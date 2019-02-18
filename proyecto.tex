@@ -1,0 +1,83 @@
+\documentclass[oneside,oldfontcommands]{memoir}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{kpfonts}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+\usepackage{algorithmic}
+\usepackage{cite}
+\usepackage{variables}
+\usepackage{chapterheader}
+\usepackage{xspace}
+\usepackage{subfiles}
+\usepackage{xcolor}
+\definecolor{lightblue}{HTML}{4A70AD}
+\decimalpoint
+\usepackage{dcolumn}
+\newcolumntype{.}{D{.}{\esperiod}{-1}} \makeatletter
+\addto\shorthandsspanish{\let\esperiod\es@period@code} \makeatother
+\RequirePackage{verbatim}
+\usepackage{graphicx}
+\usepackage{afterpage}
+\usepackage{longtable}
+\usepackage[pdfborder={000}]{hyperref} %referencia
+
+\hypersetup{
+  pdfauthor = {\AuthorName (email (en) ugr (punto) es)},
+  pdftitle = {\ProjectTitle},
+  pdfsubject = {},
+  pdfkeywords = {palabra_clave1, palabra_clave2, palabra_clave3, ...},
+  pdfcreator = {LaTeX con el paquete ....},
+  pdfproducer = {pdflatex},
+  colorlinks = True,
+  linkcolor = lightblue
+}
+
+\usepackage{url}
+\usepackage{colortbl,longtable}
+
+\renewcommand{\chaptermark}[1]{\markboth{\textbf{#1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection. #1}}}
+
+\setlength{\headheight}{1.5\headheight}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+% Definimos los tipos teorema, ejemplo y definición podremos usar
+% estos tipos simplemente poniendo \begin{teorema} \end{teorema} ...
+\newtheorem{teorema}{Teorema}[chapter]
+\newtheorem{ejemplo}{Ejemplo}[chapter]
+\newtheorem{definicion}{Definición}[chapter]
+
+\newcommand{\bigrule}{\titlerule[0.5mm]}
+
+% Para conseguir que en las páginas en blanco no ponga cabeceras
+\makeatletter
+\def\clearpage{%
+  \ifvmode \ifnum \@dbltopnum =\m@ne \ifdim \pagetotal <\topskip
+  \hbox{} \fi \fi \fi
+  \newpage
+  \thispagestyle{empty} \write\m@ne{} \vbox{} \penalty -\@Mi }
+\makeatother
+
+\begin{document}
+	
+\subfile{prefaces/cover}
+
+\subfile{prefaces/spanish_abstract}
+
+\subfile{prefaces/english_abstract}
+
+\tableofcontents
+
+\setlength{\parskip}{5pt}
+
+\subfile{chapters/01_introduction}
+
+\bibliographystyle{acm}
+\bibliography{Bibliography}
+
+\end{document}

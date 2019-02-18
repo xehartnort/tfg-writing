@@ -1,0 +1,28 @@
+\documentclass[../proyecto.tex]{book}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+  {\large\bfseries \ProjectTitleEng}\\
+\end{center}
+
+\begin{center}
+  \AuthorName\\
+  \vspace{0.7cm}
+  \noindent{\textbf{Keywords}: No Free Lunch Theorem, Stochastic Gradient Descent, Backpropagation , Deep Learning, evolutionary algorithms, Differential Evolution, Neural Networks, Convolutional Neural Networks }\\
+
+  \vspace{0.7cm}
+  \noindent{\textbf{Abstract}}\\
+ \end{center}
+
+  \textbf{Deep Neural Networks}, also known as \textbf{Deep Learning} constitute a subset of algorithms in the field of \textbf{Machine Learning}. Their functioning is inspired from the way human brain works. In the last six years, these networks have shown great results in computer vision task such as image classification. A lot of people have studied the classification problem known as \textbf{handwritten digits}, which uses a database called \textbf{`MNIST'}. Up to date, the most used algorithm to train Neural Networks is \textbf{RMSProp}, a type of \textbf{Stochastic Gradient Descent}. \\
+  
+  In this project we are going to deepen the study of the optimization of Neural Networks. The optimizer will be changed and it will be shown how results become competitive and moreover, if we fit correctly all the parameters and adjust the new optimizers to our problem, results will be close to results using RMSProp. Algorithms chosen as optimizers in our project are the \textbf{evolutionary algorithms}, based on the natural evolution and the power of natural selection between generations in populations. So, we create individuals who represent solutions to the handwritten problem. We represent them as a set of weights which we can reshape and assign to the different connections between layers, obtaining, after evaluation, a set of labels which should be the most similar possible to labels of the set we are training. Therefore, the idea is to create a population of individuals and use the correct operators of crossover, mutation and selection to obtain, after some generations, a population with quality individuals. These algorithms are atractive because of different characteristics: simplicity, ease to combine with other search algorithms (like Local Search), ease to parallelize, applicability over non-differenciable problems, etc. These characteristics,  are a motivation to use this algorithms as the new optimizers in Neural Networks. \\
+  
+  Within evolutionary algorithms, we will use \textbf{Differential Evolution}. These algorithms works well in real-valued problems and for continuous fitness functions. They do not need the fitness function to be differentiable. They have the same foundations that all evolutionary algorithms: creating a population of candidate solutions we try to evolve them and obtein a final population with quality solutions. Then, we obtain the best in this population and we consider it as the solution of our problem. They use operators such as all evolutionary algorithms: crossover, selection and mutation. They need to control three very important parameters: \textit{number of individuals in population}, \textit{F}, which control the width of change in new individuals, and \textit{CR} which is a cross rate. It is important to choose correctly this parameters; if we try to do it by hand, it could cost a lot of time and a lot of computing. In this context, \textbf{Self-adaptative Differential Evolution (SaDE)} appears. They adapt themselves throughout the execution of the algorithm. In this project we will use two algorithms with great results in some competitions. They are \textbf{SHADE} and \textbf{L-SHADE}.
+  
+  The final objective of this draft is show how, adapting well different SaDE algorithms to our problem and to their use in Neural Networks, results are competitive. So it involves that other type of algorithms, such evolutionary algorithms could be employed as optimizers in Neural Networks and also, it implies to leave the idea of \textbf{Backpropagation}. Trying to reach this objective, is important to learn the mathematical foundations within optimization of Gradient Descent and how Backpropagation propagate the error. Therefore, we will explain this mathematical aspects joined to an important theorem which it is useful as motivation for trying this change of algorithms used as optimizers: \textbf{No Free Lunch Theorem}, which says no-one algorithm is the best comparing it with the rest of  algorithms applied on the total set of all the existing problems.  After that, we deepen in computing aspects linked with Neural Networks. Specially, Convolutional Neural Networks, which results are great in images recognition.Also, we will study  evolutionary algorithms, ending the theorical showing some works where Neural Networks are mixed with evolutionary algorithms. finisthing therical aspects, algorithms using in experimentation will be explained with more details and we will show results of applying them. We will extract some conclusion of this results where the most important is that, indeed, SaDE (especially combined with Local Search), is competitive used as optimizer of Neural Networks. There is a hopeful future trying to improve this algorithms for using them as optimizers, that perhaps it would allow to obtain results equal or better than those obtained with RMSProp.
+
+\newpage
+\end{document}
