@@ -56,7 +56,7 @@
 
 % Para conseguir que en las páginas en blanco no ponga cabeceras
 \makeatletter
-\def\clearpage{%
+\def\clearpage{
   \ifvmode \ifnum \@dbltopnum =\m@ne \ifdim \pagetotal <\topskip
   \hbox{} \fi \fi \fi
   \newpage
