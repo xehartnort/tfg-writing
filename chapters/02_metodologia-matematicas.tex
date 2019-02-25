@@ -1,0 +1,43 @@
+\documentclass[../proyecto.tex]{memoir}
+
+\begin{document}
+
+\chapter{Metodología}
+
+Antes de continuar con la implementación y exposición de la técnica de simulación Montecarlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización de autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos, a causa de las perturbaciones ya derivados del medio o de la interacción de los individuos. En éste trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
+
+\section{Formulación matemática}
+
+\subsection{Autómata celular determinista síncrono}
+
+Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, células. Cada célula está conectada uniformemente a un vecindario de un número finito  de células, y tiene un estado de un conjunto finito de estados. Actualiza su estado de acuerdo a una función de transición la cual determina el estado de una célula considerando su propio estado y el de las células de su vecindario. 
+
+Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional, $Q$ el conjunto de estados posibles para cada célula y $N \in (\mathds{Z}^{d})^{k}$ el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$ y $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. 
+
+Diremos que un autómata celular $A$ tiene \textit{vecindario simétrico} si y solo si, $ \forall a, b \in A $ si $ a \in \{ (b+n_{1},...,b+n_{k}) \} $ implica $ b \in \{ (a+n_{1},...,a+n_{k}) \} $
+
+\subsection{Autómata celular determinista asíncrono}
+
+\subsection{Juego de vida de Conway}
+
+El juego de vida de Conway es un autómata celular síncrono:
+
+\begin{equation}
+C = (\mathds{Z}^{2} , N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}, Q=\{0,1\}, f)
+\end{equation}
+ %$$ 
+ 
+donde $f:\{0,1\}^{9} \rightarrow \{0,1\} $ viene dada por:
+
+\begin{equation}
+f(x)= \left\{ \begin{array}{lcc}
+             1 &   si  & x_{0}=0 \quad y \quad \sum_{i=1}^{8} x_i = 3 \\
+             \\ 1 & si & x_{0}=1 \quad y \quad \sum_{i=1}^{8} x_i \in \{2 ,3\} \\
+             \\ 0 &  si  & \sum_{i=1}^{8} x_i \in \{1, 4, 5, 6, 7, 8\} \
+             \end{array}
+   \right. 
+\end{equation}
+$x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$
+
+
+\end{document}
