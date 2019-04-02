@@ -4,19 +4,241 @@
 
 \chapter{Metodología}
 
-Antes de continuar con la implementación y exposición de la técnica de simulación Montecarlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización de autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos, a causa de las perturbaciones ya derivados del medio o de la interacción de los individuos. En éste trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
+Antes de continuar con la implementación y exposición de la técnica de simulación Montecarlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización de autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de las perturbaciones, derivadas del medio o de la interacción de los individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
 
-\section{Formulación matemática}
+\section{Marco matemático}
 
-\subsection{Autómata celular determinista síncrono}
+\subsection{Teoría de conjuntos}
 
-Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, células. Cada célula está conectada uniformemente a un vecindario de un número finito  de células, y tiene un estado de un conjunto finito de estados. Actualiza su estado de acuerdo a una función de transición la cual determina el estado de una célula considerando su propio estado y el de las células de su vecindario. 
+\subsubsection{Introducción}
 
-Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional, $Q$ el conjunto de estados posibles para cada célula y $N \in (\mathds{Z}^{d})^{k}$ el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$ y $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. 
+Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente del resto de células actualizadas en cada instante de tiempo, por ello introducimos el siguiente concepto. 
 
-Diremos que un autómata celular $A$ tiene \textit{vecindario simétrico} si y solo si, $ \forall a, b \in A $ si $ a \in \{ (b+n_{1},...,b+n_{k}) \} $ implica $ b \in \{ (a+n_{1},...,a+n_{k}) \} $
+\subsubsection{Ultrafiltros}
+Dado un conjunto X, $P(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in P(X)$, notaremos su complementario $A^{c}$. 
 
-\subsection{Autómata celular determinista asíncrono}
+Un ultrafiltro de X es $U \in P(X)$ tal que:
+
+\begin{enumerate}
+\item $\emptyset \in U$.
+\item Sean $A,B \in P(X)$ tales que $A \subset B$,$ A \in U$, entonces $B \in U$.
+\item Si $A,B \in U$, entonces $A \cap B \in U$.
+\item Si $A \in P(X)$ entonces $A \in U$ o $ A^{c} \in U$.
+\end{enumerate}
+
+Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el más pequeño que contiene a $p$, esto es, la colección de todos los conjuntos que contienen a $p$.
+
+\subsection{Métodos de Monte Carlo}
+
+\subsubsection{Introducción}
+
+El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor, puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes cantidades de memoria y tiempo cómputo. Curiosamente, en su nacimiento no había ninguna relación con los ordenadores, los cuales se han presentado como la principal herramienta para la aplicación efectiva de estos métodos.
+
+% quizás aquí hablar de lo que vamos a hacer a continuación, un prólogo
+
+\subsection{Teoría de la probabilidad}
+
+% introducir concepto de simulación o experimento
+ 
+Las deficiones de conceptos básicos de teoría de la probabilidad están extraídos de \cite{proman}. 
+
+% también de http://mathworld.wolfram.com/RandomVariable.html
+
+Un suceso es cualquier característica, hecho o proposición lógica que pueda formularse en relación a un experimento aleatorio, cuya ocurrencia o no pueda ser observada tras la realización del experimento.
+
+Una $\sigma$-álgebra sobre un conjunto X, es una colección no vacía de subconjuntos de X cerrados para uniones numerables y para la operación de complementario, esto es:
+\begin{itemize}
+\item $\forall A \in X$ se verifica que $A^{c} \in X$.
+\item $ \forall A_{n} \in X, n \in \mathds{N} $ se verifica que $\bigcup _{n \in \mathds{N}} A_{n} \in X$.
+\end{itemize}
+ 
+Una $\sigma$-álgebra de Borel sobre X es la más pequeña $\sigma$-álgebra que contiene todos los conjuntos de $P(X)$. 
+ 
+Sea $\mathds{B}$ una $\sigma$-álgebra de Borel de X, una medida de probabilidad, función de probabilidad o simplemente probabilidad es una función $\mu: \mathds{B} \rightarrow [0,1] $ tal que: 
+
+Si $E_{1}, E_{2},... \subset \mathds{B}$ es una sucesión de conjuntos disjuntos, entonces:
+\begin{equation*}
+ \mu \big( \bigcup _{i=1} ^{\infty} E_{i} \big) = \sum _{i=1}^{\infty} \mu ( E_{i} ).
+\end{equation*}
+
+De esta manera, la probabilidad de un suceso $E \in \mathds{B}$ es $\mu(E)$.
+
+Un espacio medible es la dupla (X,$\mathds{B}$) donde $\mathds{B}$ es la $\sigma$-álgebra de Borel sobre X. Una función medible es una función entre espacios medibles, $g:  (X,\mathds{B}) \rightarrow (X',\mathds{B}')$ tal que: $ \forall B \in \mathds{B}', \quad g^{-1}(B) \in \mathds{B}$.
+
+Sea X un conjunto, $\mathds{B}$ la $\sigma$-álgebra de Borel sobre X, $P: \mathds{B} \rightarrow [0,1] $ una medida de probabilidad, la tupla (X,$\mathds{B}$, P) es un espacio de probabilidad. 
+
+\subsubsection{Variables aleatorias}
+
+Una variable aleatoria es una función medible de un espacio de probabilidad $(X, \mathds{B}, P)$ en un conjunto X' junto con su $\sigma$-álgebra de Borel $\mathds{B}'$. Este último conjunto, X', será también conocido como espacio de estados. A partir, de ahora cuando nos refiramos a una variable aleatoria entenderemos que el codominio de la función es el espacio de medida $(\mathds{R},\mathds{B})$.
+
+Dada una variable aleatoria continua x que toma valores en el intervalo $(a,b)$, la función de distribución acumulada de x se define como:
+
+% falta decir quién es p aquí
+
+\begin{equation*}
+F(x) \equiv \int^{a}_{b}p(s)ds.
+\end{equation*}
+
+Esto es una función no decreciente de x que varía de $F(a)=0$ a $F(b)=1$. El n-ésimo momento de p(x) se define como:
+
+\begin{equation*}
+E(x^{n}) \equiv \int^{a}_{b}x^{n}p(x)dx.
+\end{equation*}
+
+El momento $E(x^{0})$ es simplemente la integral de $p(x)$ que es 1 por definición. Sin embargo, momentos de orden no existen necesariamente, es decir, su valor puede ser infinito. El primer momento es el valor esperado o media de la variable aleatoria x.
+
+Similarmente, si x es una variable aleatoria y f es una función real de variable real, entonces $f(x)$ también es una variable aleatoria y el valor esperado de $g(x)$ es:
+
+\begin{equation*}
+E(f(x)) = \int^{a}_{b}f(x)p(x)dx.
+\end{equation*}
+
+Notamos que el valor esperado es lineal, como consecuencia de la linealidad de la integral. Dados $\lambda, \mu \in \mathds{R}$ y sean x, x' dos variables aleatorias continuas:
+
+\begin{equation*}
+E(\lambda x+\mu x') = \lambda E(x) + \mu E(x').
+\end{equation*}
+
+Si el primer y segundo momento de $p(x)$ existen, definimos la varianza de $p(x)$ como:
+
+\begin{equation*}
+var(x) \equiv E \big((x-E(x))^{2}\big) = \int^{a}_{b} (x-E(x))^{2} p(x) dx =  E(x^{2})-E(x)^{2}.
+\end{equation*}
+
+La raíz cuadrada positiva de la varianza, $\sigma$, es la desviación estándar ó incertidumbre estándar. Éste valor es una medida de la dispersión de la variable aleatoria. Análogamente, la variable aleatoria $f(x)$ se define:
+
+\begin{equation*}
+var(f(x)) \equiv E \big((f(x)-E(f(x)))^{2}\big) =  E(f(x)^{2})-E(f(x))^{2}.
+\end{equation*}
+
+Así, para una función constante $f(x)=c$ se tiene $E(f(x))=c$ y $var(f(x)) = 0$.
+
+\subsubsection{Variables aleatorias dos dimensionales}
+
+Consideremos ahora una variable aleatoria dos dimensional $(x,y)$. Las marginales de $x$ e $y$ de se definen como:
+
+\begin{align*}
+q(x) \equiv \int p(x,y) dy, \qquad q(y) \equiv \int p(x,y) dx .
+\end{align*}
+
+es decir, $q(x)$ es la probabilidad de obtener el valor $x$ y cualquier valor de $y$. La probabilidad conjunta de $x$ e $y$ se puede expresar en términos de las marginales anteriores:
+
+\begin{equation*}
+p(x,y) = q(x)p(x|y) = q(y)p(y|x).
+\end{equation*}
+
+donde 
+
+\begin{equation*}
+p(x|y) = \frac{p(x,y)}{q(y)}, \qquad p(y|x) = \frac{p(x,y)}{q(x)}.
+\end{equation*}
+
+son las probabilidades de $x$ condicionado a $y$ e $y$ condicionada a $x$, respectivamente. El valor esperado de la  variable aleatoria $(x,y)$ es :
+
+\begin{equation*}
+E(x,y)= \int\int xyp(x,y)dxdy.
+\end{equation*}
+
+Análogamente, para una función $f(x,y)$ es:
+
+\begin{equation*}
+E(f(x,y)) = \int\int f(x,y)p(x,y)dxdy.
+\end{equation*}
+
+Los momentos de $p(x,y)$ se definen como:
+
+\begin{equation*}
+E(x^{n},y^{m})= \int\int x^{n}y^{m}p(x,y)dxdy.
+\end{equation*}
+
+En particular:
+
+\begin{align*}
+E(x^{n})= \int\int x^{n}p(x,y)dxdy = \int x^{n}q(x)dx, 
+\end{align*}
+\begin{align*}
+E(y^{m})= \int\int y^{m}p(x,y)dxdy = \int y^{m}q(y)dy.
+\end{align*}
+
+De nuevo, el único momento que necesariamente existe es $E(x^{0},y^{0})=1$. Cuando los correspondientes momentos existen las varianzas marginales son:
+
+\begin{equation*}
+var(x) =  E(x^{2})-E(x)^{2}, \qquad var(y) =  E(y^{2})-E(y)^{2}.
+\end{equation*}
+
+
+% terminar hablando de la covarianza
+
+\subsection{Generadores de números aleatorios}
+
+\subsubsection{Introducción}
+
+\subsubsection{Discusión}
+
+\subsubsection{Discusión}
+
+\subsubsection{Discusión}
+
+
+\subsection{Teoría de la computación}
+
+\subsubsection{Introducción}
+Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. [Alguna citilla mona]. Así pues tomaremos el concepto más generalista de autómata celular m-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
+
+\subsubsection{Autómata celular determinista}
+Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, y tiene un estado de un conjunto finito de estados. Actualiza su estado de acuerdo a una función de transición la cual determina el estado de una célula considerando su propio estado y el de su vecindario. 
+
+Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional, $Q$ el conjunto de estados posibles para cada célula y $N \in (\mathds{Z}^{d})^{k}$ el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$ y $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. La función de transición local, fijando una configuración g induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
+
+\begin{equation*}
+\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k}))
+\end{equation*}
+
+\subsection{Autómata celular m-asíncrono}
+
+Un autómata celular m-asíncrono C es la tupla $(A, \mu)$ donde A es un autómata celular y $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$. 
+Para cada función de transición local $f$ y cada conjunto $\tau \in P(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ como sigue:
+
+\begin{equation*}
+	\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \qquad
+	F_{\tau}(x)(i) = \left\{ \begin{array}{lcc}
+             f(x(i),x(i+n_{1}),...,x(i+n_{k})) &   si  & i \in \tau ,\\
+             \\ x(i) & si  & i \notin \tau .\\
+             \end{array}
+             \right.
+\end{equation*}
+
+$F_{\tau}$ aplica la función de transición local solo sobre los elementos de $\tau \subset \mathds{Z}^{d}$. Notar que cada célula $i \in \mathds{Z}^{d}$ es actualizada con probabilidad $\mu(U_{i})$.
+
+Esta nueva definición de autómata celular m-asíncrono, incluye la de autómata celular síncrono. Fijada una $\sigma$-álgebra $\mathds{B}$ sobre $\mathds{Z}^{d}$ y sea $C_{0}=(A, \mu_{0})$ un autómata celular m-asíncrono donde $\mu_{0}: \mathds{B} \rightarrow [0,1]$ viene dada por: 
+
+\begin{equation*}
+	 \forall A \in P(\mathds{Z}^{d}), \qquad 
+	 \mu_{0}(A) = \left\{ \begin{array}{lcc}
+             \ 1 &   si  & \mathds{Z}^{d} \in A ,\\
+             \\0 &   si  & \mathds{Z}^{d} \notin A .\\
+             \end{array}
+             \right.
+\end{equation*}
+
+De ésta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
+
+Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante de tiempo solo de aplica la función de transición local a una sola célula. Consideramos ahora el autómata celular m-asíncrono $C_{1}=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
+
+\begin{enumerate}
+\item $\mu_{1}(U_{i}) > 0, \quad \forall i \in \mathds{Z}^{d}$.
+\item $\mu_{1}(U_{i} \cap U_{j}) = 0, \quad \forall i \neq j, \quad i,j \in \mathds{Z}^{d}$.
+\end{enumerate}
+
+Así solo los conjuntos de la forma \{k\} $(k \in \mathds{Z}^{d})$ se les aplica la función de transición local.
+
+Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. Dado $C_{2}=(A, \mu_{2})$ un autómata celular m-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, $\mu_{2}: \mathds{B} \rightarrow [0,1]$ satisfaciendo:
+
+\begin{enumerate}
+\item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
+\item $ \forall A \subseteq \mathds{Z}^{d} \quad$ finito,$\quad  \mu_{2} ( \bigcap_{a \in A} U_{a} ) = \prod_{a \in A} \mu_{2} ( U_{a} )$.
+\end{enumerate}
+
 
 \subsection{Juego de vida de Conway}
 
@@ -25,7 +247,6 @@ El juego de vida de Conway es un autómata celular síncrono:
 \begin{equation}
 C = (\mathds{Z}^{2} , N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}, Q=\{0,1\}, f)
 \end{equation}
- %$$ 
  
 donde $f:\{0,1\}^{9} \rightarrow \{0,1\} $ viene dada por:
 
@@ -33,11 +254,14 @@ donde $f:\{0,1\}^{9} \rightarrow \{0,1\} $ viene dada por:
 f(x)= \left\{ \begin{array}{lcc}
              1 &   si  & x_{0}=0 \quad y \quad \sum_{i=1}^{8} x_i = 3 \\
              \\ 1 & si & x_{0}=1 \quad y \quad \sum_{i=1}^{8} x_i \in \{2 ,3\} \\
-             \\ 0 &  si  & \sum_{i=1}^{8} x_i \in \{1, 4, 5, 6, 7, 8\} \
+             \\ 0 &  si  & \sum_{i=1}^{8} x_i \notin \{2, 3\} \
              \end{array}
    \right. 
 \end{equation}
-$x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$
+y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
+
+
+\subsection{Juego de vida de Conway asíncrono}
 
 
 \end{document}
