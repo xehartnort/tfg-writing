@@ -44,8 +44,6 @@ Las deficiones de conceptos básicos de teoría de la probabilidad están extra�
 
 % también de http://mathworld.wolfram.com/RandomVariable.html
 
-Un suceso es cualquier característica, hecho o proposición lógica que pueda formularse en relación a un experimento aleatorio, cuya ocurrencia o no pueda ser observada tras la realización del experimento.
-
 Una $\sigma$-álgebra sobre un conjunto X, es una colección no vacía de subconjuntos de X cerrados para uniones numerables y para la operación de complementario, esto es:
 \begin{itemize}
 \item $\forall A \in X$ se verifica que $A^{c} \in X$.
@@ -63,113 +61,165 @@ Si $E_{1}, E_{2},... \subset \mathds{B}$ es una sucesión de conjuntos disjuntos
 
 De esta manera, la probabilidad de un suceso $E \in \mathds{B}$ es $\mu(E)$.
 
-Un espacio medible es la dupla (X,$\mathds{B}$) donde $\mathds{B}$ es la $\sigma$-álgebra de Borel sobre X. Una función medible es una función entre espacios medibles, $g:  (X,\mathds{B}) \rightarrow (X',\mathds{B}')$ tal que: $ \forall B \in \mathds{B}', \quad g^{-1}(B) \in \mathds{B}$.
+Un espacio medible es la dupla (X,$\mathds{B}$) donde $\mathds{B}$ es la $\sigma$-álgebra de Borel sobre X, una función medible es una función entre espacios medibles, $g:  (X,\mathds{B}) \rightarrow (X',\mathds{B}')$ tal que: $g^{-1}(B) \in \mathds{B} \quad \forall B \in \mathds{B}'$.
 
 Sea X un conjunto, $\mathds{B}$ la $\sigma$-álgebra de Borel sobre X, $P: \mathds{B} \rightarrow [0,1] $ una medida de probabilidad, la tupla (X,$\mathds{B}$, P) es un espacio de probabilidad. 
 
 \subsubsection{Variables aleatorias}
 
-Una variable aleatoria es una función medible de un espacio de probabilidad $(X, \mathds{B}, P)$ en un conjunto X' junto con su $\sigma$-álgebra de Borel $\mathds{B}'$. Este último conjunto, X', será también conocido como espacio de estados. A partir, de ahora cuando nos refiramos a una variable aleatoria entenderemos que el codominio de la función es el espacio de medida $(\mathds{R},\mathds{B})$.
+% va a terminar siendo necesario hablar de las continuas y de las discontinuas, crack
 
-Dada una variable aleatoria continua x que toma valores en el intervalo $(a,b)$, la función de distribución acumulada de x se define como:
+Una variable aleatoria definida sobre un espacio de probabilidad $(X, \mathds{B}, P)$ es una función medible A: $(X, \mathds{B}, P) \rightarrow  (X', \mathds{B}')$ con $(X', \mathds{B}')$ un espacio medible.
 
-% falta decir quién es p aquí
+Cada valor de A se corresponde con un subconjunto de puntos de $X$ que se aplica en dicho valor, es decir, $ \{ w\in X : A(w)=x\}$ que notaremos por simplicidad $\{X = x\}$. A parte de los anteriores conjuntos también nos resultarán de interés lo siguientes:
+\begin{align*}
+\{ w\in X : A(w) \leq x\} = \{ A \leq x \} \\
+\{ w\in X : A(w) < x\} = \{ A < x \} \\
+\{ w\in X : A(w) > x\} = \{ A > x \} \\
+\{ w\in X : A(w) \geq x\} = \{ A \geq x \}
+\end{align*}
+Con esta útil notación podremos calcular la probabilidad de sucesos de mayor interés.
 
-\begin{equation*}
-F(x) \equiv \int^{a}_{b}p(s)ds.
-\end{equation*}
+A partir, de ahora cuando nos refiramos a una variable aleatoria entenderemos que el codominio de dicha función medible es el espacio de medida $(\mathds{R},\mathds{B})$ y supondremos que está fijado un espacio de probabilidad $(X, \mathds{B}, P)$.
 
-Esto es una función no decreciente de x que varía de $F(a)=0$ a $F(b)=1$. El n-ésimo momento de p(x) se define como:
 
-\begin{equation*}
-E(x^{n}) \equiv \int^{a}_{b}x^{n}p(x)dx.
-\end{equation*}
+Dada una variable aleatoria $A$ se define su función de distribución como $ F : \mathds{R} \rightarrow [0,1] $ dada por $F(x)=P(A \leq x)$.
 
-El momento $E(x^{0})$ es simplemente la integral de $p(x)$ que es 1 por definición. Sin embargo, momentos de orden no existen necesariamente, es decir, su valor puede ser infinito. El primer momento es el valor esperado o media de la variable aleatoria x.
+La función de distribución de $A$ satisface:
 
-Similarmente, si x es una variable aleatoria y f es una función real de variable real, entonces $f(x)$ también es una variable aleatoria y el valor esperado de $g(x)$ es:
+\begin{itemize}
+\item Es monótona no decreciente.
+\item Dada una sucesión decreciente de elementos de X, $\{x_n\}_{n \in \mathds{N}} \in X$, convergente a $x\in X$ se tiene $\lim_{x_n \searrow x} F(x_n) = F(x)$, es decir, es continua a la derecha. 
+\item $\lim_{x\to+\infty} F(x) = 1$ y $\lim_{x\to-\infty} F(x) = 0$.
+\end{itemize}
 
-\begin{equation*}
-E(f(x)) = \int^{a}_{b}f(x)p(x)dx.
-\end{equation*}
+\subsubsection{Variables aleatorias discretas}
 
-Notamos que el valor esperado es lineal, como consecuencia de la linealidad de la integral. Dados $\lambda, \mu \in \mathds{R}$ y sean x, x' dos variables aleatorias continuas:
-
-\begin{equation*}
-E(\lambda x+\mu x') = \lambda E(x) + \mu E(x').
-\end{equation*}
-
-Si el primer y segundo momento de $p(x)$ existen, definimos la varianza de $p(x)$ como:
-
-\begin{equation*}
-var(x) \equiv E \big((x-E(x))^{2}\big) = \int^{a}_{b} (x-E(x))^{2} p(x) dx =  E(x^{2})-E(x)^{2}.
-\end{equation*}
-
-La raíz cuadrada positiva de la varianza, $\sigma$, es la desviación estándar ó incertidumbre estándar. Éste valor es una medida de la dispersión de la variable aleatoria. Análogamente, la variable aleatoria $f(x)$ se define:
-
-\begin{equation*}
-var(f(x)) \equiv E \big((f(x)-E(f(x)))^{2}\big) =  E(f(x)^{2})-E(f(x))^{2}.
-\end{equation*}
-
-Así, para una función constante $f(x)=c$ se tiene $E(f(x))=c$ y $var(f(x)) = 0$.
-
-\subsubsection{Variables aleatorias dos dimensionales}
-
-Consideremos ahora una variable aleatoria dos dimensional $(x,y)$. Las marginales de $x$ e $y$ de se definen como:
+Una variable aleatoria $A$ diremos que es discreta si toma valores es un conjunto numerable, esto es, $\exists E \subset \mathds{R}$ tal que $P(A \in E)=1$. Su función de distribución es la siguiente: 
 
 \begin{align*}
-q(x) \equiv \int p(x,y) dy, \qquad q(y) \equiv \int p(x,y) dx .
+\forall x\in \mathds{R}, \quad F(x) = \sum_{x_n\in E, x_n \leq x} P(A=x_n).
 \end{align*}
 
-es decir, $q(x)$ es la probabilidad de obtener el valor $x$ y cualquier valor de $y$. La probabilidad conjunta de $x$ e $y$ se puede expresar en términos de las marginales anteriores:
-
-\begin{equation*}
-p(x,y) = q(x)p(x|y) = q(y)p(y|x).
-\end{equation*}
-
-donde 
-
-\begin{equation*}
-p(x|y) = \frac{p(x,y)}{q(y)}, \qquad p(y|x) = \frac{p(x,y)}{q(x)}.
-\end{equation*}
-
-son las probabilidades de $x$ condicionado a $y$ e $y$ condicionada a $x$, respectivamente. El valor esperado de la  variable aleatoria $(x,y)$ es :
-
-\begin{equation*}
-E(x,y)= \int\int xyp(x,y)dxdy.
-\end{equation*}
-
-Análogamente, para una función $f(x,y)$ es:
-
-\begin{equation*}
-E(f(x,y)) = \int\int f(x,y)p(x,y)dxdy.
-\end{equation*}
-
-Los momentos de $p(x,y)$ se definen como:
-
-\begin{equation*}
-E(x^{n},y^{m})= \int\int x^{n}y^{m}p(x,y)dxdy.
-\end{equation*}
-
-En particular:
+Definimos el enésimo momento de la variable aleatoria discreta A como:
 
 \begin{align*}
-E(x^{n})= \int\int x^{n}p(x,y)dxdy = \int x^{n}q(x)dx, 
+\mathds{E}(A^n) \equiv \sum_{x_m \in E, x_m \leq x} x_m^n P(A=x_m).
 \end{align*}
+
+Notar que por definición el momento n=0 siempre existe, sin embargo el resto de momentos no existen necesariamente, es decir, pueden divergir. Por otro lado, el momento n=1 se conoce como valor esperado o esperanza.
+
+Suponiendo que los momentos de órdenes 1 y 2 existen, definimos la varianza de la variable aleatoria discreta A como:
+
 \begin{align*}
-E(y^{m})= \int\int y^{m}p(x,y)dxdy = \int y^{m}q(y)dy.
+var(A) \equiv \sum_{x_m\in E, x_m \leq x} (P(A=x_m) - \mathds{E}(A))^2.
 \end{align*}
 
-De nuevo, el único momento que necesariamente existe es $E(x^{0},y^{0})=1$. Cuando los correspondientes momentos existen las varianzas marginales son:
+A la raíz cuadrada positiva de la varianza la notaremos $\sigma(A)=+\sqrt{var(A)}$ y diremos que es la desviación estándar de la variable aleatoria discreta A. Dicho valor es una medida de dispersión de A, de esta manera si A es constante, $A = c\in \mathds{R}$ se tiene $\mathds{E}(A)=c$ y $var(A) = 0$.
 
-\begin{equation*}
-var(x) =  E(x^{2})-E(x)^{2}, \qquad var(y) =  E(y^{2})-E(y)^{2}.
-\end{equation*}
+\subsubsection{Variables aleatorias continuas}
+
+% hablar de variable aleatoria continua
+
+% introducir esperanza
+
+% momentos
+
+% y varianza :d
+
+\subsubsection{Tipos de convergencia: convergencia en probabilidad y convergencia casi segura}
+
+Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
+
+\begin{itemize}
+
+\item $A_n \to A$ en probabilidad, si para todo $\epsilon > 0$, $\lim_{n\to\infty} P( |A_n-A|> \epsilon ) = 0$ y lo notaremos $A_n \to^{P} A$.
+
+\item $A_n \to X$ casi seguramente, si $P(\lim_{n\to\infty} A_n=A) = 1$ y lo notaremos $A_n \to^{c.s.} X$.
+
+\end{itemize}
 
 
-% terminar hablando de la covarianza
+%% Todo lo que haga falta para terminar demostrando el teorema de la Ley de los Grandes números + la desigualdad de tchebyshev. Esto es:
 
-% llegar al teorema central del límite y añadir las conclusiones de los papeles impresos
+%% algo de teoría de estimadores, aunque no sé muy bien para qué
+
+%% CONCEPTO DE INDEPENDENCIA
+
+\subsubsection{Teorema central del límite}
+
+
+
+
+\subsubsection{Ley de los grandes números, formulación fuerte}
+
+Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes e idénticamente distribuidas, es decir, obtenidas de la misma distribución con esperanza (finita) $\mu$. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$, $\bar{\mu}=\frac{1}{n}\sum_{n\in\mathds{N}} A_n \to^{c.s.} \mu$, esto es, $P(\lim_{n\to\infty} \bar{\mu}=\mu) = 1$.
+
+Para obtener una demostración un tanto más breve de éste importante teorema añadiremos la hipótesis de existencia del momento de orden 4 de $A_n$. Una demostración completa del teorema sin la hipótesis adicional se puede consultar en [].
+
+Lema extra, previo a la demostración:
+En las misma condiciones de la ley de los grandes números, existe una constante $ K < \infty $ tal que para todo $ n \geq 0$:
+$$
+	\mathds{E} \big( ( \bar{ \mu } - n \mu ) ^ 4 \big) \leq K n^2.
+$$
+
+Demostración:
+
+Sean $Z_k = A_k - \mu $ y $T_n = Z_1 + Z_2 + ... + Z_n = \sum_{i=1}^{n} A_n - n\mu $. Entonces:
+
+$$
+	\mathds{E} ( T_{n}^{4} ) = \mathds{E} ( \big( \sum_{i=1}^{n} Z_i \big) ^{4} ) = n\mathds{E}(Z_{1}^4)+3n(n-1)\mathds{E}(Z_1^2 Z_2^2) \leq Kn^2.
+$$
+
+donde en la segunda igualdad se ha empleado el desarrollo multinomial:
+
+$$
+(x_1+x_2+...+x_m)^n = \sum_{k_1+k_2+...+k_m=n} { n \choose k_1,k_2, ..., k_n} \prod_{1 \leq t \leq m} x_t^{k_t}
+$$
+
+con
+
+$$
+{ n \choose k_1,k_2, ..., k_n} = \frac{n!}{k_1!k_2! \dotsb k_n!}
+$$
+
+Considerando que claramente $\mathds{E}(Z_k)=0 \quad \forall k$ y la independencia de las variables $Z_k$, se han cancelado todos los sumandos de la forma:
+
+\begin{align*}
+	\mathds{E} (Z_{i} Z_{j}^3 ) =\mathds{E} (Z_{i}) \mathds{E} (Z_{j}^3) = 0, \quad 1 \leq i,j \leq n, \quad i \neq j, \\
+	\mathds{E} ( Z_{i} Z_{j} Z_{k} Z_{l} ) = \mathds{E} (Z_{i}) \mathds{E} (Z_{j}) \mathds{E} (Z_{k}) \mathds{E} (Z_{l}) = 0, \quad 1 \leq i,j,k,l \leq n, \quad i \neq j \neq k \neq l.
+\end{align*}
+
+y $K$ adecuadamente elegida, $K = 4 max{\mathds{E}(Z_1^4), \mathds{E}(Z_1^2)^2}$.
+
+\subsubsection{Demostración de la ley de los grandes números}
+
+Asumamos que $E(A_n^4) < \infty \forall n$, aplicando el lema anterior:
+
+$$
+	\mathds{E} \big( ( \bar{ \mu } - \mu ) ^ 4 \big) \leq K n^{-2}.
+$$
+
+Ahora por el lema de Tonelli:
+
+$$
+	\mathds{E} \big( \sum_{n \geq 1}( \bar{ \mu } - \mu ) ^ 4 \big) = \sum_{n \geq 1} \mathds{E} \big( ( \bar{ \mu } - \mu ) ^ 4 \big)  < \infty
+$$
+
+lo que implica:
+
+$$
+\sum_{n \geq 1} \big( \bar{ \mu } - \mu \big)^ 4 < \infty \quad c.s. 
+$$
+
+Pero si una serie es convergente, entonces la sucesión de su término general de la serie converge a cero, por tanto:
+$$
+ \bar{ \mu } \to \mu \quad c.s.
+$$
+% 
+
+\subsection{•}
+
 
 \subsection{Generadores de números aleatorios}
 
