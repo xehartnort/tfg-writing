@@ -127,6 +127,8 @@ A la raíz cuadrada positiva de la varianza la notaremos $\sigma(A)=+\sqrt{var(A
 
 % y varianza :d
 
+
+
 \subsubsection{Tipos de convergencia: convergencia en probabilidad y convergencia casi segura}
 
 Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
@@ -135,7 +137,9 @@ Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 
 \item $A_n \to A$ en probabilidad, si para todo $\epsilon > 0$, $\lim_{n\to\infty} P( |A_n-A|> \epsilon ) = 0$ y lo notaremos $A_n \to^{P} A$.
 
-\item $A_n \to X$ casi seguramente, si $P(\lim_{n\to\infty} A_n=A) = 1$ y lo notaremos $A_n \to^{c.s.} X$.
+\item $A_n \to A$ casi seguramente, si $P(\lim_{n\to\infty} A_n=A) = 1$ y lo notaremos $A_n \to^{c.s.} A$.
+
+\item $A_n \to A$ en distribución, si $\lim_{n \to \infty} P(A_n \leq x) = P(A \leq x),\quad \forall x \in \mathds{R}$ donde $x\mapsto P(A \leq x)$ es una función continua.
 
 \end{itemize}
 
@@ -146,10 +150,57 @@ Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 
 %% CONCEPTO DE INDEPENDENCIA
 
+
 \subsubsection{Teorema central del límite}
 
+Previa a la demostración del teorema central del límite, introducimos las herramientas matemáticas que nos harán posible su demostración.
 
+Teorema de Taylor
 
+Sea $k \in \mathds{N}$ y $f: \mathds{R} \to \mathds{R}$ k veces diferenciable en el punto $a \in \mathds{R}$. Entonces existe una función $h_k: \mathds{R} \to \mathds{R}$ tal que:
+
+$$
+f(x)=f(a)+f'(a)(x-a)+\frac{f''(a)}{2!}(x-a)^2+\dotsb+\frac{f^{(k)}(a)}{k!}(x-a)^k + h_k(x)(x-a)^k,
+$$
+
+y $\lim_{x\to a} h_k(x) = 0$.
+ 
+\subsubsection{Función generatriz de momentos}
+
+Sea A una variable aleatoria con todos los momentos de orden $n\in\mathds{N}$ finitos, se define su función generatriz de momentos como:
+
+$$
+M_A(t)=\mathds{E}[e^{tA}].
+$$
+
+Expandiendo la serie de Taylor de $e^{tA}$, entendemos por qué se le llama función generatriz de momentos:
+
+$$
+M_A(t)=\sum_{n=0}^{\infty} \frac{\mathds{E}(A^n)}{n!}t^n.
+$$
+
+En particular, podemos observar su relación con los momentos de orden n:
+
+$$
+M_X(0)=\mathds{E}[A^n]
+$$
+
+Sean A y A' dos variables aleatorias independientes y $c \in \mathds{R}$, tenemos que la función generatriz de momentos verifica lo siguiente:
+
+$$
+M_{A+A'}(t)=\mathds{E}[e^{t(A+A')}]=\mathds{E}[e^{tA}e^{tA'}] = M_A(t)M_B(t),
+$$
+
+$$
+M_{cA}(t)=\mathds{E}[e^{tcX}]=M_A(ct).
+$$
+
+A continuación vamos exponer como se puede obtener relajar la condición de existencia de momentos
+
+%También tenemos que introducir lo que es una función característica :DDDD
+% y quizás no estaría mal decir algo de la exponencial compleja :D
+
+% Aquí también introducimos el teorema de Levy para usar la demostración que usa funciones características
 
 \subsubsection{Ley de los grandes números, formulación fuerte}
 
