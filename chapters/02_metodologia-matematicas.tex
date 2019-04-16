@@ -106,7 +106,7 @@ $$
 \end{defi}
 
 \begin{prop}
-La función de distribución de $A$ satisface:
+La función de distribución de la variable aleatoria $A$ satisface:
 
 \begin{itemize}
 \item Es monótona no decreciente.
@@ -115,6 +115,11 @@ La función de distribución de $A$ satisface:
 \end{itemize}
 
 \end{prop}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hablar de las mismas cosas de las VA aleatorias pero para las continuas 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \subsection{Variables aleatorias discretas}
 
@@ -155,7 +160,7 @@ A \mapsto \mathds{E}_c(A^n) \equiv \sum_{x_m \in E} (x_m - \mu)^n P(A=x_m).
 
 
 \begin{defi}
-Definimos la varianza de la variaable aleatoria discreta A con esperanza $\mu$ y $\mathds{E}_c(A^2) < \infty $ como:
+Definimos la varianza de la variable aleatoria discreta A con esperanza $\mu$ y $\mathds{E}_c(A^2) < \infty $ como:
 
 $$
 var(A) \equiv \mathds{E}_c(A^2) = \sum_{x_m\in E} P(A=x_m) \big(x_m - \mu\big)^2 = \mathds{E}(A^2) - \mu^2.
@@ -191,7 +196,7 @@ Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 
 %% CONCEPTO DE INDEPENDENCIA
 
-\section{Teoría de la probabilidad: teorema central del límite}
+\section{Teoría de la probabilidad: Teorema central del límite}
 
 Previa a la demostración del teorema central del límite, introducimos las herramientas matemáticas que nos harán posible su demostración.
 
@@ -207,10 +212,10 @@ y $\lim_{x\to a} h_k(x) = 0$.
 \end{teorema}
  
 \begin{defi}
-Sea A una variable aleatoria con todos los momentos de orden $n\in\mathds{N}$ finitos, se define su función generatriz de momentos como:
+Sea A una variable aleatoria con todos los momentos de orden $n\in\mathds{N}$ finitos, se define su función generatriz de momentos $M_A : \mathds{R} \to \mathds{R}$ dada por:
 
 $$
-M_A(t)=\mathds{E}[e^{tA}].
+t \mapsM_A(t)=\mathds{E}[e^{tA}].
 $$
 \end{defi}
 Expandiendo la serie de Taylor de $e^{tA}$, entendemos por qué se le llama función generatriz de momentos:
@@ -235,14 +240,54 @@ $$
 M_{cA}(t)=\mathds{E}[e^{tcX}]=M_A(ct).
 $$
 
-A continuación vamos exponer como se puede obtener relajar la condición de existencia de momentos
+A continuación vamos exponer como se puede obtener relajar la condición de existencia de momentos, para ello introducimos 
 
-%También tenemos que introducir lo que es una función característica :DDDD
-% y quizás no estaría mal decir algo de la exponencial compleja :D
+\begin{defi}
+La extensión de la función exponencial $exp: \mathds{R} \to \mathds{R^{+}}$ real al cuerpo de los números complejos $exp: \mathds{C} \to \mathds{C}$ dada por:
+$$
+z \mapsto exp(iz) = e^{iz}=\cos z+i\sin z
+$$
+\end{defi}
 
-% Aquí también introducimos el teorema de Levy para usar la demostración que usa funciones características
+Notar que el módulo de la exponencial compleja está acotada por la unidad :
 
-\section{Teoría de la probabilidad: ley de los grandes números, formulación fuerte}
+$$
+\abs{ exp(iz) } = \abs{\cos z+i\sin z} = \sqrt{( \cos^2 z - \sin^2 z)} = 1.
+$$
+
+Lo que nos segura la integrabilidad de la misma.
+
+%% http://theanalysisofdata.com/probability/8_7.html
+\begin{defi}
+La función característica asociada a la variable aleatoria A es la función $\phi_{A}: \mathds{R} \to \mathds{C}$, dada por:
+$$
+\phi_{A}(t) = \mathds{E}[e^{itA}]
+$$
+\end{defi}
+
+
+\begin{prop}
+Sea $\phi_A$ la función característica de la variable aleatoria A, entonces:
+
+\begin{itemize}
+\item $\phi_A(0) = 1$.
+\item $\abs{\phi_A(t)} \leq 1$.
+\item $\phi_A$ es una función continua.
+\item Si $A_n$, n=1,..,N es una sucesión finita de variables aleatorias independientes, entonces: $$ 
+\phi_{\sum^{N}_{n=1} A_n} (t) = \prod_{n=1}^{N} \phi_{X_n} (t) 
+$$
+
+\end{itemize}
+
+\end{prop}
+
+%% https://math.stackexchange.com/questions/2059756/levys-theorem-for-characteristic-functions
+\begin{teorema}[Teorema de continuidad de Levy]
+Sea ${ A_n }_{n \in \mathds{N}}$ una sucesión de variables aleatorias tal que la sucesión de sus funciones características, ${\phi_{A_n}}_{n \in \mathds{N}}$ converge a $\phi_{A}(t)$ para cada $t\in \mathds{R}$, donde $\phi_{A}$ es continua en 0. Entonces existe una variable aleatoria $A$ con función característica $\phi$ y $A_n \to A$. Ajustar el tipo de convergencia al que necesite.
+\end{teorema}
+
+
+\section{Teoría de la probabilidad: Ley de los grandes números, formulación fuerte}
 \begin{teorema}
 Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes, con esperanza $\mu$ e idénticamente distribuidas, es decir, obtenidas de la misma distribución. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$:
 
