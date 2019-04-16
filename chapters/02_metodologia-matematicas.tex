@@ -6,17 +6,28 @@
 
 Antes de continuar con la implementación y exposición de la técnica de simulación Monte Carlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización de autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de las perturbaciones, derivadas del medio o de la interacción de los individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
 
-\section{Marco matemático}
+\section{Introducción}
 
-\subsection{Teoría de conjuntos}
+El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor, puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes cantidades de memoria y tiempo cómputo.
 
-\subsubsection{Introducción}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Extender un poco y reescribir esto cuando se haya terminado la sección %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente del resto de células actualizadas en cada instante de tiempo, por ello introducimos el siguiente concepto. 
+En primer lugar introduciremos los conceptos básicos de teoría de la probabilidad sobre los que desarrollaremos las estimaciones \textit{Monte Carlo}, para dar paso al teorema central del límite, el cual, nos permitirá obtener estimaciones de la incertidumbre de nuestros cálculos. A continuación, discutiremos la elección de un generador de números aleatorios y procederemos con la metodología de las simulaciones realizadas.
 
-\subsubsection{Ultrafiltros}
+\section{Teoría de conjuntos}
+
+\subsection{Introducción}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% darle una vuelta a esto, en realidad se introduce esto para obtener una definición más general de autómata y permitir que la actualización dependa a no del resto %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente del resto de células actualizadas en cada instante de tiempo, por ello introducimos la definición de ultrafiltro. 
+
 Dado un conjunto X, $P(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in P(X)$, notaremos su complementario $A^{c}$. 
-
+\begin{defi}
 Un ultrafiltro de X es $U \in P(X)$ tal que:
 
 \begin{enumerate}
@@ -27,49 +38,54 @@ Un ultrafiltro de X es $U \in P(X)$ tal que:
 \end{enumerate}
 
 Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el más pequeño que contiene a $p$, esto es, la colección de todos los conjuntos que contienen a $p$.
+\end{defi}
 
-\subsection{Métodos de Monte Carlo}
-
-\subsubsection{Introducción}
-
-El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor, puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes cantidades de memoria y tiempo cómputo.
-
-En primer lugar introduciremos los conceptos básicos de teoría de la probabilidad sobre los que desarrollaremos las estimaciones \textit{Monte Carlo}, para dar paso al teorema central del límite, el cual, nos permitirá obtener estimaciones de la incertidumbre de nuestros cálculos. A continuación, discutiremos la elección de un generador de números aleatorios y procederemos con la metodología de las simulaciones realizadas.
-
-\subsection{Teoría de la probabilidad}
+\section{Teoría de la probabilidad: conceptos básicos}
 
 % introducir concepto de simulación o experimento
  
-Las deficiones de conceptos básicos de teoría de la probabilidad están extraídos de \cite{proman}. 
+Las deficiones de conceptos básicos de teoría de la probabilidad están extraídos de \cite{proman}, \cite{}. 
 
 % también de http://mathworld.wolfram.com/RandomVariable.html
+\begin{defi}
 
 Una $\sigma$-álgebra sobre un conjunto X, es una colección no vacía de subconjuntos de X cerrados para uniones numerables y para la operación de complementario, esto es:
 \begin{itemize}
 \item $\forall A \in X$ se verifica que $A^{c} \in X$.
 \item $ \forall A_{n} \in X, n \in \mathds{N} $ se verifica que $\bigcup _{n \in \mathds{N}} A_{n} \in X$.
 \end{itemize}
- 
+
+\end{defi}
+
+\begin{defi}
 Una $\sigma$-álgebra de Borel sobre X es la más pequeña $\sigma$-álgebra que contiene todos los conjuntos de $P(X)$. 
- 
+\end{defi}
+
+\begin{defi}
 Sea $\mathds{B}$ una $\sigma$-álgebra de Borel de X, una medida de probabilidad, función de probabilidad o simplemente probabilidad es una función $\mu: \mathds{B} \rightarrow [0,1] $ tal que: 
 
 Si $E_{1}, E_{2},... \subset \mathds{B}$ es una sucesión de conjuntos disjuntos, entonces:
 \begin{equation*}
  \mu \big( \bigcup _{i=1} ^{\infty} E_{i} \big) = \sum _{i=1}^{\infty} \mu ( E_{i} ).
 \end{equation*}
+\end{defi}
 
 De esta manera, la probabilidad de un suceso $E \in \mathds{B}$ es $\mu(E)$.
 
+\begin{defi}
 Un espacio medible es la dupla (X,$\mathds{B}$) donde $\mathds{B}$ es la $\sigma$-álgebra de Borel sobre X, una función medible es una función entre espacios medibles, $g:  (X,\mathds{B}) \rightarrow (X',\mathds{B}')$ tal que: $g^{-1}(B) \in \mathds{B} \quad \forall B \in \mathds{B}'$.
+\end{defi}
 
+\begin{defi}
 Sea X un conjunto, $\mathds{B}$ la $\sigma$-álgebra de Borel sobre X, $P: \mathds{B} \rightarrow [0,1] $ una medida de probabilidad, la tupla (X,$\mathds{B}$, P) es un espacio de probabilidad. 
+\end{defi}
 
-\subsubsection{Variables aleatorias}
+\subsection{Variables aleatorias}
 
 % va a terminar siendo necesario hablar de las continuas y de las discontinuas, crack
-
+\begin{defi}
 Una variable aleatoria definida sobre un espacio de probabilidad $(X, \mathds{B}, P)$ es una función medible A: $(X, \mathds{B}, P) \rightarrow  (X', \mathds{B}')$ con $(X', \mathds{B}')$ un espacio medible.
+\end{defi}
 
 Cada valor de A se corresponde con un subconjunto de puntos de $X$ que se aplica en dicho valor, es decir, $ \{ w\in X : A(w)=x\}$ que notaremos por simplicidad $\{X = x\}$. A parte de los anteriores conjuntos también nos resultarán de interés lo siguientes:
 \begin{align*}
@@ -82,9 +98,14 @@ Con esta útil notación podremos calcular la probabilidad de sucesos de mayor i
 
 A partir, de ahora cuando nos refiramos a una variable aleatoria entenderemos que el codominio de dicha función medible es el espacio de medida $(\mathds{R},\mathds{B})$ y supondremos que está fijado un espacio de probabilidad $(X, \mathds{B}, P)$.
 
+\begin{defi}
+Dada una variable aleatoria $A$ se define su función de distribución como $ F : \mathds{R} \rightarrow [0,1] $ dada por 
+$$
+F(x)=P(A \leq x).
+$$
+\end{defi}
 
-Dada una variable aleatoria $A$ se define su función de distribución como $ F : \mathds{R} \rightarrow [0,1] $ dada por $F(x)=P(A \leq x)$.
-
+\begin{prop}
 La función de distribución de $A$ satisface:
 
 \begin{itemize}
@@ -93,43 +114,62 @@ La función de distribución de $A$ satisface:
 \item $\lim_{x\to+\infty} F(x) = 1$ y $\lim_{x\to-\infty} F(x) = 0$.
 \end{itemize}
 
-\subsubsection{Variables aleatorias discretas}
+\end{prop}
 
-Una variable aleatoria $A$ diremos que es discreta si toma valores es un conjunto numerable, esto es, $\exists E \subset \mathds{R}$ tal que $P(A \in E)=1$. Su función de distribución es la siguiente: 
+\subsection{Variables aleatorias discretas}
+
+\begin{defi}
+Una variable aleatoria $A$ diremos que es discreta si toma valores es un conjunto numerable, esto es, $\exists E=\{x_n\}_{n \in \mathds{N}} \subset \mathds{R}$ tal que $P(A \in E)=1$. 
+\end{defi}
+
+
+\begin{defi}
+La función de distribución de una variable aleatoria $A$ es la siguiente: 
+
+$$
+\forall x\in \mathds{R}, \quad F(x) = P( A \leq x) = \sum_{x_n\in E, x_n \leq x} P(A=x_n).
+$$
+\end{defi}
+
+\begin{defi}
+Definimos el enésimo momento de la variable aleatoria discreta A como la función dada por:
 
 \begin{align*}
-\forall x\in \mathds{R}, \quad F(x) = \sum_{x_n\in E, x_n \leq x} P(A=x_n).
+A \mapsto \mathds{E}(A^n) \equiv \sum_{x_m \in E} x_m^n P(A=x_m).
 \end{align*}
-
-Definimos el enésimo momento de la variable aleatoria discreta A como:
-
-\begin{align*}
-\mathds{E}(A^n) \equiv \sum_{x_m \in E, x_m \leq x} x_m^n P(A=x_m).
-\end{align*}
+\end{defi}
 
 Notar que por definición el momento n=0 siempre existe, sin embargo el resto de momentos no existen necesariamente, es decir, pueden divergir. Por otro lado, el momento n=1 se conoce como valor esperado o esperanza.
 
-Suponiendo que los momentos de órdenes 1 y 2 existen, definimos la varianza de la variable aleatoria discreta A como:
+$$
+\mathds{E}(A) \equiv \sum_{x_m \in E} x_m P(A=x_m).
+$$
+
+\begin{defi}
+Definimos el enésimo momento centrado de la variable aleatoria discreta A con esperanza $\mu$ como la función dada por:
 
 \begin{align*}
-var(A) \equiv \sum_{x_m\in E, x_m \leq x} (P(A=x_m) - \mathds{E}(A))^2.
+A \mapsto \mathds{E}_c(A^n) \equiv \sum_{x_m \in E} (x_m - \mu)^n P(A=x_m).
 \end{align*}
-
-A la raíz cuadrada positiva de la varianza la notaremos $\sigma(A)=+\sqrt{var(A)}$ y diremos que es la desviación estándar de la variable aleatoria discreta A. Dicho valor es una medida de dispersión de A, de esta manera si A es constante, $A = c\in \mathds{R}$ se tiene $\mathds{E}(A)=c$ y $var(A) = 0$.
-
-\subsubsection{Variables aleatorias continuas}
-
-% hablar de variable aleatoria continua
-
-% introducir esperanza
-
-% momentos
-
-% y varianza :d
+\end{defi}
 
 
+\begin{defi}
+Definimos la varianza de la variaable aleatoria discreta A con esperanza $\mu$ y $\mathds{E}_c(A^2) < \infty $ como:
 
-\subsubsection{Tipos de convergencia: convergencia en probabilidad y convergencia casi segura}
+$$
+var(A) \equiv \mathds{E}_c(A^2) = \sum_{x_m\in E} P(A=x_m) \big(x_m - \mu\big)^2 = \mathds{E}(A^2) - \mu^2.
+$$
+\end{defi}
+
+\begin{defi}
+A la raíz cuadrada positiva de la varianza la notaremos $\sigma(A)=+\sqrt{var(A)}$ y diremos que es la desviación estándar de la variable aleatoria discreta A. 
+\end{defi}
+
+Dicho valor es una medida de dispersión de A, de esta manera si A es constante, $A = c\in \mathds{R}$ se tiene $\mathds{E}(A)=c$ y $var(A) = 0$.
+
+
+\begin{defi}[Tipos de convergencia: convergencia en probabilidad y convergencia casi segura]
 
 Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 
@@ -142,6 +182,7 @@ Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 \item $A_n \to A$ en distribución, si $\lim_{n \to \infty} P(A_n \leq x) = P(A \leq x),\quad \forall x \in \mathds{R}$ donde $x\mapsto P(A \leq x)$ es una función continua.
 
 \end{itemize}
+\end{defi}
 
 
 %% Todo lo que haga falta para terminar demostrando el teorema de la Ley de los Grandes números + la desigualdad de tchebyshev. Esto es:
@@ -150,12 +191,11 @@ Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 
 %% CONCEPTO DE INDEPENDENCIA
 
-
-\subsubsection{Teorema central del límite}
+\section{Teoría de la probabilidad: teorema central del límite}
 
 Previa a la demostración del teorema central del límite, introducimos las herramientas matemáticas que nos harán posible su demostración.
 
-Teorema de Taylor
+\begin{teorema}[Teorema de Taylor]
 
 Sea $k \in \mathds{N}$ y $f: \mathds{R} \to \mathds{R}$ k veces diferenciable en el punto $a \in \mathds{R}$. Entonces existe una función $h_k: \mathds{R} \to \mathds{R}$ tal que:
 
@@ -164,15 +204,15 @@ f(x)=f(a)+f'(a)(x-a)+\frac{f''(a)}{2!}(x-a)^2+\dotsb+\frac{f^{(k)}(a)}{k!}(x-a)^
 $$
 
 y $\lim_{x\to a} h_k(x) = 0$.
+\end{teorema}
  
-\subsubsection{Función generatriz de momentos}
-
+\begin{defi}
 Sea A una variable aleatoria con todos los momentos de orden $n\in\mathds{N}$ finitos, se define su función generatriz de momentos como:
 
 $$
 M_A(t)=\mathds{E}[e^{tA}].
 $$
-
+\end{defi}
 Expandiendo la serie de Taylor de $e^{tA}$, entendemos por qué se le llama función generatriz de momentos:
 
 $$
@@ -202,21 +242,35 @@ A continuación vamos exponer como se puede obtener relajar la condición de exi
 
 % Aquí también introducimos el teorema de Levy para usar la demostración que usa funciones características
 
-\subsubsection{Ley de los grandes números, formulación fuerte}
+\section{Teoría de la probabilidad: ley de los grandes números, formulación fuerte}
+\begin{teorema}
+Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes, con esperanza $\mu$ e idénticamente distribuidas, es decir, obtenidas de la misma distribución. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$:
 
-Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes e idénticamente distribuidas, es decir, obtenidas de la misma distribución con esperanza (finita) $\mu$. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$, $\bar{\mu}=\frac{1}{n}\sum_{n\in\mathds{N}} A_n \to^{c.s.} \mu$, esto es, $P(\lim_{n\to\infty} \bar{\mu}=\mu) = 1$.
+$$
+ \bar{\mu}=\frac{1}{n}\sum_{n\in\mathds{N}} A_n \to^{c.s.} \mu,
+$$
 
-Para obtener una demostración un tanto más breve de éste importante teorema añadiremos la hipótesis de existencia del momento de orden 4 de $A_n$. Una demostración completa del teorema sin la hipótesis adicional se puede consultar en [].
+esto es, $P(\lim_{n\to\infty} \bar{\mu}=\mu) = 1$.
 
-Lema extra, previo a la demostración:
+\end{teorema}
+
+Para obtener una demostración un tanto más breve de éste teorema añadiremos la hipótesis de existencia del momento de orden 4 de $A_n$. Una demostración completa del teorema sin la hipótesis adicional se puede consultar en [].
+
+\begin{lema}
 En las misma condiciones de la ley de los grandes números, existe una constante $ K < \infty $ tal que para todo $ n \geq 0$:
 $$
 	\mathds{E} \big( ( \bar{ \mu } - n \mu ) ^ 4 \big) \leq K n^2.
 $$
+\end{lema}
 
-Demostración:
+\begin{proof}
 
-Sean $Z_k = A_k - \mu $ y $T_n = Z_1 + Z_2 + ... + Z_n = \sum_{i=1}^{n} A_n - n\mu $. Entonces:
+Sean 
+$$
+Z_k = A_k - \mu \quad y \quad T_n = Z_1 + Z_2 + ... + Z_n = \sum_{i=1}^{n} A_n - n\mu. 
+$$
+
+Entonces:
 
 $$
 	\mathds{E} ( T_{n}^{4} ) = \mathds{E} ( \big( \sum_{i=1}^{n} Z_i \big) ^{4} ) = n\mathds{E}(Z_{1}^4)+3n(n-1)\mathds{E}(Z_1^2 Z_2^2) \leq Kn^2.
@@ -234,79 +288,86 @@ $$
 { n \choose k_1,k_2, ..., k_n} = \frac{n!}{k_1!k_2! \dotsb k_n!}
 $$
 
-Considerando que claramente $\mathds{E}(Z_k)=0 \quad \forall k$ y la independencia de las variables $Z_k$, se han cancelado todos los sumandos de la forma:
+Dado que $\mathds{E}(Z_k)=0 \quad \forall k$ y la independencia de las variables $Z_k$, se han cancelado todos los sumandos de la forma:
 
 \begin{align*}
-	\mathds{E} (Z_{i} Z_{j}^3 ) =\mathds{E} (Z_{i}) \mathds{E} (Z_{j}^3) = 0, \quad 1 \leq i,j \leq n, \quad i \neq j, \\
-	\mathds{E} ( Z_{i} Z_{j} Z_{k} Z_{l} ) = \mathds{E} (Z_{i}) \mathds{E} (Z_{j}) \mathds{E} (Z_{k}) \mathds{E} (Z_{l}) = 0, \quad 1 \leq i,j,k,l \leq n, \quad i \neq j \neq k \neq l.
+	\mathds{E} (Z_{i} Z_{j}^3 ) &=\mathds{E} (Z_{i}) \mathds{E} (Z_{j}^3) = 0, \quad 1 \leq i,j \leq n, \quad i \neq j, \\
+	\mathds{E} ( Z_{i} Z_{j} Z_{k} Z_{l} ) &= \mathds{E} (Z_{i}) \mathds{E} (Z_{j}) \mathds{E} (Z_{k}) \mathds{E} (Z_{l}) = 0, \quad 1 \leq i,j,k,l \leq n, \quad i \neq j \neq k \neq l.
 \end{align*}
 
 y $K$ adecuadamente elegida, $K = 4 max{\mathds{E}(Z_1^4), \mathds{E}(Z_1^2)^2}$.
+\end{proof}
 
-\subsubsection{Demostración de la ley de los grandes números}
+Ya tenemos todos los rudimentos necesarios para proceder a demostrar el teorema de esta sección.
 
-Asumamos que $E(A_n^4) < \infty \forall n$, aplicando el lema anterior:
+\begin{proof}[Demostración (Ley de los grandes números)]
 
-$$
-	\mathds{E} \big( ( \bar{ \mu } - \mu ) ^ 4 \big) \leq K n^{-2}.
-$$
-
-Ahora por el lema de Tonelli:
+Asumamos que $\mathds{E}_c( A_n^4) < \infty \quad \forall n$, aplicando el lema anterior:
 
 $$
-	\mathds{E} \big( \sum_{n \geq 1}( \bar{ \mu } - \mu ) ^ 4 \big) = \sum_{n \geq 1} \mathds{E} \big( ( \bar{ \mu } - \mu ) ^ 4 \big)  < \infty
+	\mathds{E} \big( ( \bar{ \mu } - \mu ) ^ 4 \big) \leq \frac{K}{n^{2}}.
+$$
+
+Ahora por el teorema de Fubini-Tonelli:
+
+$$
+	\mathds{E} \big( \sum_{n \geq 1}( \bar{ \mu } - \mu ) ^ 4 \big) = \sum_{n \geq 1} \mathds{E} \big( ( \bar{ \mu } - \mu ) ^ 4 \big)  \leq K\sum_{n \geq 1}\frac{1}{n^{2}} < \infty
 $$
 
 lo que implica:
 
 $$
-\sum_{n \geq 1} \big( \bar{ \mu } - \mu \big)^ 4 < \infty \quad c.s. 
+\abs{ \sum_{n \geq 1} \big( \bar{ \mu } - \mu \big)^ 4 } = \sum_{n \geq 1} \big( \bar{ \mu } - \mu \big)^ 4 < \infty \quad c.s. 
 $$
 
 Pero si una serie es convergente, entonces la sucesión de su término general de la serie converge a cero, por tanto:
 $$
  \bar{ \mu } \to \mu \quad c.s.
 $$
-% 
+\end{proof}
 
-\subsection{•}
+\section{Teoría de la computación}
 
-
-\subsection{Generadores de números aleatorios}
-
-\subsubsection{Introducción}
-
-Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas. En un principio los generadores de números aleatorios  más usados venían expresados por la siguiente ecuación recurrente:
-
-\begin{equation} \label{cong}
-I_{j+1} = aI_{j} +c \mod (m)
-\end{equation}
-
-donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: generador lineal congruente de números aleatorios. Claramente, en $n<m$ pasos la ecuación \ref{cong} comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de a,c y m que obtuvieran en mayor periodo posible. Notar que la elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. Una de las primeras debilidades que se encontraron en este tipo de generadores es que si $n$ números aleatorios se utilizan para pintar puntos en el espacio $[0,1]^{n}$, los puntos no tenderán a "rellenar" el espacio si no que se agruparán en planos de dimensión $n-1$ \cite{planos}. 
-
-Éste desarrollo no solo se ha plasmado en el desarrollo de nuevas técnicas de generación de números aleatorios, si no que también se han desarrollado baterías de test estadísticos para comprobar la eficacia de dichos generadores. Emplearemos la batería de test \textit{Dieharder}, la cual está basada en los primeros test estadísticos propuestos por George Marsaglia en \textit{Diehard battery of tests} e incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) \cite{dieharder}.
-
-\subsubsection{Discusión}
-
-
-
-\subsection{Teoría de la computación}
-
-\subsubsection{Introducción}
+\subsection{Introducción}
 Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. [Alguna citilla mona]. Así pues tomaremos el concepto más generalista de autómata celular m-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
 
-\subsubsection{Autómata celular determinista}
+\subsection{Autómata celular determinista}
 Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, y tiene un estado de un conjunto finito de estados. Actualiza su estado de acuerdo a una función de transición la cual determina el estado de una célula considerando su propio estado y el de su vecindario. 
 
-Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional, $Q$ el conjunto de estados posibles para cada célula y $N \in (\mathds{Z}^{d})^{k}$ el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$ y $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. La función de transición local, fijando una configuración g induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
+\begin{defi}
+Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde:
+
+\begin{itemize}
+\item $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional.
+\item $Q$ el conjunto de estados posibles para cada célula.
+\item $N \in (\mathds{Z}^{d})^{k}$ es el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$.
+\item $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. 
+\end{itemize}
+
+\end{defi}
+
+\begin{defi}
+Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. 
+\end{defi}
+
+\begin{defi}
+La función de transición local, fijando una configuración g induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
 
 \begin{equation*}
 \forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k}))
 \end{equation*}
 
-\subsection{Autómata celular m-asíncrono}
+\end{defi}
 
-Un autómata celular m-asíncrono C es la tupla $(A, \mu)$ donde A es un autómata celular y $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$. 
+\begin{defi}
+Un autómata celular m-asíncrono C es una tupla $(A, \mu)$ donde: 
+\begin{itemize}
+\item A es un autómata celular 
+\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$
+\end{itemize} 
+\end{defi}
+
+\begin{defi}
 Para cada función de transición local $f$ y cada conjunto $\tau \in P(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ como sigue:
 
 \begin{equation*}
@@ -318,7 +379,10 @@ Para cada función de transición local $f$ y cada conjunto $\tau \in P(\mathds{
              \right.
 \end{equation*}
 
-$F_{\tau}$ aplica la función de transición local solo sobre los elementos de $\tau \subset \mathds{Z}^{d}$. Notar que cada célula $i \in \mathds{Z}^{d}$ es actualizada con probabilidad $\mu(U_{i})$.
+Es decir, $F_{\tau}$ aplica la función de transición local solo sobre los elementos de $\tau \subset \mathds{Z}^{d}$. 
+\end{defi}
+
+Notar que cada célula $i \in \mathds{Z}^{d}$ es actualizada con probabilidad $\mu(U_{i})$.
 
 Esta nueva definición de autómata celular m-asíncrono, incluye la de autómata celular síncrono. Fijada una $\sigma$-álgebra $\mathds{B}$ sobre $\mathds{Z}^{d}$ y sea $C_{0}=(A, \mu_{0})$ un autómata celular m-asíncrono donde $\mu_{0}: \mathds{B} \rightarrow [0,1]$ viene dada por: 
 
@@ -352,6 +416,7 @@ Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos inte
 
 \subsection{Juego de vida de Conway}
 
+\begin{defi}
 El juego de vida de Conway es un autómata celular síncrono:
 
 \begin{equation}
@@ -369,9 +434,36 @@ f(x)= \left\{ \begin{array}{lcc}
    \right. 
 \end{equation}
 y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
-
+\end{defi}
 
 \subsection{Juego de vida de Conway asíncrono}
+
+\begin{defi}
+\end{defi}
+
+
+\section{Generadores de números aleatorios}
+
+\section{Introducción}
+
+Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas. En un principio los generadores de números aleatorios  más usados venían expresados por la siguiente ecuación recurrente:
+
+\begin{equation} \label{cong}
+I_{j+1} = aI_{j} +c \mod (m)
+\end{equation}
+
+donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: generador lineal congruente de números aleatorios. Claramente, en $n<m$ pasos la ecuación \ref{cong} comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que obtuvieran en mayor periodo posible. Notar que la elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. Una de las primeras debilidades que se encontraron en este tipo de generadores es que si $n$ números aleatorios se utilizan para pintar puntos en el espacio $[0,1]^{n}$, los puntos no tenderán a rellenar el espacio si no que se agruparán en planos de dimensión $n-1$ \cite{planos}. 
+
+El desarrollo de nuevas técnicas de generación de números aleatorios, también se plasma en el desarrollo de baterías de test estadísticos para comprobar la eficacia de dichos generadores. Algunos de estos test estadísticos son:
+
+\begin{itemize}
+\item test1
+\item test2
+\end{itemize}
+
+Emplearemos la batería de test \textit{Dieharder}, la cual está basada en los primeros test estadísticos propuestos por George Marsaglia en \textit{Diehard battery of tests} e incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) \cite{dieharder}.
+
+\section{Discusión}
 
 
 \end{document}
