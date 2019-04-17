@@ -21,7 +21,7 @@ En primer lugar introduciremos los conceptos básicos de teoría de la probabili
 \subsection{Introducción}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% darle una vuelta a esto, en realidad se introduce esto para obtener una definición más general de autómata y permitir que la actualización dependa a no del resto %
+% darle una vuelta, en realidad se introduce esto para obtener una definición más general de autómata y permitir que la actualización dependa o no del resto %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente del resto de células actualizadas en cada instante de tiempo, por ello introducimos la definición de ultrafiltro. 
@@ -42,13 +42,10 @@ Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el
 
 \section{Teoría de la probabilidad: conceptos básicos}
 
-% introducir concepto de simulación o experimento
- 
 Las deficiones de conceptos básicos de teoría de la probabilidad están extraídos de \cite{proman}, \cite{}. 
 
 % también de http://mathworld.wolfram.com/RandomVariable.html
 \begin{defi}
-
 Una $\sigma$-álgebra sobre un conjunto X, es una colección no vacía de subconjuntos de X cerrados para uniones numerables y para la operación de complementario, esto es:
 \begin{itemize}
 \item $\forall A \in X$ se verifica que $A^{c} \in X$.
@@ -64,13 +61,17 @@ Una $\sigma$-álgebra de Borel sobre X es la más pequeña $\sigma$-álgebra que
 \begin{defi}
 Sea $\mathds{B}$ una $\sigma$-álgebra de Borel de X, una medida de probabilidad, función de probabilidad o simplemente probabilidad es una función $\mu: \mathds{B} \rightarrow [0,1] $ tal que: 
 
-Si $E_{1}, E_{2},... \subset \mathds{B}$ es una sucesión de conjuntos disjuntos, entonces:
+Si $E_{1}, E_{2},... \in \mathds{B}$ es una sucesión de conjuntos disjuntos, entonces:
 \begin{equation*}
  \mu \big( \bigcup _{i=1} ^{\infty} E_{i} \big) = \sum _{i=1}^{\infty} \mu ( E_{i} ).
 \end{equation*}
 \end{defi}
 
 De esta manera, la probabilidad de un suceso $E \in \mathds{B}$ es $\mu(E)$.
+
+\begin{defi}
+Sean dos sucesos, $E, E' \in \mathds{B}$, diremos que son independientes si $P(E\cap E') = P(E) P(E')$.
+\end{defi}
 
 \begin{defi}
 Un espacio medible es la dupla (X,$\mathds{B}$) donde $\mathds{B}$ es la $\sigma$-álgebra de Borel sobre X, una función medible es una función entre espacios medibles, $g:  (X,\mathds{B}) \rightarrow (X',\mathds{B}')$ tal que: $g^{-1}(B) \in \mathds{B} \quad \forall B \in \mathds{B}'$.
@@ -82,7 +83,6 @@ Sea X un conjunto, $\mathds{B}$ la $\sigma$-álgebra de Borel sobre X, $P: \math
 
 \subsection{Variables aleatorias}
 
-% va a terminar siendo necesario hablar de las continuas y de las discontinuas, crack
 \begin{defi}
 Una variable aleatoria definida sobre un espacio de probabilidad $(X, \mathds{B}, P)$ es una función medible A: $(X, \mathds{B}, P) \rightarrow  (X', \mathds{B}')$ con $(X', \mathds{B}')$ un espacio medible.
 \end{defi}
@@ -97,6 +97,10 @@ Cada valor de A se corresponde con un subconjunto de puntos de $X$ que se aplica
 Con esta útil notación podremos calcular la probabilidad de sucesos de mayor interés.
 
 A partir, de ahora cuando nos refiramos a una variable aleatoria entenderemos que el codominio de dicha función medible es el espacio de medida $(\mathds{R},\mathds{B})$ y supondremos que está fijado un espacio de probabilidad $(X, \mathds{B}, P)$.
+
+\begin{defi}
+Sean $A$, $A'$ dos variables aleatorias diremos que son independientes si todos los sucesos de sus $\sigma$-álgebras $\mathds{B}$ y $\mathds{B'}$,respectivamente, lo son.
+\end{defi}
 
 \begin{defi}
 Dada una variable aleatoria $A$ se define su función de distribución como $ F : \mathds{R} \rightarrow [0,1] $ dada por 
@@ -117,7 +121,8 @@ La función de distribución de la variable aleatoria $A$ satisface:
 \end{prop}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Hablar de las mismas cosas de las VA aleatorias pero para las continuas 
+% TODO:
+% Hablar de las mismas cosas de las VA discretas pero para las continuas 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -129,7 +134,7 @@ Una variable aleatoria $A$ diremos que es discreta si toma valores es un conjunt
 
 
 \begin{defi}
-La función de distribución de una variable aleatoria $A$ es la siguiente: 
+La función de distribución de probabilidad de una variable aleatoria $A$ es la siguiente: 
 
 $$
 \forall x\in \mathds{R}, \quad F(x) = P( A \leq x) = \sum_{x_n\in E, x_n \leq x} P(A=x_n).
@@ -163,12 +168,12 @@ A \mapsto \mathds{E}_c(A^n) \equiv \sum_{x_m \in E} (x_m - \mu)^n P(A=x_m).
 Definimos la varianza de la variable aleatoria discreta A con esperanza $\mu$ y $\mathds{E}_c(A^2) < \infty $ como:
 
 $$
-var(A) \equiv \mathds{E}_c(A^2) = \sum_{x_m\in E} P(A=x_m) \big(x_m - \mu\big)^2 = \mathds{E}(A^2) - \mu^2.
+\sigma^2(A) \equiv \mathds{E}_c(A^2) = \sum_{x_m\in E} P(A=x_m) \big(x_m - \mu\big)^2 = \mathds{E}(A^2) - \mu^2.
 $$
 \end{defi}
 
 \begin{defi}
-A la raíz cuadrada positiva de la varianza la notaremos $\sigma(A)=+\sqrt{var(A)}$ y diremos que es la desviación estándar de la variable aleatoria discreta A. 
+A la raíz cuadrada positiva de la varianza la notaremos $\sigma(A)=+\sqrt{\sigma^2(A)}$ y diremos que es la desviación estándar de la variable aleatoria discreta A. 
 \end{defi}
 
 Dicho valor es una medida de dispersión de A, de esta manera si A es constante, $A = c\in \mathds{R}$ se tiene $\mathds{E}(A)=c$ y $var(A) = 0$.
@@ -184,19 +189,31 @@ Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 
 \item $A_n \to A$ casi seguramente, si $P(\lim_{n\to\infty} A_n=A) = 1$ y lo notaremos $A_n \to^{c.s.} A$.
 
-\item $A_n \to A$ en distribución, si $\lim_{n \to \infty} P(A_n \leq x) = P(A \leq x),\quad \forall x \in \mathds{R}$ donde $x\mapsto P(A \leq x)$ es una función continua.
+\item $A_n \to A$ en distribución, si $\lim_{n \to \infty} P(A_n \leq x) = P(A \leq x),\quad \forall x \in \mathds{R}$ donde $x\mapsto P(A \leq x)$ es una función continua y lo notaremos $A_n \to^{d} A$.
 
 \end{itemize}
 \end{defi}
 
+\subsection{Distribución normal}
 
-%% Todo lo que haga falta para terminar demostrando el teorema de la Ley de los Grandes números + la desigualdad de tchebyshev. Esto es:
+\begin{defi}
+Diremos que una variable aleatoria A tiene una distribución normal con media $\mu < \infty$ u varianza $\sigma^2 < \infty$, $N(\mu,\sigma^2)$, si A tiene una distribución con la siguiente función de distribución de probabilidad: 
 
-%% algo de teoría de estimadores, aunque no sé muy bien para qué
+$$
+f(x| \mu, \sigma^2) = \frac{1}{ \sigma \sqrt{ 2 \pi }} exp \left( -\frac{1}{2}\left( \frac{x-\mu}{\sigma} \right)^2 \right)\quad \forall x \in \mathds{R} 
+$$
 
-%% CONCEPTO DE INDEPENDENCIA
+\end{defi}
 
 \section{Teoría de la probabilidad: Teorema central del límite}
+
+\begin{teorema}
+Sean $A_{1},A_{2},...,A_{n}$ variables aleatorias independientes, con esperanza $\mu=0$, varianza $\sigma^2$ e idénticamente distribuidas, es decir, obtenidas de la misma distribución. Entonces $$
+\frac{ \frac{1}{n}\sum_{i=1}^nA_i - \mu}{ \frac{\sigma}{\sqrt{n}}} \to^d N(0,1).
+$$
+
+
+\end{teorema}
 
 Previa a la demostración del teorema central del límite, introducimos las herramientas matemáticas que nos harán posible su demostración.
 
@@ -210,49 +227,18 @@ $$
 
 y $\lim_{x\to a} h_k(x) = 0$.
 \end{teorema}
- 
-\begin{defi}
-Sea A una variable aleatoria con todos los momentos de orden $n\in\mathds{N}$ finitos, se define su función generatriz de momentos $M_A : \mathds{R} \to \mathds{R}$ dada por:
-
-$$
-t \mapsM_A(t)=\mathds{E}[e^{tA}].
-$$
-\end{defi}
-Expandiendo la serie de Taylor de $e^{tA}$, entendemos por qué se le llama función generatriz de momentos:
-
-$$
-M_A(t)=\sum_{n=0}^{\infty} \frac{\mathds{E}(A^n)}{n!}t^n.
-$$
-
-En particular, podemos observar su relación con los momentos de orden n:
-
-$$
-M_X(0)=\mathds{E}[A^n]
-$$
-
-Sean A y A' dos variables aleatorias independientes y $c \in \mathds{R}$, tenemos que la función generatriz de momentos verifica lo siguiente:
-
-$$
-M_{A+A'}(t)=\mathds{E}[e^{t(A+A')}]=\mathds{E}[e^{tA}e^{tA'}] = M_A(t)M_B(t),
-$$
-
-$$
-M_{cA}(t)=\mathds{E}[e^{tcX}]=M_A(ct).
-$$
-
-A continuación vamos exponer como se puede obtener relajar la condición de existencia de momentos, para ello introducimos 
 
 \begin{defi}
-La extensión de la función exponencial $exp: \mathds{R} \to \mathds{R^{+}}$ real al cuerpo de los números complejos $exp: \mathds{C} \to \mathds{C}$ dada por:
+Sea $i$ el número completo $i=\sqrt{-1}$, la extensión de la función exponencial $exp: \mathds{R} \to \mathds{R^{+}}$ real al cuerpo de los números complejos $exp: \mathds{C} \to \mathds{C}$ dada por:
 $$
-z \mapsto exp(iz) = e^{iz}=\cos z+i\sin z
+z \mapsto exp(iz) = e^{iz}=\cos z+i\sin z.
 $$
 \end{defi}
 
-Notar que el módulo de la exponencial compleja está acotada por la unidad :
+Notar que el módulo de la exponencial compleja está acotado por la unidad :
 
 $$
-\abs{ exp(iz) } = \abs{\cos z+i\sin z} = \sqrt{( \cos^2 z - \sin^2 z)} = 1.
+\abs{ exp(iz) } = \abs{\cos z+i\sin z} = \sqrt{( \cos^2 z - \sin^2 z)} \leq 1.
 $$
 
 Lo que nos segura la integrabilidad de la misma.
@@ -261,7 +247,7 @@ Lo que nos segura la integrabilidad de la misma.
 \begin{defi}
 La función característica asociada a la variable aleatoria A es la función $\phi_{A}: \mathds{R} \to \mathds{C}$, dada por:
 $$
-\phi_{A}(t) = \mathds{E}[e^{itA}]
+\phi_{A}(t) = \mathds{E}(e^{itA}).
 $$
 \end{defi}
 
@@ -273,26 +259,66 @@ Sea $\phi_A$ la función característica de la variable aleatoria A, entonces:
 \item $\phi_A(0) = 1$.
 \item $\abs{\phi_A(t)} \leq 1$.
 \item $\phi_A$ es una función continua.
+\item Sean $c,b\in \mathds{R}$ entonces $\phi_{cA+b}(t)=e^{itb}\phi_A(ct)$.
 \item Si $A_n$, n=1,..,N es una sucesión finita de variables aleatorias independientes, entonces: $$ 
-\phi_{\sum^{N}_{n=1} A_n} (t) = \prod_{n=1}^{N} \phi_{X_n} (t) 
+\phi_{\sum^{N}_{n=1} A_n} (t) = \prod_{n=1}^{N} \phi_{X_n} (t) .
 $$
-
+\item Si $\mathds{E}(A^k) < \infty$ su derivada k-ésima evaluada en 0 es $\phi_A^{(k)}(0)=i^k\mathds{E}(A^k), \quad k=1,..,n$.
 \end{itemize}
 
 \end{prop}
 
 %% https://math.stackexchange.com/questions/2059756/levys-theorem-for-characteristic-functions
 \begin{teorema}[Teorema de continuidad de Levy]
-Sea ${ A_n }_{n \in \mathds{N}}$ una sucesión de variables aleatorias tal que la sucesión de sus funciones características, ${\phi_{A_n}}_{n \in \mathds{N}}$ converge a $\phi_{A}(t)$ para cada $t\in \mathds{R}$, donde $\phi_{A}$ es continua en 0. Entonces existe una variable aleatoria $A$ con función característica $\phi$ y $A_n \to A$. Ajustar el tipo de convergencia al que necesite.
+Sea ${ A_n }_{n \in \mathds{N}}$ una sucesión de variables aleatorias tal que la sucesión de sus funciones características, ${\phi_{A_n}}_{n \in \mathds{N}}$ converge a $\phi_{A}(t)$ para cada $t\in \mathds{R}$, donde $\phi_{A}$ es continua en 0. Entonces existe una variable aleatoria $A$ con función característica $\phi$ y $A_n \to^d A$.
 \end{teorema}
 
+\begin{proof}[Demostración (Teorema central del límite)]
+
+%% Empieza la demostración de verdad
+Sean $A_{1},A_{2},...,A_{n}$ variables aleatorias independientes identicamente distribuidas con esperanza $\mu < \infty$ y varianza $\sigma^2< \infty$.
+Sea ahora $$
+Z_{n}=\frac{\overline{A}-\mu }{\frac{\sigma }{\sqrt{n}}} = \frac{A_{1}+A_{2}+...+A_{n}-n\mu }{\sigma \sqrt{n}}.
+$$
+Definimos una nueva variable aleatoria, $Y_i$, que es la versión normalizada de $A_i$:$$
+Y_i=\frac{A_i-\mu}{\sigma}
+$$
+Así definida, $Y_i$ es idénticamente distribuida con esperanza y varianza: $$
+E(Y_{i}) = 0,  Var(Y_{i})=1.
+$$
+Sea ahora $Z_n = \frac{Y_1+Y_2+...+Y_n}{\sqrt{n}}$, queremos ver que $$
+\lim_{n \to \infty} \phi_{Z_{n}}(t)=e^{-\frac{t^{2}}{2}}
+$$
+
+Procedemos a desarrollar el
+
+$$
+\phi_{\frac{Y_1+Y_2+...+Y_n}{\sqrt{n}}}(t) = \prod_{i=1}^{n} \phi_{\frac{Y_i}{\sqrt{n}}} (t) = \big(\phi_{\frac{Y_1}{\sqrt{n}}}(t) \big)^n
+$$
+
+Aplicando el teorema de Taylor para obtener el desarrollo centrado en 0 para $k=2$ de $\phi_{Y_1}(\frac{t}{\sqrt{n}})$: 
+
+\begin{align*}
+\phi_{\frac{Y_1}{\sqrt{n}}}(t) &= \phi_{Y_1}(\frac{t}{\sqrt{n}}) \\
+  &= \phi_{Y_1}(0) + \frac{t}{\sqrt{n}}\phi_{Y_1}^{'}(0) + \frac{t^2}{2n}\phi_{Y_1}^{''}(0) + \frac{t^2}{n} h_2(t)\\
+ &= 1 + i\frac{t}{\sqrt{n}}\mathds{E}(Y_1) - \frac{t^2}{2n}\mathds{E}(Y_1^2) + \frac{t^2}{n} h_2(t)\\
+ &= 1 + 0 - \frac{t^2}{2n} + \frac{t^2}{n} h_2(\frac{t}{\sqrt{n}}),
+\end{align*}
+donde $\lim_{t\to 0} h_2(\frac{t}{\sqrt{n}}) = 0$.
+
+Así obtenemos que $$
+\big(\phi_{\frac{Y_1}{\sqrt{n}}}(t) \big)^n =\big( 1 + 0 - \frac{t^2}{2n} + \frac{t^2}{n} h_2(\frac{t}{\sqrt{n}}) \big)^n\longrightarrow e^{-\frac{t^2}{2}}.
+$$
+
+cuyo límite es la función característica de una variable perteneciente a una distribución normal con media 0 y varianza 1, concluimos la demostración aplicando el Teorema de Levy.
+\end{proof}
 
 \section{Teoría de la probabilidad: Ley de los grandes números, formulación fuerte}
 \begin{teorema}
 Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes, con esperanza $\mu$ e idénticamente distribuidas, es decir, obtenidas de la misma distribución. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$:
 
 $$
- \bar{\mu}=\frac{1}{n}\sum_{n\in\mathds{N}} A_n \to^{c.s.} \mu,
+\bar{\mu}=\frac{1}{n}\sum_{n\in\mathds{N}} A_n \to^{c.s.} \mu,
 $$
 
 esto es, $P(\lim_{n\to\infty} \bar{\mu}=\mu) = 1$.
@@ -304,7 +330,7 @@ Para obtener una demostración un tanto más breve de éste teorema añadiremos 
 \begin{lema}
 En las misma condiciones de la ley de los grandes números, existe una constante $ K < \infty $ tal que para todo $ n \geq 0$:
 $$
-	\mathds{E} \big( ( \bar{ \mu } - n \mu ) ^ 4 \big) \leq K n^2.
+\mathds{E} \big( ( \bar{ \mu } - n \mu ) ^ 4 \big) \leq K n^2.
 $$
 \end{lema}
 
@@ -318,19 +344,19 @@ $$
 Entonces:
 
 $$
-	\mathds{E} ( T_{n}^{4} ) = \mathds{E} ( \big( \sum_{i=1}^{n} Z_i \big) ^{4} ) = n\mathds{E}(Z_{1}^4)+3n(n-1)\mathds{E}(Z_1^2 Z_2^2) \leq Kn^2.
+\mathds{E} ( T_{n}^{4} ) = \mathds{E} ( \big( \sum_{i=1}^{n} Z_i \big) ^{4} ) = n\mathds{E}(Z_{1}^4)+3n(n-1)\mathds{E}(Z_1^2 Z_2^2) \leq Kn^2.
 $$
 
 donde en la segunda igualdad se ha empleado el desarrollo multinomial:
 
 $$
-(x_1+x_2+...+x_m)^n = \sum_{k_1+k_2+...+k_m=n} { n \choose k_1,k_2, ..., k_n} \prod_{1 \leq t \leq m} x_t^{k_t}
+(x_1+x_2+...+x_m)^n = \sum_{k_1+k_2+...+k_m=n} { n \choose k_1,k_2, ..., k_n} \prod_{1 \leq t \leq m} x_t^{k_t},
 $$
 
 con
 
 $$
-{ n \choose k_1,k_2, ..., k_n} = \frac{n!}{k_1!k_2! \dotsb k_n!}
+{ n \choose k_1,k_2, ..., k_n} = \frac{n!}{k_1!k_2! \dotsb k_n!}.
 $$
 
 Dado que $\mathds{E}(Z_k)=0 \quad \forall k$ y la independencia de las variables $Z_k$, se han cancelado todos los sumandos de la forma:
@@ -440,7 +466,7 @@ Esta nueva definición de autómata celular m-asíncrono, incluye la de autómat
              \right.
 \end{equation*}
 
-De ésta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
+De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
 
 Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante de tiempo solo de aplica la función de transición local a una sola célula. Consideramos ahora el autómata celular m-asíncrono $C_{1}=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
 
