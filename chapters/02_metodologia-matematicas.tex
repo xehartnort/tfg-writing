@@ -42,7 +42,7 @@ Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el
 
 \section{Teoría de la probabilidad: conceptos básicos}
 
-El contenido de esta sección está extraído de los siguientes libros en orden de empleo: \cite{elLibro}, \cite{grandesNumeros} y \cite{loeve}x. 
+El contenido de esta sección está extraído de los siguientes textos en orden de empleo: \cite{elLibro}, \cite{grandesNumeros} y \cite{loeve}. 
 
 \begin{defi}
 Una $\sigma$-álgebra, $\mathds{F}$, sobre un conjunto X, es una colección no vacía de subconjuntos de X cerrados para uniones numerables y para la operación de complementario, esto es:
@@ -85,7 +85,7 @@ $$
 
 De ahora en adelante trabajaremos fijando $X=\mathds{R}$ y $\mathds{F}=\mathds{B}$ la $\sigma$-álgebra de Borel la recta real.
 \begin{defi}
-Un conjunto A es abierto si, para cada punto $x\in A$, existe una bola de centro el punto y radio $\epsilon > 0$ tal que $B(x,\epsilon)=\{ z : \abs{z-x} < \epsilon\} \subset F$. Así la $\sigma$-álgebra de Borel , es aquella generada por los conjuntos abiertos de $\mathds{R}$.
+Un conjunto A es abierto si, para cada punto $x\in A$, existe una bola de centro el punto y radio $\epsilon > 0$ tal que $B(x,\epsilon)=\{ z : \abs{z-x} < \epsilon\} \subset F$. Así la $\sigma$-álgebra de Borel, es aquella generada por los conjuntos abiertos de $\mathds{R}$.
 \end{defi}
 
 \subsection{Variables aleatorias}
@@ -442,22 +442,20 @@ Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a 
 
 \begin{defi}
 La función de transición local, fijando una configuración g induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
-
-\begin{equation*}
-\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k}))
-\end{equation*}
-
+$$
+\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k})).
+$$
 \end{defi}
 
 \begin{defi}
 Un autómata celular m-asíncrono C es una tupla $(A, \mu)$ donde: 
 \begin{itemize}
-\item A es un autómata celular 
-\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$
+\item A es un autómata celular .
+\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$.
 \end{itemize} 
 \end{defi}
-
 \begin{defi}
+
 Para cada función de transición local $f$ y cada conjunto $\tau \in P(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ como sigue:
 
 \begin{equation*}
@@ -507,28 +505,31 @@ Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos inte
 \subsection{Juego de vida de Conway}
 
 \begin{defi}
-El juego de vida de Conway es un autómata celular síncrono:
+El juego de vida de Conway es un autómata celular síncrono: $$
+C = (\mathds{Z}^{2}, N, Q, f)
+$$
+donde
+\begin{itemize}
+\item $N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}$,
+\item $Q=\{0,1\}$,
+\item $f:\{0,1\}^{9} \rightarrow \{0,1\} $ viene dada por:
 
-\begin{equation}
-C = (\mathds{Z}^{2} , N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}, Q=\{0,1\}, f)
-\end{equation}
- 
-donde $f:\{0,1\}^{9} \rightarrow \{0,1\} $ viene dada por:
-
-\begin{equation}
+\begin{equation*}
 f(x)= \left\{ \begin{array}{lcc}
              1 &   si  & x_{0}=0 \quad y \quad \sum_{i=1}^{8} x_i = 3 \\
              \\ 1 & si & x_{0}=1 \quad y \quad \sum_{i=1}^{8} x_i \in \{2 ,3\} \\
              \\ 0 &  si  & \sum_{i=1}^{8} x_i \notin \{2, 3\} \
              \end{array}
    \right. 
-\end{equation}
+\end{equation*}
 y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
+
+\end{itemize}
 \end{defi}
 
-\subsection{Juego de vida de Conway asíncrono}
-
+\subsection{Juego de vida de Conway \alpha-asíncrono}
 \begin{defi}
+El juego de vida de Conway es un autómata celular m-asíncrono formado por C, el autómata celular síncrono definido anteriormente y la medida de probabilidad 
 \end{defi}
 
 
