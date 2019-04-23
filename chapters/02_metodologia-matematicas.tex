@@ -42,7 +42,7 @@ Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el
 
 \section{Teoría de la probabilidad: conceptos básicos}
 
-El contenido de esta sección está extraído de los siguientes textos en orden de empleo: \cite{elLibro}, \cite{grandesNumeros} y \cite{loeve}. 
+El contenido de esta sección está extraído de los siguientes textos en orden de empleo: \cite{elLibro, grandesNumeros, loeve}. 
 
 \begin{defi}
 Una $\sigma$-álgebra, $\mathds{F}$, sobre un conjunto X, es una colección no vacía de subconjuntos de X cerrados para uniones numerables y para la operación de complementario, esto es:
@@ -512,22 +512,22 @@ donde
 \begin{itemize}
 \item $N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}$,
 \item $Q=\{0,1\}$,
-\item $f:\{0,1\}^{9} \rightarrow \{0,1\} $ viene dada por:
+\item $f:\{0,1\}^{9} \rightarrow \{0,1\} $ dada por:
 
-\begin{equation*}
+\begin{align*}
 f(x)= \left\{ \begin{array}{lcc}
              1 &   si  & x_{0}=0 \quad y \quad \sum_{i=1}^{8} x_i = 3 \\
              \\ 1 & si & x_{0}=1 \quad y \quad \sum_{i=1}^{8} x_i \in \{2 ,3\} \\
              \\ 0 &  si  & \sum_{i=1}^{8} x_i \notin \{2, 3\} \
              \end{array}
    \right. 
-\end{equation*}
+\end{align*}
 y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
 
 \end{itemize}
 \end{defi}
 
-\subsection{Juego de vida de Conway \alpha-asíncrono}
+\subsection{Juego de vida de Conway $\alpha$-asíncrono}
 \begin{defi}
 El juego de vida de Conway es un autómata celular m-asíncrono formado por C, el autómata celular síncrono definido anteriormente y la medida de probabilidad 
 \end{defi}
@@ -535,26 +535,22 @@ El juego de vida de Conway es un autómata celular m-asíncrono formado por C, e
 
 \section{Generadores de números aleatorios}
 
-\section{Introducción}
+Los generados de números aleatorios no generan números realmente aleatorios, esto es, no son variables aleatorias idénticamente distribuidas, dado un valor de inicialización de la secuencia o semilla generan siempre la misma sucesión de números, por tanto entenderemos que un generador de números aleatorios produce una secuencia indistinguible de una realmente aleatoria. Dicho esto, podemos afirmar que un ordenador solo es capaz de generar secuencias de números pseudoaleatorios con un periodo de longitud finita.
 
-Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas. En un principio los generadores de números aleatorios  más usados venían expresados por la siguiente ecuación recurrente:
+Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas. Un tipo generador de números aleatorios más usado venía dado por la siguiente ecuación recurrente:
 
 \begin{equation} \label{cong}
 I_{j+1} = aI_{j} +c \mod (m)
 \end{equation}
 
-donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: generador lineal congruente de números aleatorios. Claramente, en $n<m$ pasos la ecuación \ref{cong} comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que obtuvieran en mayor periodo posible. Notar que la elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. Una de las primeras debilidades que se encontraron en este tipo de generadores es que si $n$ números aleatorios se utilizan para pintar puntos en el espacio $[0,1]^{n}$, los puntos no tenderán a rellenar el espacio si no que se agruparán en planos de dimensión $n-1$ \cite{planos}. 
+donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: generador lineal congruente de números aleatorios. Claramente, en $n<m$ pasos la ecuación comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que obtuvieran en mayor periodo posible. En \cite{knuth} podemos encontrar algunos resultados notables sobre la elección parámetros $a,c$ y $m$. La elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. 
 
-El desarrollo de nuevas técnicas de generación de números aleatorios, también se plasma en el desarrollo de baterías de test estadísticos para comprobar la eficacia de dichos generadores. Algunos de estos test estadísticos son:
+Sin embargo no es suficiente con generar una sucesión de números de un largo periodo, además deben superar rigurosas baterías de test empíricos que aseguren una buena distribución de las secuencias de números además de la ausencia de patrones en las mismas. Dado el carácter empírico de las baterías de test, superarlos con éxito no aseguran un generador de números perfecto si no que probablemente se trate de un buen generador, ya que eventualmente con el suficiente tiempo se podría encontrar un test que no fuera superado con éxito. Por tanto nos interesaremos en tests que demuestren el mal comportamiento de un generador en un tiempo razonable. Hay numerosas baterías de test destacamos \textit{Dieharder} la cual está basada en los primeros test estadísticos propuestos en \textit{Diehard battery of tests} e incluye también los test desarrollados por el NIST (National Institute for Standards and Technology), entre otros y \textit{TestU01} \cite{dieharder,testu01}.
 
-\begin{itemize}
-\item test1
-\item test2
-\end{itemize}
 
-Emplearemos la batería de test \textit{Dieharder}, la cual está basada en los primeros test estadísticos propuestos por George Marsaglia en \textit{Diehard battery of tests} e incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) \cite{dieharder}.
 
 \section{Discusión}
+
 
 
 \end{document}
