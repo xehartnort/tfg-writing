@@ -326,7 +326,7 @@ cuyo límite es la función característica de una variable perteneciente a una 
 \end{proof}
 
 \section{Teoría de la probabilidad: Ley de los grandes números, formulación fuerte}
-\begin{teorema}
+\begin{teorema} \label{teo_grandes_numeros}
 Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes, con esperanza $\mu$ e idénticamente distribuidas, es decir, obtenidas de la misma distribución. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$:
 
 $$
@@ -415,6 +415,59 @@ $$
  \bar{ \mu } \to \mu \quad c.s.
 $$
 \end{proof}
+
+\section{Fundamentos de las simulaciones Monte Carlo}
+
+Sean $A_1,A_2,...,A_n$ variables aleatorias idénticamente distribuidas, sean $g_1, g_2, ..., g_n$ funciones reales de variable real y medibles y $\lambda_1, \lambda_2,..., \lambda_n$ números reales, definimos la variable real $G$ como:
+$$
+G = \sum_{i=1}^{n} \lambda_i g_i(A_i),
+$$
+gracias al teorema \ref{funcion_de_va} podemos afirmar que está bien definida. El valor esperado de $G$ es:
+$$
+E(G) = E(\sum_{i=1}^{n} \lambda_i g_i(A_i)).
+$$
+La varianza de $G$ viene dada por la expresión \ref{}, la cual podemos expresar de la siguiente manera si añadimos la hipótesis de que la variables aleatorias $A_1,A_2,...,A_n$ sean independientes:
+$$
+var(G) = \sum_{i=1}^{n} \lambda_i^2 g_i(A_i)) = \sum_{i=1}^{n} \lambda_i^2 g_i(A_1)).
+$$
+
+Sea ahora $\lambda_i = \frac{1}{n}$ y $g_i = g, \forall i$, entonces el valor esperado de $G$ pasa a ser:
+$$
+E(G) = E(\sum_{i=1}^{n} \frac{1}{n} g(A_i)) = E(g(A_1)).
+$$ 
+
+\begin{defi}
+La variable aleatoria $G$ anteriormente definida con variables aleatorias $A_1,A_2,...,A_n$ independientes diremos que es un \textit{estimador} de $E(g(A))$.
+\end{defi}
+
+La varianza del estimador $G$ se reescribe como sigue:
+$$
+var(G) = var \left( \frac{1}{n} \sum_{i=1}^{n} g(A_i) \right) = \sum_{i=1}^{n} \frac{1}{n^2} var(g(A_1)) = \frac{1}{n} var(g(A_1)).
+$$
+
+Esto es, a medida que el número de variables aleatorias crece la varianza disminuye.
+
+\begin{defi} \label{chebi}
+Sea G un estimador, con media $\mu$ y varianza $\sigma$ finitas y $\delta>0$ entonces la desigualdad de Chebychev es:
+
+$$
+P \left( \abs{G-\mu} \geq \sqrt{\frac{\sigma}{\delta}} \right) \leq \delta.
+$$
+
+\end{defi}
+
+El primer gran resultado o \textit{primer teorema fundamental de Monte Carlo} que podemos deducir de los anteriores, en particular es una consecuencia directa del teorema \ref{teo_grandes_numeros}, la media del estimador G converge en probabilidad a la media de las variables aleatorias que estima, esto es, sean $A_1,A_2,...,A_n$ variables aleatorias idénticamente distribuidas e independientes con esperanza finita $\mu$ entonces:
+$$
+\forall \epsilon > 0,\quad \lim_{n\to\infty} P( |A_n-\mu|> \epsilon ) = 0.
+$$
+
+Si además asumimos que la varianza de $A_1,A_2,...,A_n$ es finita, $\sigma$, es posible aplicar la desigualdad \ref{chebi} para obtener la velocidad de convergencia respecto a $n$. Veamos un ejemplo de éste hecho, dado $\delta=\frac{1}{100}$:
+
+$$
+P \left( ( G - \mu )^2 \geq 100 \sigma \right) = P \left( ( G - \mu )^2 \geq \frac{100}{n} var(g(A)) \right)  \leq \frac{1}{100},
+$$
+
+donde se ha usado que $var(G) = \sigma = \frac{1}{n} var(g(A))$.
 
 \section{Teoría de la computación}
 
