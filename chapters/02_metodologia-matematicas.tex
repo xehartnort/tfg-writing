@@ -4,27 +4,15 @@
 
 \chapter{Metodología}
 
-Antes de continuar con la implementación y exposición de la técnica de simulación Monte Carlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización de autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de las perturbaciones, derivadas del medio o de la interacción de los individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
+Antes de continuar con la implementación y exposición de la técnica de simulación Monte Carlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización del autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de perturbaciones derivadas del medio o de la interacción de los individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
 
-\section{Introducción}
-
-El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor, puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes cantidades de memoria y tiempo cómputo.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Extender un poco y reescribir esto cuando se haya terminado la sección %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-En primer lugar introduciremos los conceptos básicos de teoría de la probabilidad sobre los que desarrollaremos las estimaciones \textit{Monte Carlo}, para dar paso al teorema central del límite, el cual, nos permitirá obtener estimaciones de la incertidumbre de nuestros cálculos. A continuación, discutiremos la elección de un generador de números aleatorios y procederemos con la metodología de las simulaciones realizadas.
+En primer lugar introduciremos los conceptos básicos de teoría de conjuntos, probabilidad, computación y generación de números aleatorios sobre los que desarrollaremos las estimaciones Monte Carlo. Las claves de este desarrollo serán el teorema central del límite y la ley de los grandes números que esencialmente justifican la efectividad del método Monte Carlo.
 
 \section{Teoría de conjuntos}
 
 \subsection{Introducción}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% darle una vuelta, en realidad se introduce esto para obtener una definición más general de autómata y permitir que la actualización dependa o no del resto %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente del resto de células actualizadas en cada instante de tiempo, por ello introducimos la definición de ultrafiltro. 
+Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente o no del resto de células actualizadas en cada instante de tiempo. El concepto de ultrafiltro nos permitirá establecer una clase de autómata celular lo suficientemente general como para abarcar los nuevos tipos de autómatas celulares que introduciremos en posteriores secciones. 
 
 Dado un conjunto X, $P(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in P(X)$, notaremos su complementario $A^{c}$. 
 \begin{defi}
@@ -83,16 +71,16 @@ P \left( \bigcap_{n \geq 1} A_{n} \right) = \prod_{n \geq 1} P(A_n).
 $$
 \end{defi}
 
-De ahora en adelante trabajaremos fijando $X=\mathds{R}$ y $\mathds{F}=\mathds{B}$ la $\sigma$-álgebra de Borel la recta real.
+%De ahora en adelante trabajaremos fijando $X=\mathds{R}$ y $\mathds{F}=\mathds{B}$ la $\sigma$-álgebra de Borel sobre $\mathds{R}$.
+
 \begin{defi}
 Un conjunto A es abierto si, para cada punto $x\in A$, existe una bola de centro el punto y radio $\epsilon > 0$ tal que $B(x,\epsilon)=\{ z : \abs{z-x} < \epsilon\} \subset F$. Así la $\sigma$-álgebra de Borel, es aquella generada por los conjuntos abiertos de $\mathds{R}$.
 \end{defi}
 
 \subsection{Variables aleatorias}
 
-[MIRAR AQUÍ bien]
 \begin{defi}
-Una variable aleatoria definida sobre un espacio de probabilidad $(X, \mathds{B}, P)$ es una función medible A: $X \rightarrow \mathds{R}$
+Una variable aleatoria definida sobre un espacio de probabilidad $(X, \mathds{B}, P)$ es una función medible A: $X \rightarrow \mathds{R}$.
 \end{defi}
 
 Cada valor de A se corresponde con un subconjunto de puntos de $X$ que se aplica en dicho valor, es decir, $ \{ w\in X : A(w)=x\}$ que notaremos por simplicidad $\{X = x\}$. A parte de los anteriores conjuntos también nos resultarán de interés lo siguientes:
@@ -105,39 +93,39 @@ Cada valor de A se corresponde con un subconjunto de puntos de $X$ que se aplica
 Con esta útil notación podremos notar fácilmente la probabilidad de sucesos de mayor interés.
 
 \begin{prop} \label{funcion_de_va}
-Si g es una función real y medible y A es una variable aleatoria entonces A'=g(X) es una variable aleatoria.
+Si $g$ es una función real de variable real y medible y $A$ es una variable aleatoria entonces $A'=g(A)$ es una variable aleatoria.
 \end{prop}
 
 \begin{defi}
 Dada una variable aleatoria $A$ se define su función de distribución como $ F : \mathds{R} \rightarrow [0,1] $ dada por 
 $$
-F(x)=P(A \leq x).
+x \mapsto F(x)=P(A \leq x).
 $$
 \end{defi}
 
 \begin{prop}
 La función de distribución de la variable aleatoria $A$ satisface:
-
 \begin{itemize}
 \item Es monótona no decreciente.
-\item Dada una sucesión decreciente de elementos de X, $\{x_n\}_{n \in \mathds{N}} \in X$, convergente a $x\in X$ se tiene $\lim_{x_n \searrow x} F(x_n) = F(x)$, es decir, es continua a la derecha. 
+\item Dada una sucesión decreciente de elementos de $\mathds{R}$, $\{x_n\}_{n \in \mathds{N}} \in \mathds{R}$, convergente a $x\in \mathds{R}$ se tiene $\lim_{x_n \searrow x} F(x_n) = F(x)$, es decir, es continua a la derecha. 
 \item $\lim_{x\to+\infty} F(x) = 1$ y $\lim_{x\to-\infty} F(x) = 0$.
 \end{itemize}
 \end{prop}
 
 \begin{defi}
-Sea A una variable aleatoria, definimos su valor esperado o esperanza como sigue:
+Sea $F$ una función de distribución definimos la función de densidad de $F$ como la función integrable, $f$, tal que:
 $$
-E(A) = \int_{X}A(w)dP(w) = \int AdP.
+F(b)-F(a) = \int^{b}_a f(x) dx, \quad \forall a < b. 
 $$
-Adicionalmente si $E\abs{A} < \infty$, diremos que $A$ es integrable.
 \end{defi}
 
-\begin{prop}
-Sean $A$ y $A'$ dos variables aleatorias integrables entonces: $$
-E(aA+bA')=aE(A)+bE(A'), \quad \forall a,b \in \mathds{R}.
+\begin{defi}
+Sea A una variable aleatoria, definimos su valor esperado o esperanza como sigue:
 $$
-\end{prop}
+\mathds{E}(A) = \int_{X}A(w)dP(w).
+$$
+Adicionalmente si $\mathds{E}\abs{A} < \infty$, diremos que $A$ es integrable.
+\end{defi}
 
 \begin{defi}
 Sea una variable aleatoria A, definimos:
@@ -159,9 +147,16 @@ $$
 A la raíz cuadrada positiva de la varianza la notaremos $\sigma(A)=+\sqrt{var(A)}$ y diremos que es la desviación estándar de la variable aleatoria A. 
 \end{defi}
 
+\begin{prop}
+Sea $A$ una variable aleatoria con esperanza $\mu$ y varianza $\sigma^2$ finitas, y sea $A'=aA+b$, donde $a,b\in\mathds{R}$: $$
+\mathds{E}(A')=a\mu + b \quad y \quad var(A') = a^2 \sigma^2.
+$$
+
+\end{prop}
+
 \begin{defi}
 La variables aleatorias $A_1, A_2,..., A_n$ son independientes si y solo si, para arbitrarios conjuntos de la $\sigma$-álgebra de Borel $B_1, B_2,..., B_n$: $$
-	P \left( \bigcap_{k = 1}^{n} \{X_k \in A_k\} \right) = \prod_{k = 1}^{n} P(X_k \in A_k).
+	P \left( \bigcap_{k = 1}^{n} \{A_k \in B_k\} \right) = \prod_{k = 1}^{n} P(A_k \in B_k).
 $$
 \end{defi}
 
@@ -172,7 +167,7 @@ Una variable aleatoria $A$ diremos que es discreta si toma valores es un conjunt
 \end{defi}
 
 \begin{defi}
-La función de distribución de probabilidad de una variable aleatoria $A$ es la siguiente: $$
+La función de distribución de una variable aleatoria $A$ es la siguiente: $$
 \forall x\in \mathds{R}, \quad F(x) = P( A \leq x) = \sum_{x_n\in E, x_n \leq x} P(A=x_n).
 $$
 \end{defi}
@@ -199,10 +194,49 @@ Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 \end{itemize}
 \end{defi}
 
-\subsection{Distribución normal}
+\begin{defi}
+Sea $i$ el número completo $i=\sqrt{-1}$, la extensión de la función exponencial $exp: \mathds{R} \to \mathds{R^{+}}$ al cuerpo de los números complejos es $exp: \mathds{C} \to \mathds{C}$ dada por:
+$$
+z \mapsto exp(iz) = e^{iz}=\cos z+i\sin z.
+$$
+\end{defi}
+
+Notar que el módulo de la exponencial compleja está acotado por la unidad :
+
+$$
+\abs{ exp(iz) } = \abs{\cos z+i\sin z} = \sqrt{\cos^2 z + \sin^2 z} = 1.
+$$
+
+Esta propiedad de la exponencial compleja nos asegura la existencia de la siguiente definición para toda variable aleatoria.
 
 \begin{defi}
-Diremos que una variable aleatoria A tiene una distribución normal con media $\mu < \infty$ u varianza $\sigma^2 < \infty$, $N(\mu,\sigma^2)$, si A tiene una distribución con la siguiente función de distribución de probabilidad: 
+La función característica asociada a la variable aleatoria A es la función $\phi_{A}: \mathds{R} \to \mathds{C}$, dada por:
+$$
+\phi_{A}(t) = \mathds{E}(e^{itA}).
+$$
+\end{defi}
+
+\begin{prop}
+Sea $\phi_A$ la función característica de la variable aleatoria A, entonces:
+
+\begin{itemize}
+\item $\abs{\phi_A(t)} \leq \phi_A(0)=1$.
+\item $\phi_A$ es una función uniformemente continua.
+\item $\phi_{cA+b}(t)=e^{itb}\phi_A(ct), \quad c,b\in \mathds{R}$.
+\item Sea $A_1, A_2,...,A_n, n\in\mathds{N}$ una sucesión finita de variables aleatorias independientes, entonces: $$ 
+\phi_{\sum^{n}_{i=1} A_i} (t) = \prod_{i=1}^{n} \phi_{A_i} (t) .
+$$ Además si $A_1, A_2,...,A_n$ son idénticamente distribuidas: $$
+\phi_{\sum^{n}_{i=1} A_i} (t) = \left( \phi_{A_1}(t) \right)^{n}.
+$$
+\item Si $\mathds{E}(A^k) < \infty$ su derivada k-ésima evaluada en 0 es $\phi_A^{(k)}(0)=i^k\mathds{E}(A^k)$.
+\end{itemize}
+
+\end{prop}
+
+\subsection{Distribución normal}
+
+\begin{defi} \label{normal}
+Diremos que una variable aleatoria A sigue una distribución normal con media $\mu < \infty$ u varianza $\sigma^2 < \infty$, $N(\mu,\sigma^2)$, si A tiene una distribución con la siguiente función de densidad: 
 
 $$
 f(x| \mu, \sigma^2) = \frac{1}{ \sigma \sqrt{ 2 \pi }} exp \left( -\frac{1}{2}\left( \frac{x-\mu}{\sigma} \right)^2 \right),\quad \forall x \in \mathds{R}.
@@ -215,12 +249,10 @@ $$
 
 \section{Teoría de la probabilidad: Teorema central del límite}
 
-\begin{teorema}
+\begin{teorema} \label{central}
 Sean $A_{1},A_{2},...,A_{n}$ variables aleatorias independientes, con esperanza $\mu < \infty$, varianza $\sigma^2 < \infty$ e idénticamente distribuidas. Entonces $$
 \frac{ \frac{1}{n}\sum_{i=1}^nA_i - n\mu}{ \sigma \sqrt{n}} \to^d N(0,1).
 $$
-
-
 \end{teorema}
 
 Previa a la demostración del teorema central del límite, introducimos las herramientas matemáticas que nos harán posible su demostración.
@@ -236,52 +268,12 @@ $$
 y $\lim_{x\to a} h_k(x) = 0$.
 \end{teorema}
 
-\begin{defi}
-Sea $i$ el número completo $i=\sqrt{-1}$, la extensión de la función exponencial $exp: \mathds{R} \to \mathds{R^{+}}$ real al cuerpo de los números complejos $exp: \mathds{C} \to \mathds{C}$ dada por:
-$$
-z \mapsto exp(iz) = e^{iz}=\cos z+i\sin z.
-$$
-\end{defi}
-
-Notar que el módulo de la exponencial compleja está acotado por la unidad :
-
-$$
-\abs{ exp(iz) } = \abs{\cos z+i\sin z} = \sqrt{\cos^2 z - \sin^2 z} \leq \sqrt{\cos^2 z + \sin^2 z} = 1.
-$$
-
-Esta propiedad de la exponencial compleja no asegura la existencia de la siguiente definición para toda variable aleatoria.
-
-\begin{defi}
-La función característica asociada a la variable aleatoria A es la función $\phi_{A}: \mathds{R} \to \mathds{C}$, dada por:
-$$
-\phi_{A}(t) = \mathds{E}(e^{itA}).
-$$
-\end{defi}
-
-
-\begin{prop}
-Sea $\phi_A$ la función característica de la variable aleatoria A, entonces:
-
-\begin{itemize}
-\item $\abs{\phi_A(t)} \leq \phi_A(0)=1$.
-\item $\phi_A$ es una función uniformemente continua.
-\item $\phi_{cA+b}(t)=e^{itb}\phi_A(ct), \quad c,b\in \mathds{R}$.
-\item Sea $A_1, A_2,...,A_n, n\in\mathds{N}$ una sucesión finita de variables aleatorias independientes, entonces: $$ 
-\phi_{\sum^{n}_{i=1} A_i} (t) = \prod_{i=1}^{n} \phi_{A_i} (t) .
-$$ Además si $A_1, A_2,...,A_n$ son idénticamente distribuidas: $$
-\phi_{\sum^{n}_{i=1} A_i} (t) = \left( \phi_{X_1}(t) \right)^{n}.
-$$
-\item Si $\mathds{E}(A^k) < \infty$ su derivada k-ésima evaluada en 0 es $\phi_A^{(k)}(0)=i^k\mathds{E}(A^k)$.
-\end{itemize}
-
-\end{prop}
-
-\begin{teorema}[Teorema de continuidad]
+\begin{teorema}[Teorema de continuidad] \label{cont}
 Sean $A_1, A_2,...,A_n, n\in\mathds{N}$ variables aleatorias entonces: $$
 \lim_{n \to \infty }{\phi_{A_n}} = \phi_{A}(t), \quad \forall t\in \mathds{R},
 $$
 si y solo si $$
-X_n \to^d X.
+A_n \to^d A.
 $$
 
 \end{teorema}
@@ -322,10 +314,10 @@ Así obtenemos que $$
 \big(\phi_{Y_1}(\frac{t}{\sqrt{n}}) \big)^n =\big( 1 - \frac{t^2}{2n} + \frac{t^2}{n} h_2(\frac{t}{\sqrt{n}}) \big)^n\longrightarrow e^{-\frac{t^2}{2}}.
 $$
 
-cuyo límite es la función característica de una variable perteneciente a una distribución normal con media 0 y varianza 1, concluimos la demostración aplicando el Teorema de continuidad.
+cuyo límite es la función característica de una variable perteneciente a una distribución normal con media 0 y varianza 1, concluimos la demostración aplicando el teorema de continuidad \ref{cont}.
 \end{proof}
 
-\section{Teoría de la probabilidad: Ley de los grandes números, formulación fuerte}
+\section{Teoría de la probabilidad: Ley de los grandes números}
 \begin{teorema} \label{teo_grandes_numeros}
 Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes, con esperanza $\mu$ e idénticamente distribuidas, es decir, obtenidas de la misma distribución. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$:
 
@@ -416,59 +408,6 @@ $$
 $$
 \end{proof}
 
-\section{Fundamentos de las simulaciones Monte Carlo}
-
-Sean $A_1,A_2,...,A_n$ variables aleatorias idénticamente distribuidas, sean $g_1, g_2, ..., g_n$ funciones reales de variable real y medibles y $\lambda_1, \lambda_2,..., \lambda_n$ números reales, definimos la variable real $G$ como:
-$$
-G = \sum_{i=1}^{n} \lambda_i g_i(A_i),
-$$
-gracias al teorema \ref{funcion_de_va} podemos afirmar que está bien definida. El valor esperado de $G$ es:
-$$
-E(G) = E(\sum_{i=1}^{n} \lambda_i g_i(A_i)).
-$$
-La varianza de $G$ viene dada por la expresión \ref{}, la cual podemos expresar de la siguiente manera si añadimos la hipótesis de que la variables aleatorias $A_1,A_2,...,A_n$ sean independientes:
-$$
-var(G) = \sum_{i=1}^{n} \lambda_i^2 g_i(A_i)) = \sum_{i=1}^{n} \lambda_i^2 g_i(A_1)).
-$$
-
-Sea ahora $\lambda_i = \frac{1}{n}$ y $g_i = g, \forall i$, entonces el valor esperado de $G$ pasa a ser:
-$$
-E(G) = E(\sum_{i=1}^{n} \frac{1}{n} g(A_i)) = E(g(A_1)).
-$$ 
-
-\begin{defi}
-La variable aleatoria $G$ anteriormente definida con variables aleatorias $A_1,A_2,...,A_n$ independientes diremos que es un \textit{estimador} de $E(g(A))$.
-\end{defi}
-
-La varianza del estimador $G$ se reescribe como sigue:
-$$
-var(G) = var \left( \frac{1}{n} \sum_{i=1}^{n} g(A_i) \right) = \sum_{i=1}^{n} \frac{1}{n^2} var(g(A_1)) = \frac{1}{n} var(g(A_1)).
-$$
-
-Esto es, a medida que el número de variables aleatorias crece la varianza disminuye.
-
-\begin{defi} \label{chebi}
-Sea G un estimador, con media $\mu$ y varianza $\sigma$ finitas y $\delta>0$ entonces la desigualdad de Chebychev es:
-
-$$
-P \left( \abs{G-\mu} \geq \sqrt{\frac{\sigma}{\delta}} \right) \leq \delta.
-$$
-
-\end{defi}
-
-El primer gran resultado o \textit{primer teorema fundamental de Monte Carlo} que podemos deducir de los anteriores, en particular es una consecuencia directa del teorema \ref{teo_grandes_numeros}, la media del estimador G converge en probabilidad a la media de las variables aleatorias que estima, esto es, sean $A_1,A_2,...,A_n$ variables aleatorias idénticamente distribuidas e independientes con esperanza finita $\mu$ entonces:
-$$
-\forall \epsilon > 0,\quad \lim_{n\to\infty} P( |A_n-\mu|> \epsilon ) = 0.
-$$
-
-Si además asumimos que la varianza de $A_1,A_2,...,A_n$ es finita, $\sigma$, es posible aplicar la desigualdad \ref{chebi} para obtener la velocidad de convergencia respecto a $n$. Veamos un ejemplo de éste hecho, dado $\delta=\frac{1}{100}$:
-
-$$
-P \left( ( G - \mu )^2 \geq 100 \sigma \right) = P \left( ( G - \mu )^2 \geq \frac{100}{n} var(g(A)) \right)  \leq \frac{1}{100},
-$$
-
-donde se ha usado que $var(G) = \sigma = \frac{1}{n} var(g(A))$.
-
 \section{Teoría de la computación}
 
 \subsection{Introducción}
@@ -494,14 +433,14 @@ Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a 
 \end{defi}
 
 \begin{defi}
-La función de transición local, fijando una configuración g induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
+La función de transición local, fijando una configuración $g$ induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
 $$
 \forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k})).
 $$
 \end{defi}
 
 \begin{defi}
-Un autómata celular m-asíncrono C es una tupla $(A, \mu)$ donde: 
+Un autómata celular m-asíncrono $C$ es una tupla $(A, \mu)$ donde: 
 \begin{itemize}
 \item A es un autómata celular .
 \item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$.
@@ -538,22 +477,28 @@ Esta nueva definición de autómata celular m-asíncrono, incluye la de autómat
 
 De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
 
-Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante de tiempo solo de aplica la función de transición local a una sola célula. Consideramos ahora el autómata celular m-asíncrono $C_{1}=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
+Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante de tiempo solo de aplica la función de transición local a una sola célula. 
+
+\begin{defi}
+Consideramos ahora el autómata celular m-asíncrono $C_{1}=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
 
 \begin{enumerate}
 \item $\mu_{1}(U_{i}) > 0, \quad \forall i \in \mathds{Z}^{d}$.
 \item $\mu_{1}(U_{i} \cap U_{j}) = 0, \quad \forall i \neq j, \quad i,j \in \mathds{Z}^{d}$.
 \end{enumerate}
+\end{defi}
 
-Así solo los conjuntos de la forma \{k\} $(k \in \mathds{Z}^{d})$ se les aplica la función de transición local.
+Así solo los ultrafiltros de la forma \{k\} $(k \in \mathds{Z}^{d})$ se les aplica la función de transición local.
 
-Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. Dado $C_{2}=(A, \mu_{2})$ un autómata celular m-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, $\mu_{2}: \mathds{B} \rightarrow [0,1]$ satisfaciendo:
+Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. 
+\begin{defi} \label{alhpaasin}
+Dado $C_{2}=(A, \mu_{2})$ un autómata celular m-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \rightarrow [0,1]$ satisface:
 
 \begin{enumerate}
 \item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
 \item $ \forall A \subseteq \mathds{Z}^{d} \quad$ finito,$\quad  \mu_{2} ( \bigcap_{a \in A} U_{a} ) = \prod_{a \in A} \mu_{2} ( U_{a} )$.
 \end{enumerate}
-
+\end{defi}
 
 \subsection{Juego de vida de Conway}
 
@@ -582,7 +527,7 @@ y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z
 
 \subsection{Juego de vida de Conway $\alpha$-asíncrono}
 \begin{defi}
-El juego de vida de Conway es un autómata celular m-asíncrono formado por C, el autómata celular síncrono definido anteriormente y la medida de probabilidad 
+El juego de vida de Conway es un autómata celular $\alpha$-asíncrono formado por C, el autómata celular síncrono definido anteriormente y una medida de probabilidad verificando las condiciones expuestas en \ref{alhpaasin} para $\alpha \in (0,1)$. 
 \end{defi}
 
 
@@ -596,14 +541,71 @@ Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referenc
 I_{j+1} = aI_{j} +c \mod (m)
 \end{equation}
 
-donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: generador lineal congruente de números aleatorios. Claramente, en $n<m$ pasos la ecuación comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que obtuvieran en mayor periodo posible. En \cite{knuth} podemos encontrar algunos resultados notables sobre la elección parámetros $a,c$ y $m$. La elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. 
+donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: generador lineal congruente de números aleatorios. Claramente, en $n<m$ pasos la ecuación comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que obtuvieran en mayor periodo posible. En \cite{knuth} podemos encontrar algunos resultados notables sobre la elección parámetros $a,c$ y $m$. La elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. Sin embargo no es suficiente con generar una sucesión de números de un largo periodo, además deben superar rigurosas baterías de test empíricos que aseguren una buena distribución de las secuencias de números además de la ausencia de patrones en las mismas. En el caso de los generadores lineales congruentes existe un resultado que afirma que las sucesivas n-tuplas de valores generados residen en al menos $(n!m)^\frac{1}{m}$ hiperplanos paralelos \cite{marsagliaRandom}, luego esta clase de generadores no son adecuados para la generación de números aleatorios.
 
-Sin embargo no es suficiente con generar una sucesión de números de un largo periodo, además deben superar rigurosas baterías de test empíricos que aseguren una buena distribución de las secuencias de números además de la ausencia de patrones en las mismas. Dado el carácter empírico de las baterías de test, superarlos con éxito no aseguran un generador de números perfecto si no que probablemente se trate de un buen generador, ya que eventualmente con el suficiente tiempo se podría encontrar un test que no fuera superado con éxito. Por tanto nos interesaremos en tests que demuestren el mal comportamiento de un generador en un tiempo razonable. Hay numerosas baterías de test destacamos \textit{Dieharder} la cual está basada en los primeros test estadísticos propuestos en \textit{Diehard battery of tests} e incluye también los test desarrollados por el NIST (National Institute for Standards and Technology), entre otros y \textit{TestU01} \cite{dieharder,testu01}.
+Dado el carácter empírico de las baterías de test, superarlas con éxito no aseguran un generador de números perfecto si no que probablemente se trate de un buen generador, ya que eventualmente con el suficiente tiempo se podría encontrar un test que no fuera superado con éxito. Por tanto nos interesaremos en tests que demuestren el mal comportamiento de un generador en un tiempo razonable. Hay numerosas baterías de test, destacamos dos \cite{dieharder,testu01}: \textit{Dieharder} la cual está basada en los primeros test estadísticos propuestos en \textit{Diehard battery of tests}, incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) y además dispone de un programa, \textit{dieharder}, para realizar dichos tests y la batería de test \textit{TestU01}.
 
+Nuestra elección de generador de números aleatorios es una variante del generador \textit{Mersenne Twister} \cite{mt} implementada en el lenguaje de programación Python, el cual es el generador por defecto en las versiones del lenguaje de programación Python posteriores a la $2.3$ \cite{pyver} y en el lenguaje de programación estadística $R$\cite{langR}. Dicho generador de números aleatorios en su implementación en Python genera números en coma flotante de 53-bits de precisión y tiene un periodo de $2^{19937}-1$. Instalando el programa \textit{dieharder} disponible en los repositorios de las distribuciones Ubuntu y Debian, podremos ejecutar el comando \textit{dieharder -g 014 -a} para observar como nuestra elección de generador de números aleatorios supera esta batería de test estadísticos satisfactoriamente.
 
+\section{Fundamentos de las simulaciones Monte Carlo}
 
-\section{Discusión}
+El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor, puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes cantidades de memoria y tiempo cómputo.
 
+\begin{defi}
+Una muestra aleatoria simple $S_n$, es un conjunto de $n\in\mathds{N}$ variables aleatorias, $A_1,A_2,...,A_n$, independientes e idénticamente distribuidas. En caso de que la media y la varianza de las variables aleatorias $A_1,A_2,...,A_n$ sean finitas, las notaremos $\mu$ y $\sigma^2$ respectivamente.
+\end{defi}
 
+La media de una muestra aleatoria simple $S_n$, $\mu_S = E(S_n) = \frac{1}{n}\sum_{i=1}^n A_i$ es una variable aleatoria gracias al resultado \ref{funcion_de_va}, dicha variable aleatoria tiene la siguiente media y varianza:$$
+E(\mu_S) = E(\frac{1}{n}\sum_{i=1}^n A_i) = \frac{1}{n}\sum_{i=1}^n E(A_i) = \mu,
+$$
+$$
+var(\mu_S) = var(\frac{1}{n}\sum_{i=1}^n A_i) = \frac{1}{n^2} \sum_{i=1}^n var(A_i) = \frac{\sigma^2}{n}.
+$$
+Luego su desviación estándar es $\sigma(\mu_S) = \frac{\sigma}{\sqrt{n}}$ 
+\begin{defi}
+La variable aleatoria $\mu_S$ anteriormente definida diremos que es un \textit{estimador} del valor esperado $E(A)=\mu$.
+\end{defi}
 
+\begin{defi} \label{chebi}
+Sea $\mu_S$ un estimador de la media de una muestra aleatoria simple, $S_n$, de media $\mu$ y varianza $\sigma^2$ finitas y $\delta>0$, la desigualdad de Chebychev es:
+
+$$
+P \left( \abs{\mu_S-\mu} \geq \sqrt{\frac{var(\mu_S)}{\delta}} \right) = P \left( \abs{\mu_S-\mu} \geq \frac{\sigma}{\sqrt{n\delta}} \right)  \leq \delta.
+$$
+
+\end{defi}
+
+El primer gran resultado o \textit{primer teorema fundamental de Monte Carlo} que podemos deducir de los anteriores, en particular es una consecuencia directa del teorema \ref{teo_grandes_numeros}, el estimador $G$ de la media de una muestra aleatoria simple, $S_n$, de media $\mu$ y varianza $\sigma^2$ finitas converge en probabilidad al valor esperado $\mu$:
+$$
+\forall \epsilon > 0,\quad \lim_{n\to\infty} P( |G - \mu|> \epsilon ) = 0.
+$$
+
+Es posible aplicar la desigualdad \ref{chebi} para obtener la velocidad de convergencia respecto a $n$. Veamos un ejemplo de éste hecho, dado $\delta=\frac{1}{100}$:
+
+$$
+P \left( ( G - \mu )^2 \geq \frac{100}{n} \sigma^2 \right)  \leq \frac{1}{100},
+$$
+
+Haciendo $n$ lo suficientemente grande, la varianza de $G$ se hace tan pequeña como se quiera, esto es, disminuye considerablemente la probabilidad de obtener una gran desviación relativa a $\delta$ entre el valor esperado y el los valores obtenidos.
+
+Es posible obtener un resultado más fuerte que el anterior como consecuencia  del teorema \ref{central}. Existe una función de distribución de probabilidad que aproxima los valores del estimador $G$, esto es, cuando $n \to\infty$, el teorema central del límite afirma que asintóticamente los valores de $G$ convergen a una distribución normal \ref{normal}. Por tanto, es posible reescribir la función de distribución como sigue:
+$$
+f(G) = \sqrt{\frac{n}{2 \pi \sigma^2}} exp \left( - \frac{n(G-\mu)^2}{2\sigma} \right).
+$$
+Cuando $n \to\infty$, el valor de $G$ se encuentra en intervalos cada vez más estrechos centrados en $\mathds{E}(G)$ y es posible medir la desviación en unidades de $\sigma$, es decir, el valor de $G$ está dentro del intervalo centrado en $\mathds{E}(G)$ de un error estándar, de longitud $ \sigma / \sqrt{n} $, el 68.3 \% de las veces, de dos errores estándar de longitud el 95.4 \% y de tres errores estándar el 99.7 \%  de las veces. Como comentábamos anteriormente la convergencia es asintótica por lo que inicialmente desconocemos como de grande debe de ser $n$ para poder aplicar el teorema. En un caso particular, si el tercer momento $\mu_3$ de $G$ existe, entonces el teorema será satisfecho substancialmente cuando:
+$$
+\abs{\mathds{E}(A^3)} << \sigma^3 \sqrt{n}.
+$$
+Así los límites de confianza derivados de la distribución normal pueden ser aplicados a los cálculos Monte Carlo \cite{fundamentos_montecarlo}.
+
+Cuando la varianza es infinita, es posible encontrar una distribución límite para $G$ que llevará a un caso particular del teorema central del límite, en estos casos la distribución límite no será en general la distribución normal. Un estimador de la varianza de la media estimada viene dado por:
+$$
+var(G_n) = \frac{1}{n-1} \left( \frac{1}{n} \sum_{i=1}^n A_i^2 - \left( \frac{1}{n} \sum_{i=1}^n A_i \right)^2 \right)
+$$
 \end{document}
+
+\section{Implementación: Representación interna del juego de vida $\alpha$-asíncrono}
+
+\section{Implementación: Actualización celular del juego de vida $\alpha$-asíncrono}
+
+
