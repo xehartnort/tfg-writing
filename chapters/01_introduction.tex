@@ -6,9 +6,28 @@
 
 El autómata celular fue inventado por von Neumann y Ulam en 1950 para estudiar el problema de hacer máquinas artificiales que se reproduzcan a sí mismas \cite{neummanUlam}. Con el fin de imitar el comportamiento de seres vivos, el diseño de dichas máquinas incluiría el espacio en el que se desarrollan, representado por una malla en la que los nodos son llamados células y evolucionan simultáneamente de acuerdo a un conjunto de reglas simples. Éstas dirigen la "física" de su pequeño universo abstracto, dichas reglas son locales en el sentido de que cada célula tiene conocimiento de aquellas células que la rodean, su vecindario. En la construcción de Neumman el vecindario lo constituyen las células adyacentes verticales y horizontales, lo que se conoce como vecindario de Neumman o de tipo Neumman, si además se considera que las células adyacentes diagonales forman parte del vecindario, entonces pasa a nombrarse vecindario de Moore o de tipo Moore.
 
-El juego de vida es un autómata celular propuesto por Conway en 1970 y popularizado por Martin Gardner en el mismo año \cite{primerap}. Éste consiste en la evolución de una configuración inicial de células con dos estados mutuamente excluyentes, vida (1) o muerte (0), en una malla rectangular infinita dos dimensional. Dicha evolución viene dada por un conjunto de reglas que se aplican simultáneamente a todas las células considerando su vecindario de tipo Moore. Dada una célula viva, ésta continua viviendo si en su vecindario hay 2 o 3 células, en otro caso muere y dada una célula muerta, nace si tiene 3 células en su vecindario.
+El juego de vida es un autómata celular propuesto por Conway en 1970 y popularizado por Martin Gardner en el mismo año \cite{primerap}. Éste consiste en la evolución de una configuración inicial de células con dos estados mutuamente excluyentes, vida (1) o muerte (0), en una malla rectangular infinita. Dicha evolución viene dada por un conjunto de reglas que se aplican simultáneamente a todas las células considerando su vecindario de tipo Moore. Dada una célula viva, ésta continua viviendo si en su vecindario hay 2 o 3 células, en otro caso muere y dada una célula muerta, nace si tiene 3 células en su vecindario.
 
-Uno de los motivos por los que atrajo la atención de científicos de diferentes campos es la capacidad de observar como patrones complejos surgen de la aplicación de un conjunto muy simple y reducido de reglas. De esta manera comenzaron a observarse configuraciones iniciales que daban lugar a comportamientos interesantes. Tales como las de 'naves espaciales' que se desplazan sobre la malla rectangular, los 'osciladores' que retornan a su configuración inicial después de un número finito de generaciones o las 'vidas inmóviles', osciladores de periodo la unidad.
+Uno de los motivos por los que atrajo la atención de científicos de diferentes campos es la capacidad de observar como patrones complejos surgen de la aplicación de un conjunto muy simple y reducido de reglas. De esta manera comenzaron a observarse configuraciones iniciales que daban lugar a comportamientos interesantes. Tales como las de naves espaciales \ref{fig:spaceship} que se desplazan sobre la malla rectangular, los osciladores \ref{fig:blinker} que retornan a su configuración inicial después de un número finito de generaciones o las vidas inmóviles \ref{fig:block}, osciladores de periodo la unidad.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.15\linewidth]{./images/glider.png}
+	\caption{Ejemplo de nave espacial.}
+	\label{fig:spaceship}
+\end{figure} 
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.125\linewidth]{./images/blinker.png}
+	\caption{Ejemplo de oscilador de periodo dos.}
+	\label{fig:blinker}
+\end{figure} 
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.15\linewidth]{./images/block.png}
+	\caption{Ejemplo de vida inmóvil.}
+	\label{fig:block}
+\end{figure} 
 
 La elección de las reglas de evolución parecería a priori aleatoria, sin embargo, Conway perseguía con ellas obtener el siguiente comportamiento \cite{libroGardner}:
 \begin{itemize}
@@ -16,21 +35,6 @@ La elección de las reglas de evolución parecería a priori aleatoria, sin emba
 	\item Debe de haber disposiciones iniciales de células que aparentemente crezcan sin límite. 
 	\item Debe de haber disposiciones iniciales de células simples que crezcan y cambien durante un periodo considerable, llegando a tres posibles finales: desaparecer completamente ya sea debido a superpoblación o a dispersión, estabilizarse en una configuración que se mantenga constante o entrar en un ciclo sin fin de oscilación de periodo mayor a uno.  
 \end{itemize}
-
-% Mostrar aquí una imagen con los diferentes estados del oscilador, el bloque y la nave espacial en el tiempo, creo que t=3 es suficiente
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=.15\linewidth]{./images/blinker.png}
-	\caption{Oscilador de periodo dos nombrado 'Blinker'}
-	\label{fig:blinker}
-\end{figure} 
-\begin{figure}[H]
-	
-	\centering
-	\includegraphics[height=.15\linewidth]{./images/block.png}
-	\caption{Vida inmóvil nombrada 'Block'}
-	\label{fig:block}
-\end{figure} 
 
 Al intentar realizar simulaciones de juegos de vida en los ordenadores se enfrentan al problema de representar una malla infinita en un ordenador con memoria finita. Una inteligente solución es alterar las características topológicas de la malla, imitando las de una botella de Klein, una esfera, o un toro. En particular, esta última resulta atraer gran interés, pues se obtiene evidencia de que reduce los efectos asociados a la finitud de la malla \cite{finitudMalla, finitudMalla2}. Cabe descatar el estudio de la alteración de las cualidades geométricas de la malla, tales como el uso de figuras geométricas regulares diferentes al cuadrado (triángulo y hexágono)\cite{triangular}, teselaciones de Penrose \cite{penrose} o el empleo del espacio geométrico hiperbólico \cite{hiperbolico}. Finalmente, cabe notar que existen implementaciones en las cuales no se almacena la malla en la memoria, si no que se almacena la posición de cada célula respecto a un origen de coordenadas, simulando más eficazmente una malla infinita \cite{boardless}.
 

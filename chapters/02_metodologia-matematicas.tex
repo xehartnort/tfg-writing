@@ -408,128 +408,6 @@ $$
 $$
 \end{proof}
 
-\section{Teoría de la computación}
-
-\subsection{Introducción}
-Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. [Alguna citilla mona]. Así pues tomaremos el concepto más generalista de autómata celular m-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
-
-\subsection{Autómata celular determinista}
-Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, y tiene un estado de un conjunto finito de estados. Actualiza su estado de acuerdo a una función de transición la cual determina el estado de una célula considerando su propio estado y el de su vecindario. 
-
-\begin{defi}
-Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde:
-
-\begin{itemize}
-\item $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional.
-\item $Q$ el conjunto de estados posibles para cada célula.
-\item $N \in (\mathds{Z}^{d})^{k}$ es el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$.
-\item $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. 
-\end{itemize}
-
-\end{defi}
-
-\begin{defi}
-Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. 
-\end{defi}
-
-\begin{defi}
-La función de transición local, fijando una configuración $g$ induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
-$$
-\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k})).
-$$
-\end{defi}
-
-\begin{defi}
-Un autómata celular m-asíncrono $C$ es una tupla $(A, \mu)$ donde: 
-\begin{itemize}
-\item A es un autómata celular .
-\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$.
-\end{itemize} 
-\end{defi}
-\begin{defi}
-
-Para cada función de transición local $f$ y cada conjunto $\tau \in P(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ como sigue:
-
-\begin{equation*}
-	\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \qquad
-	F_{\tau}(x)(i) = \left\{ \begin{array}{lcc}
-             f(x(i),x(i+n_{1}),...,x(i+n_{k})) &   si  & i \in \tau ,\\
-             \\ x(i) & si  & i \notin \tau .\\
-             \end{array}
-             \right.
-\end{equation*}
-
-Es decir, $F_{\tau}$ aplica la función de transición local solo sobre los elementos de $\tau \subset \mathds{Z}^{d}$. 
-\end{defi}
-
-Notar que cada célula $i \in \mathds{Z}^{d}$ es actualizada con probabilidad $\mu(U_{i})$.
-
-Esta nueva definición de autómata celular m-asíncrono, incluye la de autómata celular síncrono. Fijada una $\sigma$-álgebra $\mathds{B}$ sobre $\mathds{Z}^{d}$ y sea $C_{0}=(A, \mu_{0})$ un autómata celular m-asíncrono donde $\mu_{0}: \mathds{B} \rightarrow [0,1]$ viene dada por: 
-
-\begin{equation*}
-	 \forall A \in P(\mathds{Z}^{d}), \qquad 
-	 \mu_{0}(A) = \left\{ \begin{array}{lcc}
-             \ 1 &   si  & \mathds{Z}^{d} \in A ,\\
-             \\0 &   si  & \mathds{Z}^{d} \notin A .\\
-             \end{array}
-             \right.
-\end{equation*}
-
-De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
-
-Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante de tiempo solo de aplica la función de transición local a una sola célula. 
-
-\begin{defi}
-Consideramos ahora el autómata celular m-asíncrono $C_{1}=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
-
-\begin{enumerate}
-\item $\mu_{1}(U_{i}) > 0, \quad \forall i \in \mathds{Z}^{d}$.
-\item $\mu_{1}(U_{i} \cap U_{j}) = 0, \quad \forall i \neq j, \quad i,j \in \mathds{Z}^{d}$.
-\end{enumerate}
-\end{defi}
-
-Así solo los ultrafiltros de la forma \{k\} $(k \in \mathds{Z}^{d})$ se les aplica la función de transición local.
-
-Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. 
-\begin{defi} \label{alhpaasin}
-Dado $C_{2}=(A, \mu_{2})$ un autómata celular m-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \rightarrow [0,1]$ satisface:
-
-\begin{enumerate}
-\item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
-\item $ \forall A \subseteq \mathds{Z}^{d} \quad$ finito,$\quad  \mu_{2} ( \bigcap_{a \in A} U_{a} ) = \prod_{a \in A} \mu_{2} ( U_{a} )$.
-\end{enumerate}
-\end{defi}
-
-\subsection{Juego de vida de Conway}
-
-\begin{defi}
-El juego de vida de Conway es un autómata celular síncrono: $$
-C = (\mathds{Z}^{2}, N, Q, f)
-$$
-donde
-\begin{itemize}
-\item $N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}$,
-\item $Q=\{0,1\}$,
-\item $f:\{0,1\}^{9} \rightarrow \{0,1\} $ dada por:
-
-\begin{align*}
-f(x)= \left\{ \begin{array}{lcc}
-             1 &   si  & x_{0}=0 \quad y \quad \sum_{i=1}^{8} x_i = 3 \\
-             \\ 1 & si & x_{0}=1 \quad y \quad \sum_{i=1}^{8} x_i \in \{2 ,3\} \\
-             \\ 0 &  si  & \sum_{i=1}^{8} x_i \notin \{2, 3\} \
-             \end{array}
-   \right. 
-\end{align*}
-y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
-
-\end{itemize}
-\end{defi}
-
-\subsection{Juego de vida de Conway $\alpha$-asíncrono}
-\begin{defi}
-El juego de vida de Conway es un autómata celular $\alpha$-asíncrono formado por C, el autómata celular síncrono definido anteriormente y una medida de probabilidad verificando las condiciones expuestas en \ref{alhpaasin} para $\alpha \in (0,1)$. 
-\end{defi}
-
 
 \section{Generadores de números aleatorios}
 
@@ -545,7 +423,9 @@ donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natura
 
 Dado el carácter empírico de las baterías de test, superarlas con éxito no aseguran un generador de números perfecto si no que probablemente se trate de un buen generador, ya que eventualmente con el suficiente tiempo se podría encontrar un test que no fuera superado con éxito. Por tanto nos interesaremos en tests que demuestren el mal comportamiento de un generador en un tiempo razonable. Hay numerosas baterías de test, destacamos dos \cite{dieharder,testu01}: \textit{Dieharder} la cual está basada en los primeros test estadísticos propuestos en \textit{Diehard battery of tests}, incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) y además dispone de un programa, \textit{dieharder}, para realizar dichos tests y la batería de test \textit{TestU01}.
 
-Nuestra elección de generador de números aleatorios es una variante del generador \textit{Mersenne Twister} \cite{mt} implementada en el lenguaje de programación Python, el cual es el generador por defecto en las versiones del lenguaje de programación Python posteriores a la $2.3$ \cite{pyver} y en el lenguaje de programación estadística $R$\cite{langR}. Dicho generador de números aleatorios en su implementación en Python genera números en coma flotante de 53-bits de precisión y tiene un periodo de $2^{19937}-1$. Instalando el programa \textit{dieharder} disponible en los repositorios de las distribuciones Ubuntu y Debian, podremos ejecutar el comando \textit{dieharder -g 014 -a} para observar como nuestra elección de generador de números aleatorios supera esta batería de test estadísticos satisfactoriamente.
+Nuestra elección de generador de números aleatorios es una variante del generador \textit{Mersenne Twister} \cite{mt} presente en la biblioteca estándar del lenguaje de programación Python, el cual es el generador por defecto en las versiones del lenguaje de programación Python posteriores a la $2.3$ \cite{pyver} y en el lenguaje de programación estadística $R$\cite{langR}. Dicho generador de números aleatorios en su implementación en Python genera números en coma flotante de 53-bits de precisión y tiene un periodo de $2^{19937}-1$. 
+
+Instalando el programa \textit{dieharder} disponible en los repositorios de las distribuciones Ubuntu y Debian, podremos ejecutar el comando \textit{dieharder -g 014 -a} para observar como nuestra elección de generador de números aleatorios supera esta batería de test estadísticos satisfactoriamente.
 
 \section{Fundamentos de las simulaciones Monte Carlo}
 
@@ -604,8 +484,263 @@ var(G_n) = \frac{1}{n-1} \left( \frac{1}{n} \sum_{i=1}^n A_i^2 - \left( \frac{1}
 $$
 \end{document}
 
-\section{Implementación: Representación interna del juego de vida $\alpha$-asíncrono}
 
-\section{Implementación: Actualización celular del juego de vida $\alpha$-asíncrono}
+\section{Teoría de la computación}
+
+\subsection{Introducción}
+Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. [Alguna citilla mona]. Así pues tomaremos el concepto más generalista de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
+
+\subsection{Autómata celular determinista}
+Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, y tiene un estado de un conjunto finito de estados. Actualiza su estado de acuerdo a una función de transición la cual determina el estado de una célula considerando su propio estado y el de su vecindario. 
+
+\begin{defi}
+Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde:
+
+\begin{itemize}
+\item $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional.
+\item $Q$ el conjunto de estados posibles para cada célula.
+\item $N \in (\mathds{Z}^{d})^{k}$ es el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$.
+\item $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. 
+\end{itemize}
+
+\end{defi}
+
+\begin{defi}
+Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. 
+\end{defi}
+
+\begin{defi}
+La función de transición local, fijando una configuración $g$ induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
+$$
+\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k})).
+$$
+\end{defi}
+
+\begin{defi}
+Un autómata celular $m$-asíncrono $C$ es una tupla $(A, \mu)$ donde: 
+\begin{itemize}
+\item A es un autómata celular .
+\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$.
+\end{itemize} 
+\end{defi}
+\begin{defi}
+
+Para cada función de transición local $f$ y cada conjunto $\tau \in P(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ como sigue:
+
+\begin{equation*}
+	\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \qquad
+	F_{\tau}(x)(i) = \left\{ \begin{array}{lcc}
+             f(x(i),x(i+n_{1}),...,x(i+n_{k})) &   si  & i \in \tau ,\\
+             \\ x(i) & si  & i \notin \tau .\\
+             \end{array}
+             \right.
+\end{equation*}
+
+Es decir, $F_{\tau}$ aplica la función de transición local solo sobre los elementos de $\tau \subset \mathds{Z}^{d}$. 
+\end{defi}
+
+Notar que cada célula $i \in \mathds{Z}^{d}$ es actualizada con probabilidad $\mu(U_{i})$.
+
+Esta nueva definición de autómata celular $m$-asíncrono, incluye la de autómata celular síncrono. Fijada una $\sigma$-álgebra $\mathds{B}$ sobre $\mathds{Z}^{d}$ y sea $C_{0}=(A, \mu_{0})$ un autómata celular $m$-asíncrono donde $\mu_{0}: \mathds{B} \rightarrow [0,1]$ viene dada por: 
+
+\begin{equation*}
+	 \forall A \in P(\mathds{Z}^{d}), \qquad 
+	 \mu_{0}(A) = \left\{ \begin{array}{lcc}
+             \ 1 &   si  & \mathds{Z}^{d} \in A ,\\
+             \\0 &   si  & \mathds{Z}^{d} \notin A .\\
+             \end{array}
+             \right.
+\end{equation*}
+
+De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
+
+Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante de tiempo solo de aplica la función de transición local a una sola célula. 
+
+\begin{defi}
+Consideramos ahora el autómata celular $m$-asíncrono $C_{1}=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
+
+\begin{enumerate}
+\item $\mu_{1}(U_{i}) > 0, \quad \forall i \in \mathds{Z}^{d}$.
+\item $\mu_{1}(U_{i} \cap U_{j}) = 0, \quad \forall i \neq j, \quad i,j \in \mathds{Z}^{d}$.
+\end{enumerate}
+\end{defi}
+
+Así solo los ultrafiltros de la forma $\{k\}$ $(k \in \mathds{Z}^{d})$ se les aplica la función de transición local.
+
+Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. 
+\begin{defi} \label{alhpaasin}
+Dado $C_{2}=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \rightarrow [0,1]$ satisface:
+
+\begin{enumerate}
+\item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
+\item $ \forall A \subseteq \mathds{Z}^{d} \quad$ finito,$\quad  \mu_{2} ( \bigcap_{a \in A} U_{a} ) = \prod_{a \in A} \mu_{2} ( U_{a} )$.
+\end{enumerate}
+\end{defi}
+
+\subsection{Juego de vida de Conway}
+
+\begin{defi}
+El juego de vida de Conway es un autómata celular síncrono: $$
+C = (\mathds{Z}^{2}, N, Q, f)
+$$
+donde
+\begin{itemize}
+\item $N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}$,
+\item $Q=\{0,1\}$,
+\item $f:\{0,1\}^{9} \rightarrow \{0,1\} $ dada por:
+
+\begin{equation} \label{trans}
+f(x)= \left\{ \begin{array}{lcc}
+             1 &   si  & x_{0}=0 \quad y \quad \sum_{i=1}^{8} x_i = 3 \\
+             \\ 1 & si & x_{0}=1 \quad y \quad \sum_{i=1}^{8} x_i \in \{2 ,3\} \\
+             \\ 0 &  si  & \sum_{i=1}^{8} x_i \notin \{2, 3\} \
+             \end{array}
+   \right. 
+\end{equation}
+y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
+
+\end{itemize}
+\end{defi}
+
+\subsection{Juego de vida de Conway $\alpha$-asíncrono}
+\begin{defi}
+El juego de vida de Conway es un autómata celular $\alpha$-asíncrono formado por C, el autómata celular síncrono definido anteriormente y una medida de probabilidad verificando las condiciones expuestas en \ref{alhpaasin} para $\alpha \in (0,1)$. 
+\end{defi}
+
+\section{Representación del juego de vida de Conway}
+
+Fijada una configuración inicial $z$, enteremos por ejecución o simulación experimento del juego de vida de Conway de duración $n \in \mathds{N} \cup \{ \infty\}$ al resultado de aplicar $n$ veces la función de transición global del juego de vida de Conway a la configuración inicial y lo notaremos $C_{n}(z)$. Sea $t$ tal que $1 \leq t \leq n$, diremos que es el instante $t$ de la ejecución/simulación/experimento del juego de vida de Conway de duración $t$, el resultado de aplicar $t$ veces la función de transición global a una configuración inicial $z$ y lo notaremos $C^t_n(z)$. Por último, los conjuntos de puntos $C^{t'}_{n'}(z')$, $C^{t}_{n}(z)$ si los conjuntos de células de cada simulación son idénticos.
+
+Como se comentaba la introducción plantearse la simulación del juego de vida implica afrontar el problema de representar una malla infinita de dos dimensiones en la memoria finita de los ordenadores. Mientras que la cantidad de memoria y velocidad de acceso de la misma ha mejorado significativamente con el paso del tiempo, perseguimos una implementación que cumpla las siguientes dos características:
+
+\begin{itemize}
+\item Una ejecución completa de una configuración inicial del juego de vida tiene que finalizar en un tiempo razonable, pues la clave de las simulaciones Monte Carlo es la repetición de los experimentos y como se comentaba en la sección anterior, al aumentar el número de muestras/ejecuciones/experimentos disminuye el error en una proporción conocida, permitiendo un acercamiento más veloz al límite asintótico de la suma de variables aleatorias.
+
+\item El comportamiento de las configuraciones iniciales es difícil de predecir, por lo que configuraciones que crezcan sin límite podrían agotar los recursos de memoria disponibles haciendo que la ejecución sea inválida. En particular, una situación de alto consumo de memoria evitaría la ejecución de múltiples simulaciones independientes en paralelo.
+\end{itemize}
+
+Este último punto es, en nuestra opinión, el más restrictivo. Un planteamiento inicial nos podría sugerir que limitar el tamaño de la malla dos dimensional, sin embargo se perdería información en aquellas configuraciones iniciales que excedieran el tamaño fijado de la malla. Para reducir el impacto de la finitud de la malla se ha estudiado la identificación de los bordes opuestos como se muestran en la imagen ref simulando un espacio \textit{infinito} que imita la superficie de un toro ref toro, obteniendo resultados favorables \cite{finitudMalla, finitudMalla2}. Pero no es necesario lidiar con los errores derivados de este planteamiento, una implementación más \textit{literal} de la descripción formal del juego de vida, nos permite romper con el paradigma de la limitación de la malla. En lugar de almacenar en memoria la malla completa independientemente de su utilización, se almacenan las células identificadas por las coordenadas sobre el plano cartesiano \cite{boardless}. 
+
+Dado $C^t_n$ si suponemos que la malla dos dimensional con los bordes opuestos identificados es cuadrada con lado de tamaño $m$, la complejidad en espacio viene dada por $O(m^2)$ independientemente a la configuración inicial escogida. Por otro lado si suponemos una malla dos dimensional infinita, una configuración inicial con $c$ células y $c(t)$ el número de células en el instante $t$, la complejidad en espacio para cada instante $t$ es $O(c(t))$ y la complejidad en espacio de $C_n^t$ es $O(\max_{0\leq t\leq n}\{c(t)\})$. Así al optar por la implementación de la malla infinita haremos un uso más eficiente de la memoria disponible.
+
+Una última cuestión por explorar es como se implementa la aplicación de la función de transición global bajo la representación de la malla infinita. De nuevo nos apoyaremos en la definición matemática del juego de vida, en particular en la definición de función de transición local \ref{trans}.
+
+\section{Configuraciones iniciales del juego de vida de Conway}
+
+Las configuraciones iniciales son muy diversas, han existido algunos esfuerzos por realizar una taxonomía de patrones pero no existe un consenso global y como consecuencia aceptamos la existencia de principalmente cuatro categorías, las cuales expondremos a continuación. En este trabajo trataremos de caracterizar el comportamiento de configuraciones iniciales del juego de vida de Conway bajo la hipótesis de actualización $\alpha$-asíncrona. Nuestras elecciones de patrones está inicialmente motivada por la simplicidad de los mismos, que nos permitirá visualizar el impacto de la $\alpha$-asincronismo en la actualización y a continuación verificar si esta caracterización es extensible a todas las configuraciones iniciales de la misma categoría. 
+
+\subsection{Vidas inmóviles}
+Probablemente las vidas inmóviles sean las configuraciones con el comportamiento más simple y fácil de observar. Esta sección está extraída de las siguientes fuentes: \cite{stillLifeProblem},\cite{stillLifeTheory} y \cite{LikeWikiStill}.
+
+\begin{defi}
+Una vida inmóvil es una configuración inicial $z$ finita y no vacía que permanece fija tras la aplicación la función de transición global, esto es, fijado $n\in\mathds{N}$, se verifica que $z = C^n_0(z) = C^n_t(z)$ para todo $t \leq n$.
+\end{defi}
+
+Distinguimos tres categorías tipos de vidas inmóviles:
+
+\begin{defi}
+Una vida inmóvil estricta es aquella vida inmóvil tal que al eliminar cualquiera de las células vivas deja de pertenecer a la categoría de vida inmóvil.
+\end{defi}
+
+A continuación mostramos ejemplos de este tipo de vida inmóvil. La colmena \ref{fig:beehive} es una vida inmóvil estricta pues todos los elementos dependen entre sí los unos de los otros, la colmena con cola \ref{fig:beehive_tail} nuevo es una vida inmóvil estricta a pesar de que contenga a otra vida inmóvil estricta y la configuración inicial mesa frente a mesa \ref{fig:table_on_table} es también una vida inmóvil estricta pues el patrón de la mitad horizontal derecha conserva su estabilidad gracias a su homólogo reflejado de la mitad horizontal izquierda.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.125\linewidth]{./images/beehive.png}
+	\caption{Configuración inicial colmena.}
+	\label{fig:beehive}
+\end{figure} 
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.15\linewidth]{./images/beehive_with_tail.png}
+	\caption{Configuración inicial colmena con cola.}
+	\label{fig:beehive_tail}
+\end{figure} 
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.15\linewidth]{./images/table_on_table.png}
+	\caption{Configuración inicial mesa frente a mesa.}
+	\label{fig:table_on_table}
+\end{figure} 
+
+\begin{defi}
+Una vida pseudo inmóvil es una vida inmóvil que puede ser particionada en vidas inmóviles independientes, es decir, la estabilidad de una de ellas no depende de la presencia de las otras. Además debe de existir al menos una célula muerta por superpoblación (más de tres vecinos vivos) que al particionar en vidas inmóviles independientes la célula continúe muerta por soledad (menos de tres vecinos vivos).
+\end{defi}
+
+Las vidas inmóviles que particionan a una vida pseudo inmóvil pueden ser a su vez vidas pseudo inmóviles \ref{fig:bisnake} o vidas inmóviles estrictas \ref{fig:biblock}. Notar que una vida inmóvil puede estar formada por varias vidas inmóviles y aún así ser una vida estrictamente inmóvil (y no pseudo inmóvil), si éstas dependen entre sí para mantener su estabilidad \ref{fig:table_on_table}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.125\linewidth]{./images/biblock.png}
+	\caption{Configuración inicial bibloque.}
+	\label{fig:biblock}
+\end{figure} 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.3\linewidth]{./images/bisnake.png}
+	\caption{Configuración inicial que puede ser particionada en dos vidas pseudo inmóviles.}
+	\label{fig:bisnake}
+\end{figure} 
+
+
+\begin{defi}
+Una vida quasi inmóvil es una vida inmóvil que puede ser particionada en vidas inmóviles independientes, es decir, la estabilidad de una de ellas no depende de la presencia de las otras. Además existen células que tanto en la configuración inicial como en las vidas inmóviles independientes se mantengan muertas por soledad (menos de tres vecinos vivos). 
+\end{defi}
+
+Notar que la figura \ref{fig:biblock} no es una vida quasi inmóvil y sin embargo \ref{fig:bimoved} sí. Este tipo de vida inmóvil está habitualmente formada por dos vidas inmóviles que comparten una diagonal.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.2\linewidth]{./images/bimoved.png}
+	\caption{Configuración inicial que en el centro tiene una célula que se mantiene muerta por soledad tanto en las vidas inmóviles independientes como en el total.}
+	\label{fig:bimoved}
+\end{figure} 
+
+Por último, cabría preguntarse el problema de dado un número finito de células, ¿cuántas vidas inmóviles existen? Dicho problema ha sido resuelto para vidas inmóviles estrictas y pseudo inmóviles de hasta 32 células, como se puede consultar en \cite{countStillLifes} y en \cite{countPseudoStillLifes}.
+
+\subsection{Osciladores}
+
+\begin{defi}
+Un oscilador es una configuración inicial $z$ finita y no vacía que se repite tras la aplicación de $k$ veces de la función de transición global, esto es, fijado $n\in\mathds{N}$, se verifica que existe $k>1, \in\mathds{N}$ tal que $C^n_t(z) = C^n_{t+k}(z)$ para todo $t \leq n-k$ y diremos que $k$ es el periodo del oscilador.
+\end{defi}
+
+Notar que se exige que el periodo de oscilación sea estrictamente superior a la unidad, para evitar que la categoría de las vidas inmóviles esté contenidas dentro de la de los osciladores. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.125\linewidth]{./images/blinker.png}
+	\caption{El oscilador más pequeño de periodo dos.}
+	\label{fig:blinker}
+\end{figure} 
+
+\subsection{Naves espaciales}
+
+\begin{defi}
+Una  nave espacial es una configuración inicial $z$ finita y no vacía que se repite tras la aplicación de $k$ veces de la función de transición global pero en una posición distinta, esto es, fijado $n\in\mathds{N}$, se verifica que existen $k\in\mathds{N}$ y una traslación distinta de la identidad, $\phi:\mathds{Z}^2\to\mathds{Z}^2$, tal que $C^n_t(z) = \phi(C^n_{t+k}(z))$ para todo $t \leq n-k$ y diremos que $k$ es el periodo de la nave espacial.
+\end{defi}
+
+Notar que se exige que la traslación $\phi$ sea distinta a la identidad y $k>1$, para evitar que la categoría de los osciladores esté contenida dentro de la de las naves espaciales.
+
+Si la configuración se desplaza $x$ unidades horizontalmente e $y$ unidades verticalmente cada periodo de longitud $k$ la velocidad de desplazamiento de la nave espacial es $\max\{|x|,|y|\}c/k$ con pendiente $x/y$, siendo la velocidad máxima teórica conocida como \textit{velocidad de la luz} $c=1$, esto es, un desplazamiento por cada aplicación de la función de transición global. Según \cite{pendienteNaves} existe una nave espacial en el juego de vida de Conway para cada pendiente racional.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.15\linewidth]{./images/lightweightspaceship.png}
+	\caption{Nave espacial más pequeña conocida de velocidad $c/2$, su desplazamiento es paralelo a uno de los ejes de coordenadas cartesianos.}
+	\label{fig:lightweightspaceship}
+\end{figure} 
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=.15\linewidth]{./images/glider.png}
+	\caption{Nave espacial más pequeña conocida de velocidad $c/4$, su desplazamiento es diagonal a los ejes cartesianos de coordenadas.}
+	\label{fig:glider}
+\end{figure} 
+
+\subsection{Características de interés de las configuraciones iniciales}
+
+\subsection{Representación de configuraciones iniciales: formato RLE}
+
+%\section{Actualización celular del juego de vida $\alpha$-asíncrono}
 
 
