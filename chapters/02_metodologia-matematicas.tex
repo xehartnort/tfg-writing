@@ -71,11 +71,11 @@ P \left( \bigcap_{n \geq 1} A_{n} \right) = \prod_{n \geq 1} P(A_n).
 $$
 \end{defi}
 
-%De ahora en adelante trabajaremos fijando $X=\mathds{R}$ y $\mathds{F}=\mathds{B}$ la $\sigma$-álgebra de Borel sobre $\mathds{R}$.
-
 \begin{defi}
 Un conjunto A es abierto si, para cada punto $x\in A$, existe una bola de centro el punto y radio $\epsilon > 0$ tal que $B(x,\epsilon)=\{ z : \abs{z-x} < \epsilon\} \subset F$. Así la $\sigma$-álgebra de Borel, es aquella generada por los conjuntos abiertos de $\mathds{R}$.
 \end{defi}
+
+De ahora en adelante trabajaremos fijando $X=\mathds{R}$ y $F=\mathds{B}$ la $\sigma$-álgebra de Borel sobre $\mathds{R}$.
 
 \subsection{Variables aleatorias}
 
@@ -427,7 +427,7 @@ Nuestra elección de generador de números aleatorios es una variante del genera
 
 Instalando el programa \textit{dieharder} disponible en los repositorios de las distribuciones Ubuntu y Debian, podremos ejecutar el comando \textit{dieharder -g 014 -a} para observar como nuestra elección de generador de números aleatorios supera esta batería de test estadísticos satisfactoriamente.
 
-\section{Fundamentos de las simulaciones Monte Carlo}
+\section{Fundamentos de las simulaciones Monte Carlo} \label{MonteCarlo}
 
 El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor, puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes cantidades de memoria y tiempo cómputo.
 
@@ -557,7 +557,7 @@ De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante
 Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante de tiempo solo de aplica la función de transición local a una sola célula. 
 
 \begin{defi}
-Consideramos ahora el autómata celular $m$-asíncrono $C_{1}=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
+Consideramos ahora el autómata celular $m$-asíncrono $C=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
 
 \begin{enumerate}
 \item $\mu_{1}(U_{i}) > 0, \quad \forall i \in \mathds{Z}^{d}$.
@@ -569,7 +569,7 @@ Así solo los ultrafiltros de la forma $\{k\}$ $(k \in \mathds{Z}^{d})$ se les a
 
 Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. 
 \begin{defi} \label{alhpaasin}
-Dado $C_{2}=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \rightarrow [0,1]$ satisface:
+Dado $C=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \rightarrow [0,1]$ satisface:
 
 \begin{enumerate}
 \item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
@@ -577,9 +577,10 @@ Dado $C_{2}=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in 
 \end{enumerate}
 \end{defi}
 
+y lo notaremos $C(\alpha)$.
 \subsection{Juego de vida de Conway}
 
-\begin{defi}
+\begin{defi}  \label{original}
 El juego de vida de Conway es un autómata celular síncrono: $$
 C = (\mathds{Z}^{2}, N, Q, f)
 $$
@@ -604,12 +605,12 @@ y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z
 
 \subsection{Juego de vida de Conway $\alpha$-asíncrono}
 \begin{defi}
-El juego de vida de Conway es un autómata celular $\alpha$-asíncrono formado por C, el autómata celular síncrono definido anteriormente y una medida de probabilidad verificando las condiciones expuestas en \ref{alhpaasin} para $\alpha \in (0,1)$. 
+El juego de vida de Conway $\alpha$-asíncrono es un autómata celular $m$-asíncrono formado por $C=(\mathds{Z}^{2}, N, Q, f)$, el autómata celular síncrono definido anteriormente \ref{original}, y una medida de probabilidad $\mu: \mathds{B} \rightarrow [0,1]$ verificando las condiciones expuestas en \ref{alhpaasin} para $\alpha \in (0,1)$. 
 \end{defi}
 
 \section{Representación del juego de vida de Conway}
 
-Fijada una configuración inicial $z$, enteremos por ejecución o simulación experimento del juego de vida de Conway de duración $n \in \mathds{N} \cup \{ \infty\}$ al resultado de aplicar $n$ veces la función de transición global del juego de vida de Conway a la configuración inicial y lo notaremos $C_{n}(z)$. Sea $t$ tal que $1 \leq t \leq n$, diremos que es el instante $t$ de la ejecución/simulación/experimento del juego de vida de Conway de duración $t$, el resultado de aplicar $t$ veces la función de transición global a una configuración inicial $z$ y lo notaremos $C^t_n(z)$. Por último, los conjuntos de puntos $C^{t'}_{n'}(z')$, $C^{t}_{n}(z)$ si los conjuntos de células de cada simulación son idénticos.
+Fijada una configuración inicial $z$, enteremos por ejecución o simulación del juego de vida de Conway de duración $n \in \mathds{N} \cup \{ \infty\}$ al resultado de aplicar $n$ veces la función de transición global del juego de vida de Conway a la configuración inicial y lo notaremos $C_{n}(z)$. Sea $t$ tal que $1 \leq t \leq n$, diremos que es el instante $t$ de la ejecución/simulación/experimento del juego de vida de Conway de duración $t$, el resultado de aplicar $t$ veces la función de transición global a una configuración inicial $z$ y lo notaremos $C^t_n(z)$. Por último, los conjuntos de puntos $C^{t'}_{n'}(z')$, $C^{t}_{n}(z)$ si los conjuntos de células de cada simulación son idénticos. De la misma manera, entederemos por ejecución o simulación del juego de vida de Conway $\alpha$-asíncrono de duración $n$ al resultado de aplicar $n$ veces la función de transición global a la configuración inicial $z$ y lo notaremos $C_{n}(z)(\alpha)$ donde $\alpha$ es un número real en el intervalo $(0,1)$.
 
 Como se comentaba la introducción plantearse la simulación del juego de vida implica afrontar el problema de representar una malla infinita de dos dimensiones en la memoria finita de los ordenadores. Mientras que la cantidad de memoria y velocidad de acceso de la misma ha mejorado significativamente con el paso del tiempo, perseguimos una implementación que cumpla las siguientes dos características:
 
@@ -625,7 +626,7 @@ Dado $C^t_n$ si suponemos que la malla dos dimensional con los bordes opuestos i
 
 Una última cuestión por explorar es como se implementa la aplicación de la función de transición global bajo la representación de la malla infinita. De nuevo nos apoyaremos en la definición matemática del juego de vida, en particular en la definición de función de transición local \ref{trans}.
 
-\section{Configuraciones iniciales del juego de vida de Conway}
+\section{Configuraciones iniciales del juego de vida de Conway} \label{zoo}
 
 Las configuraciones iniciales son muy diversas, han existido algunos esfuerzos por realizar una taxonomía de patrones pero no existe un consenso global y como consecuencia aceptamos la existencia de principalmente cuatro categorías, las cuales expondremos a continuación. En este trabajo trataremos de caracterizar el comportamiento de configuraciones iniciales del juego de vida de Conway bajo la hipótesis de actualización $\alpha$-asíncrona. Nuestras elecciones de patrones está inicialmente motivada por la simplicidad de los mismos, que nos permitirá visualizar el impacto de la $\alpha$-asincronismo en la actualización y a continuación verificar si esta caracterización es extensible a todas las configuraciones iniciales de la misma categoría. 
 
@@ -737,10 +738,18 @@ Si la configuración se desplaza $x$ unidades horizontalmente e $y$ unidades ver
 	\label{fig:glider}
 \end{figure} 
 
-\subsection{Características de interés de las configuraciones iniciales}
+\subsection{Características medidas sobre las simulaciones}
 
-\subsection{Representación de configuraciones iniciales: formato RLE}
+Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación expondremos. Dada una configuración inicial $z$ de las categorías expuestas en la sección \ref{zoo}, realizaremos múltiples simulaciones del juego de vida de Conway $\alpha asíncrono$ de duración $n=100$. Nuestros parámetros de interés son:
 
-%\section{Actualización celular del juego de vida $\alpha$-asíncrono}
+\begin{itemize}
+\item Crecimiento de la población de células de la configuración inicial: dispondremos de dos herramientas para medir el número de células. Estudiaremos la evolución del número de células en cada etapa y la evolución del rectángulo de menor tamaño que contenga a todas las células de cada etapa.
+\item Tasa de cambio de la configuración inicial: emplearemos el concepto de temperatura, que es el porcentaje medio el número de células que nacen o mueren por generación.
+\item Distribución de las células en cúmulos: contabilizaremos el número de cúmulos por cada generación, entendiendo por cúmulo al mayor conjunto de células cuyo vecindario no es disjunto, es decir, en un cúmulo cada célula del mismo está contenido en el vecindario de otra célula del cúmulo.
+\end{itemize}
+
+Estos valores serán tomados para distintos valores de $\alpha$ con el fin de medir el efecto de la aleatoriedad en las configuraciones iniciales.
+
+% Características a medir si sobra tiempo: simulaciones utilizando cadenas de markov y métodos de monte carlo
 
 
