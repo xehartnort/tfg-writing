@@ -4,9 +4,9 @@
 
 \chapter{Metodología}
 
-Antes de continuar con la implementación y exposición de la técnica de simulación Monte Carlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización del autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de perturbaciones derivadas del medio o de la interacción de los individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
+Antes de continuar con la implementación y exposición de la técnica de simulación Monte Carlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización del autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de perturbaciones derivadas del medio o de la interacción con otros individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
 
-En primer lugar introduciremos los conceptos básicos de teoría de conjuntos, probabilidad, computación y generación de números aleatorios sobre los que desarrollaremos las estimaciones Monte Carlo. Las claves de este desarrollo serán el teorema central del límite y la ley de los grandes números que esencialmente justifican la efectividad del método Monte Carlo.
+En primer lugar introduciremos los conceptos básicos de teoría de conjuntos, probabilidad, computación y generación de números aleatorios sobre los que desarrollaremos las estimaciones Monte Carlo. Las claves de este desarrollo serán el teorema central del límite y la ley de los grandes números que esencialmente justifican la efectividad del método Monte Carlo. Continuaremos con la exposición del autómata celular m-asíncrono, el juego de vida de Conway $\alpha$-asíncrono y su representación,mostraremos las principales categorías de configuraciones iniciales y finalmente expondremos que criterio utilizaremos para intentar caracterizar el comportamiento de nuestras simulaciones.
 
 \section{Teoría de conjuntos}
 
@@ -14,15 +14,15 @@ En primer lugar introduciremos los conceptos básicos de teoría de conjuntos, p
 
 Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente o no del resto de células actualizadas en cada instante de tiempo. El concepto de ultrafiltro nos permitirá establecer una clase de autómata celular lo suficientemente general como para abarcar los nuevos tipos de autómatas celulares que introduciremos en posteriores secciones. 
 
-Dado un conjunto X, $P(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in P(X)$, notaremos su complementario $A^{c}$. 
+Dado un conjunto X, $P(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in \mathcal{P}(X)$, notaremos su complementario $A^{c}$. 
 \begin{defi}
-Un ultrafiltro de X es $U \in P(X)$ tal que:
+Un ultrafiltro de X es $U \in \mathcal{P}(X)$ tal que:
 
 \begin{enumerate}
 \item $\emptyset \in U$.
-\item Sean $A,B \in P(X)$ tales que $A \subset B$,$ A \in U$, entonces $B \in U$.
+\item Sean $A,B \in \mathcal{P}(X)$ tales que $A \subset B$ y $ A \in U$, entonces $B \in U$.
 \item Si $A,B \in U$, entonces $A \cap B \in U$.
-\item Si $A \in P(X)$ entonces $A \in U$ o $ A^{c} \in U$.
+\item Si $A \in \mathcal{P}(X)$ entonces o bien $A \in U$, o bien $ A^{c} \in U$.
 \end{enumerate}
 
 Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el más pequeño que contiene a $p$, esto es, la colección de todos los conjuntos que contienen a $p$.
@@ -33,7 +33,7 @@ Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el
 El contenido de esta sección está extraído de los siguientes textos en orden de empleo: \cite{elLibro, grandesNumeros, loeve}. 
 
 \begin{defi}
-Una $\sigma$-álgebra, $\mathds{F}$, sobre un conjunto X, es una colección no vacía de subconjuntos de X cerrados para uniones numerables y para la operación de complementario, esto es:
+Una $\sigma$-álgebra, $\mathds{F}$, sobre un conjunto $X$, es una colección no vacía de subconjuntos de $X$ cerrados para uniones numerables y para la operación de complementario, esto es:
 \begin{itemize}
 \item $\forall A \in \mathds{F}$ se verifica que $A^{c} \in \mathds{F}$.
 \item $ \forall A_{n} \in \mathds{F}, n \in \mathds{N} $ se verifica que $\bigcup _{n \in \mathds{N}} A_{n} \in \mathds{F}$.
@@ -41,22 +41,22 @@ Una $\sigma$-álgebra, $\mathds{F}$, sobre un conjunto X, es una colección no v
 \end{defi}
 
 \begin{defi}
-Sean un conjunto X con su $\sigma$-álgebra asociada, $\mathds{F}$, el par $(X, \mathds{F})$ es un espacio medible. 
+Sean un conjunto $X$ con su $\sigma$-álgebra asociada, $\mathds{F}$, el par $(X, \mathds{F})$ es un espacio medible. 
 \end{defi}
 
 \begin{defi}
-Una función medible es una función entre espacios medibles, $g:  (X,\mathds{F}) \rightarrow (X',\mathds{F}')$ tal que: $g^{-1}(A) \in \mathds{F} \quad \forall A \in \mathds{F}'$.
+Una función medible es una función entre espacios medibles, $g: (X, \mathds{F}) \rightarrow (X', \mathds{F}')$ tal que: $g^{-1}(A) \in \mathds{F} \quad \forall A \in \mathds{F}'$.
 \end{defi}
 
 \begin{defi}
 La tupla $(X, \mathds{F}, P)$ es un espacio de probabilidad si:
 \begin{itemize}
-\item $X$ es el espacio de muestreo, esto es, algún conjunto,
-\item $\mathds{F}$ es una $\sigma$-álgebra de sucesos, esto es, los conjuntos medibles de $X$,
-\item P es una medida de probabilidad, 
-esto es, P satisface los siguientes axiomas de Kolmogorov:
+\item $X$ es el espacio de muestreo, esto es, algún conjunto no vacío.
+\item $\mathds{F}$ es una $\sigma$-álgebra de sucesos.
+\item $P: \mathds{F} \to \mathds{R}$ es una medida de probabilidad, 
+esto es, $P$ satisface los siguientes axiomas de Kolmogorov:
 \begin{enumerate}
-\item Para cada $A\in\mathds{F}$, existe un número $P(A) \geq 0$, esto es, la probabilidad del suceso A,
+\item Para cada $A\in\mathds{F}$, existe un número $P(A) \geq 0$, esto es, la probabilidad del suceso $A$,
 \item $P(X)=1$.
 \item Sean ${A_n, n \geq 1}$ disjuntos, entonces: $$
 	P \left( \bigcup_{n=1}^{\infty} A_{n} \right) = \sum_{n=1}^{\infty} P(A_n).
@@ -72,32 +72,38 @@ $$
 \end{defi}
 
 \begin{defi}
-Un conjunto A es abierto si, para cada punto $x\in A$, existe una bola de centro el punto y radio $\epsilon > 0$ tal que $B(x,\epsilon)=\{ z : \abs{z-x} < \epsilon\} \subset F$. Así la $\sigma$-álgebra de Borel, es aquella generada por los conjuntos abiertos de $\mathds{R}$.
+Un conjunto $A$ es abierto si, para cada punto $x\in A$, existe una bola de centro el punto y radio $\epsilon > 0$, $B(x,\epsilon)=\{ z : \abs{z-x} < \epsilon\}$, tal que $B(x,\epsilon) \subset F$. Así la $\sigma$-álgebra de Borel, es aquella generada por los conjuntos abiertos de $\mathds{R}$.
 \end{defi}
 
-De ahora en adelante trabajaremos fijando $X=\mathds{R}$ y $F=\mathds{B}$ la $\sigma$-álgebra de Borel sobre $\mathds{R}$.
+De ahora en adelante supondremos que se ha fijado el espacio medible dado por $X=\mathds{R}$ y $F=\mathds{B}$ la $\sigma$-álgebra de Borel sobre $\mathds{R}$.
 
 \subsection{Variables aleatorias}
 
 \begin{defi}
-Una variable aleatoria definida sobre un espacio de probabilidad $(X, \mathds{B}, P)$ es una función medible A: $X \rightarrow \mathds{R}$.
+Una variable aleatoria definida sobre un espacio de probabilidad $(X, \mathds{B}, P)$ es una función medible $A: X \to \mathds{R}$.
 \end{defi}
 
-Cada valor de A se corresponde con un subconjunto de puntos de $X$ que se aplica en dicho valor, es decir, $ \{ w\in X : A(w)=x\}$ que notaremos por simplicidad $\{X = x\}$. A parte de los anteriores conjuntos también nos resultarán de interés lo siguientes:
+Cada valor de $A$ se corresponde con un subconjunto de puntos de $X$ que se aplica en dicho valor: $\{ w\in X : A(w)=x\}$, que notaremos por simplicidad $\{X = x\}$. A parte de los anteriores conjuntos también nos resultarán de interés lo siguientes:
 \begin{align*}
 \{ w\in X : A(w) \leq x\} = \{ A \leq x \} \\
 \{ w\in X : A(w) < x\} = \{ A < x \} \\
 \{ w\in X : A(w) > x\} = \{ A > x \} \\
 \{ w\in X : A(w) \geq x\} = \{ A \geq x \}
 \end{align*}
-Con esta útil notación podremos notar fácilmente la probabilidad de sucesos de mayor interés.
+%Con esta útil notación podremos notar fácilmente la probabilidad de sucesos de mayor interés.
 
 \begin{prop} \label{funcion_de_va}
-Si $g$ es una función real de variable real y medible y $A$ es una variable aleatoria entonces $A'=g(A)$ es una variable aleatoria.
+Si $g:\mathds{R}\to\mathds{R}$ es una función real de variable real, medible y $A$ es una variable aleatoria entonces $A'=g(A)$ es una variable aleatoria.
 \end{prop}
 
 \begin{defi}
-Dada una variable aleatoria $A$ se define su función de distribución como $ F : \mathds{R} \rightarrow [0,1] $ dada por 
+La variables aleatorias $A_1, A_2,..., A_n$ son independientes si y solo si, para arbitrarios conjuntos de la $\sigma$-álgebra de Borel $B_1, B_2,..., B_n$: $$
+	P \left( \bigcap_{k = 1}^{n} \{A_k \in B_k\} \right) = \prod_{k = 1}^{n} P(A_k \in B_k).
+$$
+\end{defi}
+
+\begin{defi}
+Dada una variable aleatoria $A$ se define su función de distribución como $ F : \mathds{R} \to [0,1] $ dada por:
 $$
 x \mapsto F(x)=P(A \leq x).
 $$
@@ -107,20 +113,20 @@ $$
 La función de distribución de la variable aleatoria $A$ satisface:
 \begin{itemize}
 \item Es monótona no decreciente.
-\item Dada una sucesión decreciente de elementos de $\mathds{R}$, $\{x_n\}_{n \in \mathds{N}} \in \mathds{R}$, convergente a $x\in \mathds{R}$ se tiene $\lim_{x_n \searrow x} F(x_n) = F(x)$, es decir, es continua a la derecha. 
+\item Dada una sucesión decreciente de elementos de $\mathds{R}$, $\{x_n\}_{n \in \mathds{N}} \in \mathds{R}$ convergente a $x\in \mathds{R}$ se tiene $\lim_{x_n \to x} F(x_n) = F(x)$, es decir, es continua a la derecha.
 \item $\lim_{x\to+\infty} F(x) = 1$ y $\lim_{x\to-\infty} F(x) = 0$.
 \end{itemize}
 \end{prop}
 
 \begin{defi}
-Sea $F$ una función de distribución definimos la función de densidad de $F$ como la función integrable, $f$, tal que:
+Sea $F$ una función de distribución definimos la función de densidad como la función integrable, $f$, tal que:
 $$
 F(b)-F(a) = \int^{b}_a f(x) dx, \quad \forall a < b. 
 $$
 \end{defi}
 
 \begin{defi}
-Sea A una variable aleatoria, definimos su valor esperado o esperanza como sigue:
+Sea $A$ una variable aleatoria, definimos su valor esperado o esperanza como sigue:
 $$
 \mathds{E}(A) = \int_{X}A(w)dP(w).
 $$
@@ -128,17 +134,17 @@ Adicionalmente si $\mathds{E}\abs{A} < \infty$, diremos que $A$ es integrable.
 \end{defi}
 
 \begin{defi}
-Sea una variable aleatoria A, definimos:
+Sea una variable aleatoria $A$, definimos:
 \begin{itemize}
-\item Los momentos de A: $\mathds{E}(A^n) = \int_{X}A(w)^{n}dP(w), \quad n \in \mathds{N}$.
-\item Los momentos centrados de A: $\mathds{E}_c(A^n) = E( (A-E(A))^n ), \quad n \in \mathds{N}$.
+\item Los momentos de orden $n$ de $A$: $\mathds{E}(A^n) = \int_{X}A(w)^{n}dP(w), \quad n \in \mathds{N}$.
+\item Los momentos centrados de orden $n$ de $A$: $\mathds{E}_c(A^n) = E( (A-E(A))^n ), \quad n \in \mathds{N}$.
 \end{itemize}
 \end{defi}
 
-Notar que los momentos no existen necesariamente para todo $n$.
+Notar que los momentos no existen necesariamente para todo $n\in \mathds{N}$.
 
 \begin{defi}
-Definimos la varianza de la variable aleatoria A con esperanza $\mu < \infty$ y $\mathds{E}_c(A^2) < \infty $ como:$$
+Definimos la varianza de la variable aleatoria $A$ con esperanza $\mu < \infty$ y $\mathds{E}_c(A^2) < \infty $ como:$$
 var(A) \equiv \mathds{E}_c(A^2) = \mathds{E}(A^2) - \mu^2.
 $$
 \end{defi}
@@ -148,17 +154,12 @@ A la raíz cuadrada positiva de la varianza la notaremos $\sigma(A)=+\sqrt{var(A
 \end{defi}
 
 \begin{prop}
-Sea $A$ una variable aleatoria con esperanza $\mu$ y varianza $\sigma^2$ finitas, y sea $A'=aA+b$, donde $a,b\in\mathds{R}$: $$
+Sea $A$ una variable aleatoria con esperanza $\mu < \infty$ y varianza $\sigma^2 < \infty$ y sea $A'=aA+b$, donde $a,b\in\mathds{R}$, entonces: $$
 \mathds{E}(A')=a\mu + b \quad y \quad var(A') = a^2 \sigma^2.
 $$
 
 \end{prop}
 
-\begin{defi}
-La variables aleatorias $A_1, A_2,..., A_n$ son independientes si y solo si, para arbitrarios conjuntos de la $\sigma$-álgebra de Borel $B_1, B_2,..., B_n$: $$
-	P \left( \bigcap_{k = 1}^{n} \{A_k \in B_k\} \right) = \prod_{k = 1}^{n} P(A_k \in B_k).
-$$
-\end{defi}
 
 \subsection{Variables aleatorias discretas}
 
@@ -167,25 +168,25 @@ Una variable aleatoria $A$ diremos que es discreta si toma valores es un conjunt
 \end{defi}
 
 \begin{defi}
-La función de distribución de una variable aleatoria $A$ es la siguiente: $$
+La función de distribución de una variable aleatoria discreta $A$ es la siguiente: $$
 \forall x\in \mathds{R}, \quad F(x) = P( A \leq x) = \sum_{x_n\in E, x_n \leq x} P(A=x_n).
 $$
 \end{defi}
 
 \begin{defi}
-Sea una variable aleatoria discreta A, definimos:
+Sea una variable aleatoria discreta $A$, definimos:
 
 \begin{itemize}
-\item Los momentos de A: $\mathds{E}(A^n) = \sum_{x_m \in E} x_m^n P(A=x_m)$.
-\item Los momentos centrados de A: $\mathds{E}_c(A^n) =\sum_{x_m \in E} (x_m - \mu)^n P(A=x_m)$.
+\item Los momentos de orden $n$ de $A$: $\mathds{E}(A^n) = \sum_{x_m \in E} x_m^n P(A=x_m)$.
+\item Los momentos centrados de orden $n$ de $A$: $\mathds{E}_c(A^n) =\sum_{x_m \in E} (x_m - \mu)^n P(A=x_m)$.
 \end{itemize}
 \end{defi}
 
-El momento n=1 se conoce como valor esperado o esperanza. $$
+El momento $n=1$ se conoce como valor esperado o esperanza: $$
 \mathds{E}(A) \equiv \sum_{x_m \in E} x_m P(A=x_m).
 $$
 
-\begin{defi}[Tipos de convergencia: convergencia en probabilidad y convergencia casi segura]
+\begin{defi}[Tipos de convergencia: convergencia en probabilidad, convergencia casi segura y convergencia en distribución]
 Sean ${A_n}$ ,$n\in \mathds{N}$ y $A$ variables aleatorias, definimos:
 \begin{itemize}
 \item $A_n \to A$ en probabilidad, si para todo $\epsilon > 0$, $\lim_{n\to\infty} P( |A_n-A|> \epsilon ) = 0$ y lo notaremos $A_n \to^{P} A$.
@@ -207,17 +208,17 @@ $$
 \abs{ exp(iz) } = \abs{\cos z+i\sin z} = \sqrt{\cos^2 z + \sin^2 z} = 1.
 $$
 
-Esta propiedad de la exponencial compleja nos asegura la existencia de la siguiente definición para toda variable aleatoria.
+Esta propiedad de la exponencial compleja nos asegura la existencia para toda variable aleatoria de la siguiente definición.
 
 \begin{defi}
-La función característica asociada a la variable aleatoria A es la función $\phi_{A}: \mathds{R} \to \mathds{C}$, dada por:
+La función característica asociada a la variable aleatoria $A$ es la función $\phi_{A}: \mathds{R} \to \mathds{C}$, dada por:
 $$
 \phi_{A}(t) = \mathds{E}(e^{itA}).
 $$
 \end{defi}
 
 \begin{prop}
-Sea $\phi_A$ la función característica de la variable aleatoria A, entonces:
+Sea $\phi_A$ la función característica de la variable aleatoria $A$, entonces:
 
 \begin{itemize}
 \item $\abs{\phi_A(t)} \leq \phi_A(0)=1$.
@@ -236,10 +237,10 @@ $$
 \subsection{Distribución normal}
 
 \begin{defi} \label{normal}
-Diremos que una variable aleatoria A sigue una distribución normal con media $\mu < \infty$ u varianza $\sigma^2 < \infty$, $N(\mu,\sigma^2)$, si A tiene una distribución con la siguiente función de densidad: 
+Diremos que una variable aleatoria $A$ sigue una distribución normal con media $\mu < \infty$ y varianza $\sigma^2 < \infty$, $N(\mu,\sigma^2)$, si $A$ tiene la siguiente función de densidad: 
 
 $$
-f(x| \mu, \sigma^2) = \frac{1}{ \sigma \sqrt{ 2 \pi }} exp \left( -\frac{1}{2}\left( \frac{x-\mu}{\sigma} \right)^2 \right),\quad \forall x \in \mathds{R}.
+f(x) = \frac{1}{ \sigma \sqrt{ 2 \pi }} exp \left( -\frac{1}{2}\left( \frac{x-\mu}{\sigma} \right)^2 \right),\quad \forall x \in \mathds{R}.
 $$
 
 Además su función característica es: $$
@@ -247,10 +248,10 @@ Además su función característica es: $$
 $$
 \end{defi}
 
-\section{Teoría de la probabilidad: Teorema central del límite}
+\section{Teoría de la probabilidad: teorema central del límite}
 
 \begin{teorema} \label{central}
-Sean $A_{1},A_{2},...,A_{n}$ variables aleatorias independientes, con esperanza $\mu < \infty$, varianza $\sigma^2 < \infty$ e idénticamente distribuidas. Entonces $$
+Sean $A_{1},A_{2},...,A_{n}$ variables aleatorias independientes, con esperanza $\mu < \infty$, varianza $\sigma^2 < \infty$ e idénticamente distribuidas. Entonces: $$
 \frac{ \frac{1}{n}\sum_{i=1}^nA_i - n\mu}{ \sigma \sqrt{n}} \to^d N(0,1).
 $$
 \end{teorema}
@@ -259,10 +260,10 @@ Previa a la demostración del teorema central del límite, introducimos las herr
 
 \begin{teorema}[Teorema de Taylor]
 
-Sea $k \in \mathds{N}$ y $f: \mathds{R} \to \mathds{R}$ k veces diferenciable en el punto $a \in \mathds{R}$. Entonces existe una función $h_k: \mathds{R} \to \mathds{R}$ tal que:
+Sea $k \in \mathds{N}$ y $f: \mathds{R} \to \mathds{R}$ k-veces diferenciable en el punto $a \in \mathds{R}$. Entonces existe una función $h_k: \mathds{R} \to \mathds{R}$ tal que:
 
 $$
-f(x)=f(a)+f'(a)(x-a)+\frac{f''(a)}{2!}(x-a)^2+\dotsb+\frac{f^{(k)}(a)}{k!}(x-a)^k + h_k(x)(x-a)^k,
+f(x)=f(a)+f'(a)(x-a)+\frac{f''(a)}{2!}(x-a)^2+\dotsb+\frac{f^{(k)}(a)}{k!}(x-a)^k + h_k(x)(x-a)^k
 $$
 
 y $\lim_{x\to a} h_k(x) = 0$.
@@ -290,17 +291,17 @@ $$
 Así definida, $Y_i$ es idénticamente distribuida con esperanza y varianza: $$
 E(Y_{i}) = 0,  Var(Y_{i})=1.
 $$
-Sea ahora $Z_n = \frac{Y_1+Y_2+...+Y_n}{\sqrt{n}}$, queremos ver que $$
-\lim_{n \to \infty} \phi_{Z_{n}}(t)=e^{-\frac{t^{2}}{2}}
+Sea ahora $Z_n = \frac{Y_1+Y_2+...+Y_n}{\sqrt{n}}$, queremos ver que: $$
+\lim_{n \to \infty} \phi_{Z_{n}}(t)=e^{-\frac{t^{2}}{2}}.
 $$
 
-Procedemos a desarrollar el
+Procedemos a desarrollar el siguiente término:
 
 $$
-\phi_{\frac{Y_1+Y_2+...+Y_n}{\sqrt{n}}}(t) = \prod_{i=1}^{n} \phi_{\frac{Y_i}{\sqrt{n}}} (t) = \big(\phi_{\frac{Y_1}{\sqrt{n}}}(t) \big)^n
+\phi_{\frac{Y_1+Y_2+...+Y_n}{\sqrt{n}}}(t) = \prod_{i=1}^{n} \phi_{\frac{Y_i}{\sqrt{n}}} (t) = \big(\phi_{\frac{Y_1}{\sqrt{n}}}(t) \big)^n.
 $$
 
-Aplicando el Teorema de Taylor para obtener el desarrollo centrado en 0 para $k=2$ de $\phi_{Y_1}(\frac{t}{\sqrt{n}})$: 
+Aplicando el teorema de Taylor para obtener el desarrollo centrado en 0 para $k=2$ de $\phi_{Y_1}(\frac{t}{\sqrt{n}})$: 
 
 \begin{align*}
 \phi_{\frac{Y_1}{\sqrt{n}}}(t) &= \phi_{Y_1}(\frac{t}{\sqrt{n}}) \\
@@ -310,16 +311,16 @@ Aplicando el Teorema de Taylor para obtener el desarrollo centrado en 0 para $k=
 \end{align*}
 donde $\lim_{t\to 0} h_2(\frac{t}{\sqrt{n}}) = 0$.
 
-Así obtenemos que $$
+Obtenemos que: $$
 \big(\phi_{Y_1}(\frac{t}{\sqrt{n}}) \big)^n =\big( 1 - \frac{t^2}{2n} + \frac{t^2}{n} h_2(\frac{t}{\sqrt{n}}) \big)^n\longrightarrow e^{-\frac{t^2}{2}}.
 $$
 
-cuyo límite es la función característica de una variable perteneciente a una distribución normal con media 0 y varianza 1, concluimos la demostración aplicando el teorema de continuidad \ref{cont}.
+cuyo límite es la función característica de una variable aleatoria perteneciente a una distribución normal con media 0 y varianza 1, concluimos la demostración aplicando el teorema de continuidad \ref{cont}.
 \end{proof}
 
-\section{Teoría de la probabilidad: Ley de los grandes números}
+\section{Teoría de la probabilidad: ley de los grandes números}
 \begin{teorema} \label{teo_grandes_numeros}
-Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes, con esperanza $\mu$ e idénticamente distribuidas, es decir, obtenidas de la misma distribución. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$:
+Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes, con esperanza $\mu < \infty$ e idénticamente distribuidas. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$:
 
 $$
 \bar{\mu}=\frac{1}{n}\sum_{n\in\mathds{N}} A_n \to^{c.s.} \mu,
@@ -370,14 +371,14 @@ $$
 { n \choose k_1,k_2, ..., k_n} = \frac{n!}{k_1!k_2! \dotsb k_n!}.
 $$
 
-Dado que $\mathds{E}(Z_k)=0 \quad \forall k$ y la independencia de las variables $Z_k$, se han cancelado todos los sumandos de la forma:
+Dado que $\mathds{E}(Z_k)=0 \quad \forall k$ y la independencia de las variables $Z_k$, se cancelan todos los sumandos de la forma:
 
 \begin{align*}
 	\mathds{E} (Z_{i} Z_{j}^3 ) &=\mathds{E} (Z_{i}) \mathds{E} (Z_{j}^3) = 0, \quad 1 \leq i,j \leq n, \quad i \neq j, \\
 	\mathds{E} ( Z_{i} Z_{j} Z_{k} Z_{l} ) &= \mathds{E} (Z_{i}) \mathds{E} (Z_{j}) \mathds{E} (Z_{k}) \mathds{E} (Z_{l}) = 0, \quad 1 \leq i,j,k,l \leq n, \quad i \neq j \neq k \neq l.
 \end{align*}
 
-y $K$ adecuadamente elegida, $K = 4 max{\mathds{E}(Z_1^4), \mathds{E}(Z_1^2)^2}$.
+y siendo $K$ adecuadamente elegida, por ejemplo $K = 4 max{\mathds{E}(Z_1^4), \mathds{E}(Z_1^2)^2}$.
 \end{proof}
 
 Ya tenemos todos los rudimentos necesarios para proceder a demostrar el teorema de esta sección.
@@ -411,25 +412,25 @@ $$
 
 \section{Generadores de números aleatorios}
 
-Los generados de números aleatorios no generan números realmente aleatorios, esto es, no son variables aleatorias idénticamente distribuidas, dado un valor de inicialización de la secuencia o semilla generan siempre la misma sucesión de números, por tanto entenderemos que un generador de números aleatorios produce una secuencia indistinguible de una realmente aleatoria. Dicho esto, podemos afirmar que un ordenador solo es capaz de generar secuencias de números pseudoaleatorios con un periodo de longitud finita.
+Los generadores de números aleatorios no generan números realmente aleatorios, es decir, no son variables aleatorias idénticamente distribuidas. Dado un valor de inicialización de la secuencia o semilla generan siempre la misma sucesión de números, por tanto diremos que un generador de números aleatorios produce una secuencia indistinguible de una realmente aleatoria. Dicho ésto, podemos afirmar que un ordenador solo es capaz de generar secuencias de números pseudoaleatorios con un periodo de longitud finita.
 
-Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas. Un tipo generador de números aleatorios más usado venía dado por la siguiente ecuación recurrente:
+Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas. Un tipo generador de números aleatorios muy usado venía dado por la siguiente ecuación recurrente:
 
 \begin{equation} \label{cong}
 I_{j+1} = aI_{j} +c \mod (m)
 \end{equation}
 
-donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: generador lineal congruente de números aleatorios. Claramente, en $n<m$ pasos la ecuación comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que obtuvieran en mayor periodo posible. En \cite{knuth} podemos encontrar algunos resultados notables sobre la elección parámetros $a,c$ y $m$. La elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. Sin embargo no es suficiente con generar una sucesión de números de un largo periodo, además deben superar rigurosas baterías de test empíricos que aseguren una buena distribución de las secuencias de números además de la ausencia de patrones en las mismas. En el caso de los generadores lineales congruentes existe un resultado que afirma que las sucesivas n-tuplas de valores generados residen en al menos $(n!m)^\frac{1}{m}$ hiperplanos paralelos \cite{marsagliaRandom}, luego esta clase de generadores no son adecuados para la generación de números aleatorios.
+donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: \textit{generador lineal congruente de números aleatorios}. Claramente, en $n<m$ pasos la ecuación comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que obtuvieran en mayor periodo posible. En \cite{knuth} podemos encontrar algunos resultados notables sobre la elección parámetros $a,c$ y $m$. La elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. Sin embargo no es suficiente con generar una sucesión de números de un largo periodo, además deben superar rigurosas baterías de test empíricos que aseguren una buena distribución de las secuencias de números además de la ausencia de patrones en las mismas. En el caso de los generadores lineales congruentes existe un resultado que afirma que las sucesivas n-tuplas de valores generados residen en al menos $(n!m)^\frac{1}{m}$ hiperplanos paralelos \cite{marsagliaRandom}, luego esta clase de generadores no son adecuados para la generación de números aleatorios.
 
-Dado el carácter empírico de las baterías de test, superarlas con éxito no aseguran un generador de números perfecto si no que probablemente se trate de un buen generador, ya que eventualmente con el suficiente tiempo se podría encontrar un test que no fuera superado con éxito. Por tanto nos interesaremos en tests que demuestren el mal comportamiento de un generador en un tiempo razonable. Hay numerosas baterías de test, destacamos dos \cite{dieharder,testu01}: \textit{Dieharder} la cual está basada en los primeros test estadísticos propuestos en \textit{Diehard battery of tests}, incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) y además dispone de un programa, \textit{dieharder}, para realizar dichos tests y la batería de test \textit{TestU01}.
+Dado el carácter empírico de las baterías de test, superarlas con éxito no aseguran un generador de números perfecto si no que probablemente se trate de un buen generador, ya que eventualmente con el suficiente tiempo se podría encontrar un test que no fuera superado con éxito. Por tanto nos interesaremos en tests que demuestren el mal comportamiento de un generador en un tiempo razonable. Hay numerosas baterías de test, destacamos dos \cite{dieharder,testu01}: \textit{Dieharder} la cual está basada en los primeros test estadísticos propuestos en \textit{Diehard battery of tests}, incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) y además dispone de un programa, \textit{dieharder}, para realizar dichos tests y ejecutar la batería de test \textit{TestU01}.
 
 Nuestra elección de generador de números aleatorios es una variante del generador \textit{Mersenne Twister} \cite{mt} presente en la biblioteca estándar del lenguaje de programación Python, el cual es el generador por defecto en las versiones del lenguaje de programación Python posteriores a la $2.3$ \cite{pyver} y en el lenguaje de programación estadística $R$\cite{langR}. Dicho generador de números aleatorios en su implementación en Python genera números en coma flotante de 53-bits de precisión y tiene un periodo de $2^{19937}-1$. 
 
-Instalando el programa \textit{dieharder} disponible en los repositorios de las distribuciones Ubuntu y Debian, podremos ejecutar el comando \textit{dieharder -g 014 -a} para observar como nuestra elección de generador de números aleatorios supera esta batería de test estadísticos satisfactoriamente.
+%Instalando el programa \textit{dieharder} disponible en los repositorios de las distribuciones Ubuntu y Debian, podremos ejecutar el comando \textit{dieharder -g 014 -a} para observar como nuestra elección de generador de números aleatorios supera esta batería de test estadísticos satisfactoriamente.
 
 \section{Fundamentos de las simulaciones Monte Carlo} \label{MonteCarlo}
 
-El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor, puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes cantidades de memoria y tiempo cómputo.
+El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia de este método reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes periodos de tiempo cómputo.
 
 \begin{defi}
 Una muestra aleatoria simple $S_n$, es un conjunto de $n\in\mathds{N}$ variables aleatorias, $A_1,A_2,...,A_n$, independientes e idénticamente distribuidas. En caso de que la media y la varianza de las variables aleatorias $A_1,A_2,...,A_n$ sean finitas, las notaremos $\mu$ y $\sigma^2$ respectivamente.
@@ -447,7 +448,7 @@ La variable aleatoria $\mu_S$ anteriormente definida diremos que es un \textit{e
 \end{defi}
 
 \begin{defi} \label{chebi}
-Sea $\mu_S$ un estimador de la media de una muestra aleatoria simple, $S_n$, de media $\mu$ y varianza $\sigma^2$ finitas y $\delta>0$, la desigualdad de Chebychev es:
+Sea $\mu_S$ un estimador de la media de una muestra aleatoria simple, $S_n$, de media $\mu < \infty$ y varianza $\sigma^2  < \infty$ y $\delta>0$, la desigualdad de Chebychev es:
 
 $$
 P \left( \abs{\mu_S-\mu} \geq \sqrt{\frac{var(\mu_S)}{\delta}} \right) = P \left( \abs{\mu_S-\mu} \geq \frac{\sigma}{\sqrt{n\delta}} \right)  \leq \delta.
@@ -455,7 +456,7 @@ $$
 
 \end{defi}
 
-El primer gran resultado o \textit{primer teorema fundamental de Monte Carlo} que podemos deducir de los anteriores, en particular es una consecuencia directa del teorema \ref{teo_grandes_numeros}, el estimador $G$ de la media de una muestra aleatoria simple, $S_n$, de media $\mu$ y varianza $\sigma^2$ finitas converge en probabilidad al valor esperado $\mu$:
+El primer gran resultado o \textit{primer teorema fundamental de Monte Carlo} que podemos deducir de los anteriores, en particular es una consecuencia directa del teorema \ref{teo_grandes_numeros}, el estimador $G$ de la media de una muestra aleatoria simple, $S_n$, de media $\mu < \infty$ y varianza $\sigma^2 < \infty$ converge en probabilidad al valor esperado $\mu$:
 $$
 \forall \epsilon > 0,\quad \lim_{n\to\infty} P( |G - \mu|> \epsilon ) = 0.
 $$
@@ -472,7 +473,7 @@ Es posible obtener un resultado más fuerte que el anterior como consecuencia  d
 $$
 f(G) = \sqrt{\frac{n}{2 \pi \sigma^2}} exp \left( - \frac{n(G-\mu)^2}{2\sigma} \right).
 $$
-Cuando $n \to\infty$, el valor de $G$ se encuentra en intervalos cada vez más estrechos centrados en $\mathds{E}(G)$ y es posible medir la desviación en unidades de $\sigma$, es decir, el valor de $G$ está dentro del intervalo centrado en $\mathds{E}(G)$ de un error estándar, de longitud $ \sigma / \sqrt{n} $, el 68.3 \% de las veces, de dos errores estándar de longitud el 95.4 \% y de tres errores estándar el 99.7 \%  de las veces. Como comentábamos anteriormente la convergencia es asintótica por lo que inicialmente desconocemos como de grande debe de ser $n$ para poder aplicar el teorema. En un caso particular, si el tercer momento $\mu_3$ de $G$ existe, entonces el teorema será satisfecho substancialmente cuando:
+Cuando $n \to\infty$, el valor de $G$ se encuentra en intervalos cada vez más estrechos centrados en $\mathds{E}(G)$ y es posible medir la desviación en unidades de $\sigma$, es decir, el valor de $G$ está dentro del intervalo centrado en $\mathds{E}(G)$ de un error estándar, de longitud $ \sigma / \sqrt{n} $, el 68.3 \% de las veces, de dos errores estándar de longitud el 95.4 \% y de tres errores estándar el 99.7 \%  de las veces. Como comentábamos anteriormente la convergencia es asintótica por lo que inicialmente desconocemos como de grande debe de ser $n$ para poder aplicar el teorema. En un caso particular, si el tercer momento $\mathds{E}(A^3)$ de $G$ existe, entonces el teorema será satisfecho substancialmente cuando:
 $$
 \abs{\mathds{E}(A^3)} << \sigma^3 \sqrt{n}.
 $$
