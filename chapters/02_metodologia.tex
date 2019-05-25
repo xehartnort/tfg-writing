@@ -489,10 +489,10 @@ $$
 \section{Teoría de la computación}
 
 \subsection{Introducción}
-Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. [Alguna citilla mona]. Así pues tomaremos el concepto más generalista de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
+Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. Tomaremos el concepto de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
 
 \subsection{Autómata celular determinista}
-Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, y tiene un estado de un conjunto finito de estados. Actualiza su estado de acuerdo a una función de transición la cual determina el estado de una célula considerando su propio estado y el de su vecindario. 
+Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, tiene un estado de un conjunto finito de estados y actualiza su estado de acuerdo a una función de transición local, la cual determina el siguiente estado de una célula considerando su propio estado y el de su vecindario. 
 
 \begin{defi}
 Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde:
@@ -507,11 +507,11 @@ Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular dete
 \end{defi}
 
 \begin{defi}
-Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. 
+Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. Entenderemos por configuración inicial, a aquella configuración a la que aún no se le ha aplicado la función de transición global.
 \end{defi}
 
 \begin{defi}
-La función de transición local, fijando una configuración $g$ induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
+La función de transición local induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
 $$
 \forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k})).
 $$
@@ -520,13 +520,14 @@ $$
 \begin{defi}
 Un autómata celular $m$-asíncrono $C$ es una tupla $(A, \mu)$ donde: 
 \begin{itemize}
-\item A es un autómata celular .
-\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $P(\mathds{Z}^{d})$.
+\item A es un autómata celular.
+\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $\mathcal{P}(\mathds{Z}^{d})$.
 \end{itemize} 
 \end{defi}
+
 \begin{defi}
 
-Para cada función de transición local $f$ y cada conjunto $\tau \in P(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ como sigue:
+Para cada función de transición local $f$ y cada conjunto $\tau \in \mathcal{P}(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \to Q^{\mathds{Z}^{d}}$ como sigue:
 
 \begin{equation*}
 	\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \qquad
@@ -555,7 +556,7 @@ Esta nueva definición de autómata celular $m$-asíncrono, incluye la de autóm
 
 De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
 
-Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante de tiempo solo de aplica la función de transición local a una sola célula. 
+Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante se aplica la función de transición local a una sola célula. 
 
 \begin{defi}
 Consideramos ahora el autómata celular $m$-asíncrono $C=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
@@ -570,7 +571,7 @@ Así solo los ultrafiltros de la forma $\{k\}$ $(k \in \mathds{Z}^{d})$ se les a
 
 Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. 
 \begin{defi} \label{alhpaasin}
-Dado $C=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \rightarrow [0,1]$ satisface:
+Dado $C=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \to [0,1]$ satisface:
 
 \begin{enumerate}
 \item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
@@ -613,7 +614,7 @@ El juego de vida de Conway $\alpha$-asíncrono es un autómata celular $m$-asín
 
 Fijada una configuración inicial $z$, enteremos por ejecución o simulación del juego de vida de Conway de duración $n \in \mathds{N} \cup \{ \infty\}$ al resultado de aplicar $n$ veces la función de transición global del juego de vida de Conway a la configuración inicial y lo notaremos $C_{n}(z)$. Sea $t$ tal que $1 \leq t \leq n$, diremos que es el instante $t$ de la ejecución/simulación/experimento del juego de vida de Conway de duración $t$, el resultado de aplicar $t$ veces la función de transición global a una configuración inicial $z$ y lo notaremos $C^t_n(z)$. Por último, los conjuntos de puntos $C^{t'}_{n'}(z')$, $C^{t}_{n}(z)$ si los conjuntos de células de cada simulación son idénticos. De la misma manera, entederemos por ejecución o simulación del juego de vida de Conway $\alpha$-asíncrono de duración $n$ al resultado de aplicar $n$ veces la función de transición global a la configuración inicial $z$ y lo notaremos $C_{n}(z)(\alpha)$ donde $\alpha$ es un número real en el intervalo $(0,1)$.
 
-Como se comentaba la introducción plantearse la simulación del juego de vida implica afrontar el problema de representar una malla infinita de dos dimensiones en la memoria finita de los ordenadores. Mientras que la cantidad de memoria y velocidad de acceso de la misma ha mejorado significativamente con el paso del tiempo, perseguimos una implementación que cumpla las siguientes dos características:
+Como se comentaba en la introducción, plantearse la simulación del juego de vida implica afrontar el problema de representar una malla infinita de dos dimensiones en la memoria finita de los ordenadores. Mientras que la cantidad de memoria y velocidad de acceso de la misma ha mejorado significativamente con el paso del tiempo, perseguimos una representación que cumpla las siguientes dos características:
 
 \begin{itemize}
 \item Una ejecución completa de una configuración inicial del juego de vida tiene que finalizar en un tiempo razonable, pues la clave de las simulaciones Monte Carlo es la repetición de los experimentos y como se comentaba en la sección anterior, al aumentar el número de muestras/ejecuciones/experimentos disminuye el error en una proporción conocida, permitiendo un acercamiento más veloz al límite asintótico de la suma de variables aleatorias.
@@ -621,15 +622,15 @@ Como se comentaba la introducción plantearse la simulación del juego de vida i
 \item El comportamiento de las configuraciones iniciales es difícil de predecir, por lo que configuraciones que crezcan sin límite podrían agotar los recursos de memoria disponibles haciendo que la ejecución sea inválida. En particular, una situación de alto consumo de memoria evitaría la ejecución de múltiples simulaciones independientes en paralelo.
 \end{itemize}
 
-Este último punto es, en nuestra opinión, el más restrictivo. Un planteamiento inicial nos podría sugerir que limitar el tamaño de la malla dos dimensional, sin embargo se perdería información en aquellas configuraciones iniciales que excedieran el tamaño fijado de la malla. Para reducir el impacto de la finitud de la malla se ha estudiado la identificación de los bordes opuestos como se muestran en la imagen ref simulando un espacio \textit{infinito} que imita la superficie de un toro ref toro, obteniendo resultados favorables \cite{finitudMalla, finitudMalla2}. Pero no es necesario lidiar con los errores derivados de este planteamiento, una implementación más \textit{literal} de la descripción formal del juego de vida, nos permite romper con el paradigma de la limitación de la malla. En lugar de almacenar en memoria la malla completa independientemente de su utilización, se almacenan las células identificadas por las coordenadas sobre el plano cartesiano \cite{boardless}. 
+Este último punto es, en nuestra opinión, el más restrictivo. Un planteamiento inicial nos podría sugerir que limitar el tamaño de la malla dos dimensional, sin embargo se perdería información en aquellas configuraciones iniciales que excedieran el tamaño fijado de la malla. Para reducir el impacto de la finitud de la malla se ha estudiado la identificación de los bordes opuestos simulando un espacio \textit{infinito} que imita la superficie de un toro, obteniendo resultados favorables \cite{finitudMalla, finitudMalla2}. Pero no es necesario lidiar con los errores derivados de este planteamiento, una implementación más \textit{literal} de la descripción formal del juego de vida, nos permite romper con el paradigma de la limitación de la malla. En lugar de almacenar en memoria la malla completa independientemente de su utilización, se almacenan las células identificadas por las coordenadas sobre el plano cartesiano \cite{boardless}. 
 
 Dado $C^t_n$ si suponemos que la malla dos dimensional con los bordes opuestos identificados es cuadrada con lado de tamaño $m$, la complejidad en espacio viene dada por $O(m^2)$ independientemente a la configuración inicial escogida. Por otro lado si suponemos una malla dos dimensional infinita, una configuración inicial con $c$ células y $c(t)$ el número de células en el instante $t$, la complejidad en espacio para cada instante $t$ es $O(c(t))$ y la complejidad en espacio de $C_n^t$ es $O(\max_{0\leq t\leq n}\{c(t)\})$. Así al optar por la implementación de la malla infinita haremos un uso más eficiente de la memoria disponible.
 
-Una última cuestión por explorar es como se implementa la aplicación de la función de transición global bajo la representación de la malla infinita. De nuevo nos apoyaremos en la definición matemática del juego de vida, en particular en la definición de función de transición local \ref{trans}.
+%Una última cuestión por explorar es como se implementa la aplicación de la función de transición global bajo la representación de la malla infinita. De nuevo nos apoyaremos en la definición matemática del juego de vida, en particular en la definición de función de transición local \ref{trans}.
 
 \section{Configuraciones iniciales del juego de vida de Conway} \label{zoo}
 
-Las configuraciones iniciales son muy diversas, han existido algunos esfuerzos por realizar una taxonomía de patrones pero no existe un consenso global y como consecuencia aceptamos la existencia de principalmente cuatro categorías, las cuales expondremos a continuación. En este trabajo trataremos de caracterizar el comportamiento de configuraciones iniciales del juego de vida de Conway bajo la hipótesis de actualización $\alpha$-asíncrona. Nuestras elecciones de patrones está inicialmente motivada por la simplicidad de los mismos, que nos permitirá visualizar el impacto de la $\alpha$-asincronismo en la actualización y a continuación verificar si esta caracterización es extensible a todas las configuraciones iniciales de la misma categoría. 
+Dado que las configuraciones iniciales son muy diversas, han existido algunos esfuerzos por realizar una taxonomía de patrones pero no existe un consenso global y como consecuencia aceptamos la existencia de principalmente tres categorías, las cuales expondremos a continuación. En este trabajo trataremos de caracterizar el comportamiento de configuraciones iniciales del juego de vida de Conway bajo la hipótesis de actualización $\alpha$-asíncrona. Nuestras elecciones de patrones está inicialmente motivada por la simplicidad de los mismos, que nos permitirá visualizar el impacto de la $\alpha$-asincronismo en la actualización y a continuación verificar si esta caracterización es extensible a todas las configuraciones iniciales de la misma categoría. 
 
 \subsection{Vidas inmóviles}
 Probablemente las vidas inmóviles sean las configuraciones con el comportamiento más simple y fácil de observar. Esta sección está extraída de las siguientes fuentes: \cite{stillLifeProblem},\cite{stillLifeTheory} y \cite{LikeWikiStill}.
@@ -741,7 +742,7 @@ Si la configuración se desplaza $x$ unidades horizontalmente e $y$ unidades ver
 
 \subsection{Características medidas sobre las simulaciones}
 
-Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación expondremos. Dada una configuración inicial $z$ de las categorías expuestas en la sección \ref{zoo}, realizaremos múltiples simulaciones del juego de vida de Conway $\alpha asíncrono$ de duración $n=100$. Nuestros parámetros de interés son:
+Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación expondremos. Dada una configuración inicial $z$ de las categorías expuestas en la sección \ref{zoo}, realizaremos múltiples simulaciones del juego de vida de Conway $\alpha$-asíncrono de duración $n=100$. Nuestras variables de interés son:
 
 \begin{itemize}
 \item Crecimiento de la población de células de la configuración inicial: dispondremos de dos herramientas para medir el número de células. Estudiaremos la evolución del número de células en cada etapa y la evolución del rectángulo de menor tamaño que contenga a todas las células de cada etapa.
@@ -749,7 +750,7 @@ Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos lo
 \item Distribución de las células en cúmulos: contabilizaremos el número de cúmulos por cada generación, entendiendo por cúmulo al mayor conjunto de células cuyo vecindario no es disjunto, es decir, en un cúmulo cada célula del mismo está contenido en el vecindario de otra célula del cúmulo.
 \end{itemize}
 
-Estos valores serán tomados para distintos valores de $\alpha$ con el fin de medir el efecto de la aleatoriedad en las configuraciones iniciales.
+Estas variables serán medidas para distintos valores de $\alpha$ con el fin de estudiar el efecto de la aleatoriedad en las configuraciones iniciales. Notar que debido a que no se conoce a priori el número de simulaciones a partir de la cual es posible aplicar el teorema central del límite para deducir la distribución límite de la suma de variables aleatorias, el número de simulaciones que realizaremos podrá variar de una configuración inicial a otra.
 
 % Características a medir si sobra tiempo: simulaciones utilizando cadenas de markov y métodos de monte carlo
 
