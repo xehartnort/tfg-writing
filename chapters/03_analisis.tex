@@ -13,8 +13,17 @@ En esta sección expondremos y comentaremos los resultados obtenidos en las simu
 \end{itemize}
 
 
-\section{Teoría de conjuntos}
+\section{Formulación de las simulaciones}
 
-\subsection{Introducción}
+% en esta sección vamos a comentar como vamos a realizar el experimento si simplemente vamos a hacer ejecuciones o vamos a hacer para cada estado, un mogollón de simulaciones
+La manera probablemente más intuitiva de realizar las simulaciones de la evolución de configuraciones iniciales del juego de vida de Conway $\alpha$-asíncrono consistiría en la ejecución de un número prefijado de simulaciones, cada una con el mismo número prefijado de pasos, para después agregar en cada paso de la evolución los datos obtenidos de cada simulación individual. De esta manera en cada paso de la evolución se tendría una visión global de los estados más probables a esta formulación la llamaremos secuencial. Sin embargo esta formulación, asumiendo que se va a cumplir el teorema central del límite para el número de simulaciones prefijado, a medida que nos alejamos de la configuración inicial obtendríamos mucha información de los estados cercanos a ésta pero careceríamos de información sobre el comportamiento en los pasos finales. Se podría postular que una solución sería el incremento del número simulaciones pero la exploración de los niveles más lejanos crecería lentamente respecto al aumento de dichos valores. Asumiendo de nuevo que se verifica el teorema central del límite para un número de simulaciones $n\in\mathds{N}$ y aplicando lo expuesto en sección \ref{MonteCarlo}, la probabilidad de obtener un valor dentro del intervalo $[\mathds{E}(G)+\sqrt{var(G)},\ \mathds{E}(G)-\sqrt{var(G)}]$ es del 68,3\% y dado que cada paso depende únicamente del anterior, una cota superior de la probabilidad de obtener un valor en dicho intervalo en el $k$-ésimo paso es $0.683^k$. En particular para $n=100$, la cota de la probabilidad es $0.683^{100}$ que es un número muy cercano a cero.
 
+Globalmente, se muestra a continuación la descripción algorítmica de las formulaciones de las simulaciones propuestas:
+
+% exponer aquí el algoritmo de la simulación "mala"
+
+% exponer aquí el algoritmo la formulación "buena", es te hay que tener cuidado para no perder la reproducibilidad
+
+
+% quizás se podría poner un razonamiento de estimación para ver que efectivamente se pueden producir más estados
 \end{document}

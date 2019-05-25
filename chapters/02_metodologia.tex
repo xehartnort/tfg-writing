@@ -436,13 +436,13 @@ El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban 
 Una muestra aleatoria simple $S_n$, es un conjunto de $n\in\mathds{N}$ variables aleatorias, $A_1,A_2,...,A_n$, independientes e idénticamente distribuidas. En caso de que la media y la varianza de las variables aleatorias $A_1,A_2,...,A_n$ sean finitas, las notaremos $\mu$ y $\sigma^2$ respectivamente.
 \end{defi}
 
-La media de una muestra aleatoria simple $S_n$, $\mu_S = E(S_n) = \frac{1}{n}\sum_{i=1}^n A_i$ es una variable aleatoria gracias al resultado \ref{funcion_de_va}, dicha variable aleatoria tiene la siguiente media y varianza:$$
+La media de una muestra aleatoria simple $S_n$, $\mu_S = E(S_n) = \frac{1}{n}\sum_{i=1}^n A_i$ es una variable aleatoria gracias al resultado \ref{funcion_de_va}, si además la media $\mu$ y varianza $\sigma$ de $A_i$ son finitas, dicha variable aleatoria tiene la siguiente media y varianza:$$
 E(\mu_S) = E(\frac{1}{n}\sum_{i=1}^n A_i) = \frac{1}{n}\sum_{i=1}^n E(A_i) = \mu,
 $$
 $$
 var(\mu_S) = var(\frac{1}{n}\sum_{i=1}^n A_i) = \frac{1}{n^2} \sum_{i=1}^n var(A_i) = \frac{\sigma^2}{n}.
 $$
-Luego su desviación estándar es $\sigma(\mu_S) = \frac{\sigma}{\sqrt{n}}$ 
+Luego su desviación estándar es $\sqrt{var(\mu_S)} = \frac{\sigma}{\sqrt{n}}$.
 \begin{defi}
 La variable aleatoria $\mu_S$ anteriormente definida diremos que es un \textit{estimador} del valor esperado $E(A)=\mu$.
 \end{defi}
@@ -473,7 +473,7 @@ Es posible obtener un resultado más fuerte que el anterior como consecuencia  d
 $$
 f(G) = \sqrt{\frac{n}{2 \pi \sigma^2}} exp \left( - \frac{n(G-\mu)^2}{2\sigma} \right).
 $$
-Cuando $n \to\infty$, el valor de $G$ se encuentra en intervalos cada vez más estrechos centrados en $\mathds{E}(G)$ y es posible medir la desviación en unidades de $\sigma$, es decir, el valor de $G$ está dentro del intervalo centrado en $\mathds{E}(G)$ de un error estándar, de longitud $ \sigma / \sqrt{n} $, el 68.3 \% de las veces, de dos errores estándar de longitud el 95.4 \% y de tres errores estándar el 99.7 \%  de las veces. Como comentábamos anteriormente la convergencia es asintótica por lo que inicialmente desconocemos como de grande debe de ser $n$ para poder aplicar el teorema. En un caso particular, si el tercer momento $\mathds{E}(A^3)$ de $G$ existe, entonces el teorema será satisfecho substancialmente cuando:
+Cuando $n \to\infty$, el valor de $G$ se encuentra en intervalos cada vez más estrechos centrados en $\mathds{E}(G)$ y es posible medir la desviación en unidades de $\sigma$, es decir, el valor de $G$ está dentro del intervalo centrado en $\mathds{E}(G)$ de un error estándar el 68.3 \% de las veces, de dos errores estándar el 95.4 \% de las veces y de tres errores estándar el 99.7 \%  de las veces, los intervalos son $[\mathds{E}(G)+\sqrt{var(G)},\ \mathds{E}(G)-\sqrt{var(G)}]$, $[\mathds{E}(G)+2\sqrt{var(G)},\ \mathds{E}(G)-2\sqrt{var(G)}]$ y $[\mathds{E}(G)+3\sqrt{var(G)},\ \mathds{E}(G)-3\sqrt{var(G)}]$, respectivamente. Como comentábamos anteriormente la convergencia es asintótica por lo que inicialmente desconocemos como de grande debe de ser $n$ para poder aplicar el teorema. En un caso particular, si $\mathds{E}(A^3)$ el momento de tercer orden de A es finito, entonces el teorema será satisfecho substancialmente cuando:
 $$
 \abs{\mathds{E}(A^3)} << \sigma^3 \sqrt{n}.
 $$
