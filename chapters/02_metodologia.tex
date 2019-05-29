@@ -6,15 +6,17 @@
 
 Antes de continuar con la implementación y exposición de la técnica de simulación Monte Carlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización del autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de perturbaciones derivadas del medio o de la interacción con otros individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
 
-En primer lugar introduciremos los conceptos básicos de teoría de conjuntos, probabilidad, computación y generación de números aleatorios sobre los que desarrollaremos las estimaciones Monte Carlo. Las claves de este desarrollo serán el teorema central del límite y la ley de los grandes números que esencialmente justifican la efectividad del método Monte Carlo. Continuaremos con la exposición del autómata celular m-asíncrono, el juego de vida de Conway $\alpha$-asíncrono y su representación,mostraremos las principales categorías de configuraciones iniciales y finalmente expondremos que criterio utilizaremos para intentar caracterizar el comportamiento de nuestras simulaciones.
+%En primer lugar introduciremos los conceptos básicos de teoría de conjuntos, probabilidad, computación y generación de números aleatorios sobre los que desarrollaremos las estimaciones Monte Carlo. Las claves de este desarrollo serán el teorema central del límite y la ley de los grandes números que esencialmente justifican la efectividad del método Monte Carlo. Continuaremos con la exposición del autómata celular m-asíncrono, el juego de vida de Conway $\alpha$-asíncrono y su representación,mostraremos las principales categorías de configuraciones iniciales y finalmente expondremos que criterio utilizaremos para intentar caracterizar el comportamiento de nuestras simulaciones.
 
-\section{Teoría de conjuntos}
+
+\section{Teoría de la computación}
 
 \subsection{Introducción}
+Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. Tomaremos el concepto de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
 
 Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente o no del resto de células actualizadas en cada instante de tiempo. El concepto de ultrafiltro nos permitirá establecer una clase de autómata celular lo suficientemente general como para abarcar los nuevos tipos de autómatas celulares que introduciremos en posteriores secciones. 
 
-Dado un conjunto X, $P(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in \mathcal{P}(X)$, notaremos su complementario $A^{c}$. 
+Dado un conjunto X, $\mathcal{P}(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in \mathcal{P}(X)$, notaremos su complementario $A^{c}$. 
 \begin{defi}
 Un ultrafiltro de X es $U \in \mathcal{P}(X)$ tal que:
 
@@ -28,7 +30,127 @@ Un ultrafiltro de X es $U \in \mathcal{P}(X)$ tal que:
 Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el más pequeño que contiene a $p$, esto es, la colección de todos los conjuntos que contienen a $p$.
 \end{defi}
 
-\section{Teoría de la probabilidad: conceptos básicos}
+\subsection{Autómata celular determinista}
+Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, tiene un estado de un conjunto finito de estados y actualiza su estado de acuerdo a una función de transición local, la cual determina el siguiente estado de una célula considerando su propio estado y el de su vecindario. 
+
+\begin{defi}
+Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde:
+
+\begin{itemize}
+\item $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional.
+\item $Q$ el conjunto de estados posibles para cada célula.
+\item $N \in (\mathds{Z}^{d})^{k}$ es el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$.
+\item $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. 
+\end{itemize}
+
+\end{defi}
+
+\begin{defi}
+Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. Entenderemos por configuración inicial, a aquella configuración a la que aún no se le ha aplicado la función de transición global.
+\end{defi}
+
+\begin{defi}
+La función de transición local induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
+$$
+\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k})).
+$$
+\end{defi}
+
+\begin{defi}
+Un autómata celular $m$-asíncrono $C$ es una tupla $(A, \mu)$ donde: 
+\begin{itemize}
+\item A es un autómata celular.
+\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $\mathcal{P}(\mathds{Z}^{d})$.
+\end{itemize} 
+\end{defi}
+
+\begin{defi}
+
+Para cada función de transición local $f$ y cada conjunto $\tau \in \mathcal{P}(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \to Q^{\mathds{Z}^{d}}$ como sigue:
+
+\begin{equation*}
+	\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \qquad
+	F_{\tau}(x)(i) = \left\{ \begin{array}{lcc}
+             f(x(i),x(i+n_{1}),...,x(i+n_{k})) &   si  & i \in \tau ,\\
+             \\ x(i) & si  & i \notin \tau .\\
+             \end{array}
+             \right.
+\end{equation*}
+
+Es decir, $F_{\tau}$ aplica la función de transición local solo sobre los elementos de $\tau \subset \mathds{Z}^{d}$. 
+\end{defi}
+
+Notar que cada célula $i \in \mathds{Z}^{d}$ es actualizada con probabilidad $\mu(U_{i})$.
+
+Esta nueva definición de autómata celular $m$-asíncrono, incluye la de autómata celular síncrono. Fijada una $\sigma$-álgebra $\mathds{B}$ sobre $\mathds{Z}^{d}$ y sea $C_{0}=(A, \mu_{0})$ un autómata celular $m$-asíncrono donde $\mu_{0}: \mathds{B} \rightarrow [0,1]$ viene dada por: 
+
+\begin{equation*}
+	 \forall A \in P(\mathds{Z}^{d}), \qquad 
+	 \mu_{0}(A) = \left\{ \begin{array}{lcc}
+             \ 1 &   si  & \mathds{Z}^{d} \in A ,\\
+             \\0 &   si  & \mathds{Z}^{d} \notin A .\\
+             \end{array}
+             \right.
+\end{equation*}
+
+De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
+
+Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante se aplica la función de transición local a una sola célula. 
+
+\begin{defi}
+Consideramos ahora el autómata celular $m$-asíncrono $C=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
+
+\begin{enumerate}
+\item $\mu_{1}(U_{i}) > 0, \quad \forall i \in \mathds{Z}^{d}$.
+\item $\mu_{1}(U_{i} \cap U_{j}) = 0, \quad \forall i \neq j, \quad i,j \in \mathds{Z}^{d}$.
+\end{enumerate}
+\end{defi}
+
+Así solo los ultrafiltros de la forma $\{k\}$ $(k \in \mathds{Z}^{d})$ se les aplica la función de transición local.
+
+Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. 
+\begin{defi} \label{alhpaasin}
+Dado $C=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \to [0,1]$ satisface:
+
+\begin{enumerate}
+\item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
+\item $ \forall A \subseteq \mathds{Z}^{d} \quad$ finito,$\quad  \mu_{2} ( \bigcap_{a \in A} U_{a} ) = \prod_{a \in A} \mu_{2} ( U_{a} )$.
+\end{enumerate}
+\end{defi}
+
+y lo notaremos $C(\alpha)$.
+\subsection{Juego de vida de Conway}
+
+\begin{defi}  \label{original}
+El juego de vida de Conway es un autómata celular síncrono: $$
+C = (\mathds{Z}^{2}, N, Q, f)
+$$
+donde
+\begin{itemize}
+\item $N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}$,
+\item $Q=\{0,1\}$,
+\item $f:\{0,1\}^{9} \rightarrow \{0,1\} $ dada por:
+
+\begin{equation} \label{trans}
+f(x)= \left\{ \begin{array}{lcc}
+             1 &   si  & x_{0}=0 \quad y \quad \sum_{i=1}^{8} x_i = 3 \\
+             \\ 1 & si & x_{0}=1 \quad y \quad \sum_{i=1}^{8} x_i \in \{2 ,3\} \\
+             \\ 0 &  si  & \sum_{i=1}^{8} x_i \notin \{2, 3\} \
+             \end{array}
+   \right. 
+\end{equation}
+y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
+
+\end{itemize}
+\end{defi}
+
+\subsection{Juego de vida de Conway $\alpha$-asíncrono}
+\begin{defi}
+El juego de vida de Conway $\alpha$-asíncrono es un autómata celular $m$-asíncrono formado por $C=(\mathds{Z}^{2}, N, Q, f)$, el autómata celular síncrono definido anteriormente \ref{original}, y una medida de probabilidad $\mu: \mathds{B} \rightarrow [0,1]$ verificando las condiciones expuestas en \ref{alhpaasin} para $\alpha \in (0,1)$. 
+\end{defi}
+
+
+\section{Teoría de la probabilidad}
 
 El contenido de esta sección está extraído de los siguientes textos en orden de empleo: \cite{elLibro, grandesNumeros, loeve}. 
 
@@ -248,7 +370,15 @@ Además su función característica es: $$
 $$
 \end{defi}
 
-\section{Teoría de la probabilidad: teorema central del límite}
+\begin{prop} 
+Sean $A, A'$ variables aleatorias pertenecientes a distribuciones normales con medias $\mu,\mu' < \infty$ y varianzas $\sigma_{0}^2,\sigma_{1}^{2} < \infty$, $N(\mu,\sigma_{0}^{2})$ y $N(\mu',\sigma_{1}^{2})$ respectivamente, entonces la variable aleatoria dada por la suma $A+A'$ es una variable aleatoria que pertenece a una distribución normal $N(\mu + \mu', \sigma_{0}^{2}+\sigma_{1}^{2} )$.
+\end{prop}
+
+\begin{prop} \label{prop_normal}
+Sea $N(\mu,\sigma^2)$ una distribución normal con media $\mu<\infty$ y varianza $\sigma^2<\infty$, entonces el 68.27\% de los valores de la distribución normal se encuentran en el intervalo $[\mu+\sigma, \mu-\sigma]$, el 95.45\% en el intervalo $[\mu+2\sigma, \mu-2\sigma]$ y el 99.7\% en el intervalo $[\mu+3\sigma, \mu-3\sigma]$, estos intervalos se conocen también como intervalos de confianza de la distribución normal.
+\end{prop}
+
+\subsection{Teorema central del límite}
 
 \begin{teorema} \label{central}
 Sean $A_{1},A_{2},...,A_{n}$ variables aleatorias independientes, con esperanza $\mu < \infty$, varianza $\sigma^2 < \infty$ e idénticamente distribuidas. Entonces: $$
@@ -318,7 +448,7 @@ $$
 cuyo límite es la función característica de una variable aleatoria perteneciente a una distribución normal con media 0 y varianza 1, concluimos la demostración aplicando el teorema de continuidad \ref{cont}.
 \end{proof}
 
-\section{Teoría de la probabilidad: ley de los grandes números}
+\subsection{Ley de los grandes números}
 \begin{teorema} \label{teo_grandes_numeros}
 Sean $A_n$, $n \in \mathds{N}$ variables aleatorias independientes, con esperanza $\mu < \infty$ e idénticamente distribuidas. Entonces el valor medio de $A_n$, $\bar{\mu}$, converge casi seguramente a $\mu$:
 
@@ -410,11 +540,17 @@ $$
 \end{proof}
 
 
-\section{Generadores de números aleatorios}
+\section{Fundamentos de las simulaciones Monte Carlo} \label{MonteCarlo}
+
+El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia de este método reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes periodos de tiempo cómputo.
+
+Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas.
+
+\subsection{Generadores de números aleatorios}
 
 Los generadores de números aleatorios no generan números realmente aleatorios, es decir, no son variables aleatorias idénticamente distribuidas. Dado un valor de inicialización de la secuencia o semilla generan siempre la misma sucesión de números, por tanto diremos que un generador de números aleatorios produce una secuencia indistinguible de una realmente aleatoria. Dicho ésto, podemos afirmar que un ordenador solo es capaz de generar secuencias de números pseudoaleatorios con un periodo de longitud finita.
 
-Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas. Un tipo generador de números aleatorios muy usado venía dado por la siguiente ecuación recurrente:
+ Un tipo generador de números aleatorios muy usado venía dado por la siguiente ecuación recurrente:
 
 \begin{equation} \label{cong}
 I_{j+1} = aI_{j} +c \mod (m)
@@ -426,11 +562,9 @@ Dado el carácter empírico de las baterías de test, superarlas con éxito no a
 
 Nuestra elección de generador de números aleatorios es una variante del generador \textit{Mersenne Twister} \cite{mt} presente en la biblioteca estándar del lenguaje de programación Python, el cual es el generador por defecto en las versiones del lenguaje de programación Python posteriores a la $2.3$ \cite{pyver} y en el lenguaje de programación estadística $R$\cite{langR}. Dicho generador de números aleatorios en su implementación en Python genera números en coma flotante de 53-bits de precisión y tiene un periodo de $2^{19937}-1$. 
 
-%Instalando el programa \textit{dieharder} disponible en los repositorios de las distribuciones Ubuntu y Debian, podremos ejecutar el comando \textit{dieharder -g 014 -a} para observar como nuestra elección de generador de números aleatorios supera esta batería de test estadísticos satisfactoriamente.
+\subsection{Métodos Monte Carlo}
 
-\section{Fundamentos de las simulaciones Monte Carlo} \label{MonteCarlo}
-
-El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban en el desarrollo de armas nucleares en Los Álamos en la década de los 40 para designar una clase de métodos numéricos basados en el uso de números aleatorios. La esencia de este método reside en la invención de juegos de azar cuyo comportamiento puede ser usado para estudiar algún fenómeno de interés. Se podría pensar que el hecho de que resultados obtenidos por estos métodos estén sujetos a las leyes del azar es un problema, sin embargo, es un problema menor puesto que se puede determinar como de exactos son sus resultados y si se deseara obtener resultados más precisos, bastaría con incrementar el número de experimentos realizados. Actualmente, los métodos de Monte Carlos juegan un papel fundamental en la resolución de problemas matemáticos complejos, en los cuales, o bien los métodos de resolución analíticos o bien los métodos numéricos existentes requieren de grandes periodos de tiempo cómputo.
+Los métodos de Monte Carlo se apoyan fundamentalmente en dos grandes resultados de la teoría de la probabilidad: la ley de los grandes números y el teorema central de límite. Ambos nos permiten describir la distribución límite de la suma de las variables aleatorias independientes, proporcionando también una estimación del error. 
 
 \begin{defi}
 Una muestra aleatoria simple $S_n$, es un conjunto de $n\in\mathds{N}$ variables aleatorias, $A_1,A_2,...,A_n$, independientes e idénticamente distribuidas. En caso de que la media y la varianza de las variables aleatorias $A_1,A_2,...,A_n$ sean finitas, las notaremos $\mu$ y $\sigma^2$ respectivamente.
@@ -473,142 +607,13 @@ Es posible obtener un resultado más fuerte que el anterior como consecuencia  d
 $$
 f(G) = \sqrt{\frac{n}{2 \pi \sigma^2}} exp \left( - \frac{n(G-\mu)^2}{2\sigma} \right).
 $$
-Cuando $n \to\infty$, el valor de $G$ se encuentra en intervalos cada vez más estrechos centrados en $\mathds{E}(G)$ y es posible medir la desviación en unidades de $\sigma$, es decir, el valor de $G$ está dentro del intervalo centrado en $\mathds{E}(G)$ de un error estándar el 68.3 \% de las veces, de dos errores estándar el 95.4 \% de las veces y de tres errores estándar el 99.7 \%  de las veces, los intervalos son $[\mathds{E}(G)+\sqrt{var(G)},\ \mathds{E}(G)-\sqrt{var(G)}]$, $[\mathds{E}(G)+2\sqrt{var(G)},\ \mathds{E}(G)-2\sqrt{var(G)}]$ y $[\mathds{E}(G)+3\sqrt{var(G)},\ \mathds{E}(G)-3\sqrt{var(G)}]$, respectivamente. Como comentábamos anteriormente la convergencia es asintótica por lo que inicialmente desconocemos como de grande debe de ser $n$ para poder aplicar el teorema. En un caso particular, si $\mathds{E}(A^3)$ el momento de tercer orden de A es finito, entonces el teorema será satisfecho substancialmente cuando:
-$$
-\abs{\mathds{E}(A^3)} << \sigma^3 \sqrt{n}.
-$$
-Así los límites de confianza derivados de la distribución normal pueden ser aplicados a los cálculos Monte Carlo \cite{fundamentos_montecarlo}.
+Cuando $n \to\infty$, el valor de $G$ se encuentra en intervalos cada vez más estrechos centrados en $\mathds{E}(G)$ y es posible medir la desviación en unidades de $\sigma$, es decir, el valor de $G$ está dentro del intervalo centrado en $\mathds{E}(G)$ de un error estándar el 68.3 \% de las veces, de dos errores estándar el 95.4 \% de las veces y de tres errores estándar el 99.7 \%  de las veces, los intervalos son $[\mathds{E}(G)+\sqrt{var(G)},\ \mathds{E}(G)-\sqrt{var(G)}]$, $[\mathds{E}(G)+2\sqrt{var(G)},\ \mathds{E}(G)-2\sqrt{var(G)}]$ y $[\mathds{E}(G)+3\sqrt{var(G)},\ \mathds{E}(G)-3\sqrt{var(G)}]$, respectivamente \ref{prop_normal}. Como comentábamos anteriormente la convergencia es asintótica por lo que inicialmente desconocemos como de grande debe de ser $n$ para poder aplicar el teorema.
 
-Cuando la varianza es infinita, es posible encontrar una distribución límite para $G$ que llevará a un caso particular del teorema central del límite, en estos casos la distribución límite no será en general la distribución normal. Un estimador de la varianza de la media estimada viene dado por:
+Cuando la varianza no es finita, es posible encontrar una distribución límite para $G$ que llevará a un caso particular del teorema central del límite, en estos casos la distribución límite no será en general la distribución normal. Un estimador de la varianza de la media estimada viene dado por:
 $$
 var(G_n) = \frac{1}{n-1} \left( \frac{1}{n} \sum_{i=1}^n A_i^2 - \left( \frac{1}{n} \sum_{i=1}^n A_i \right)^2 \right)
 $$
 \end{document}
-
-
-\section{Teoría de la computación}
-
-\subsection{Introducción}
-Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. Tomaremos el concepto de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
-
-\subsection{Autómata celular determinista}
-Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, tiene un estado de un conjunto finito de estados y actualiza su estado de acuerdo a una función de transición local, la cual determina el siguiente estado de una célula considerando su propio estado y el de su vecindario. 
-
-\begin{defi}
-Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde:
-
-\begin{itemize}
-\item $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional.
-\item $Q$ el conjunto de estados posibles para cada célula.
-\item $N \in (\mathds{Z}^{d})^{k}$ es el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$.
-\item $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. 
-\end{itemize}
-
-\end{defi}
-
-\begin{defi}
-Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. Entenderemos por configuración inicial, a aquella configuración a la que aún no se le ha aplicado la función de transición global.
-\end{defi}
-
-\begin{defi}
-La función de transición local induce una función de transición global $F:Q^{\mathds{Z}^{d}} \rightarrow Q^{\mathds{Z}^{d}}$ definida como sigue:
-$$
-\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k})).
-$$
-\end{defi}
-
-\begin{defi}
-Un autómata celular $m$-asíncrono $C$ es una tupla $(A, \mu)$ donde: 
-\begin{itemize}
-\item A es un autómata celular.
-\item $\mu$ es una medida de probabilidad sobre la $\sigma$-álgebra de Borel en $\mathcal{P}(\mathds{Z}^{d})$.
-\end{itemize} 
-\end{defi}
-
-\begin{defi}
-
-Para cada función de transición local $f$ y cada conjunto $\tau \in \mathcal{P}(\mathds{Z}^{d})$, definimos la función de transición global $F:Q^{\mathds{Z}^{d}} \to Q^{\mathds{Z}^{d}}$ como sigue:
-
-\begin{equation*}
-	\forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \qquad
-	F_{\tau}(x)(i) = \left\{ \begin{array}{lcc}
-             f(x(i),x(i+n_{1}),...,x(i+n_{k})) &   si  & i \in \tau ,\\
-             \\ x(i) & si  & i \notin \tau .\\
-             \end{array}
-             \right.
-\end{equation*}
-
-Es decir, $F_{\tau}$ aplica la función de transición local solo sobre los elementos de $\tau \subset \mathds{Z}^{d}$. 
-\end{defi}
-
-Notar que cada célula $i \in \mathds{Z}^{d}$ es actualizada con probabilidad $\mu(U_{i})$.
-
-Esta nueva definición de autómata celular $m$-asíncrono, incluye la de autómata celular síncrono. Fijada una $\sigma$-álgebra $\mathds{B}$ sobre $\mathds{Z}^{d}$ y sea $C_{0}=(A, \mu_{0})$ un autómata celular $m$-asíncrono donde $\mu_{0}: \mathds{B} \rightarrow [0,1]$ viene dada por: 
-
-\begin{equation*}
-	 \forall A \in P(\mathds{Z}^{d}), \qquad 
-	 \mu_{0}(A) = \left\{ \begin{array}{lcc}
-             \ 1 &   si  & \mathds{Z}^{d} \in A ,\\
-             \\0 &   si  & \mathds{Z}^{d} \notin A .\\
-             \end{array}
-             \right.
-\end{equation*}
-
-De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
-
-Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante se aplica la función de transición local a una sola célula. 
-
-\begin{defi}
-Consideramos ahora el autómata celular $m$-asíncrono $C=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
-
-\begin{enumerate}
-\item $\mu_{1}(U_{i}) > 0, \quad \forall i \in \mathds{Z}^{d}$.
-\item $\mu_{1}(U_{i} \cap U_{j}) = 0, \quad \forall i \neq j, \quad i,j \in \mathds{Z}^{d}$.
-\end{enumerate}
-\end{defi}
-
-Así solo los ultrafiltros de la forma $\{k\}$ $(k \in \mathds{Z}^{d})$ se les aplica la función de transición local.
-
-Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. 
-\begin{defi} \label{alhpaasin}
-Dado $C=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \to [0,1]$ satisface:
-
-\begin{enumerate}
-\item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
-\item $ \forall A \subseteq \mathds{Z}^{d} \quad$ finito,$\quad  \mu_{2} ( \bigcap_{a \in A} U_{a} ) = \prod_{a \in A} \mu_{2} ( U_{a} )$.
-\end{enumerate}
-\end{defi}
-
-y lo notaremos $C(\alpha)$.
-\subsection{Juego de vida de Conway}
-
-\begin{defi}  \label{original}
-El juego de vida de Conway es un autómata celular síncrono: $$
-C = (\mathds{Z}^{2}, N, Q, f)
-$$
-donde
-\begin{itemize}
-\item $N=\{(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1,-1), (0,-1), (1,-1) \}$,
-\item $Q=\{0,1\}$,
-\item $f:\{0,1\}^{9} \rightarrow \{0,1\} $ dada por:
-
-\begin{equation} \label{trans}
-f(x)= \left\{ \begin{array}{lcc}
-             1 &   si  & x_{0}=0 \quad y \quad \sum_{i=1}^{8} x_i = 3 \\
-             \\ 1 & si & x_{0}=1 \quad y \quad \sum_{i=1}^{8} x_i \in \{2 ,3\} \\
-             \\ 0 &  si  & \sum_{i=1}^{8} x_i \notin \{2, 3\} \
-             \end{array}
-   \right. 
-\end{equation}
-y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
-
-\end{itemize}
-\end{defi}
-
-\subsection{Juego de vida de Conway $\alpha$-asíncrono}
-\begin{defi}
-El juego de vida de Conway $\alpha$-asíncrono es un autómata celular $m$-asíncrono formado por $C=(\mathds{Z}^{2}, N, Q, f)$, el autómata celular síncrono definido anteriormente \ref{original}, y una medida de probabilidad $\mu: \mathds{B} \rightarrow [0,1]$ verificando las condiciones expuestas en \ref{alhpaasin} para $\alpha \in (0,1)$. 
-\end{defi}
 
 \section{Representación del juego de vida de Conway}
 
@@ -745,7 +750,7 @@ Si la configuración se desplaza $x$ unidades horizontalmente e $y$ unidades ver
 Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación expondremos. Dada una configuración inicial $z$ de las categorías expuestas en la sección \ref{zoo}, realizaremos múltiples simulaciones del juego de vida de Conway $\alpha$-asíncrono de duración $n=100$. Nuestras variables de interés son:
 
 \begin{itemize}
-\item Crecimiento de la población de células de la configuración inicial: dispondremos de dos herramientas para medir el número de células. Estudiaremos la evolución del número de células en cada etapa y la evolución del rectángulo de menor tamaño que contenga a todas las células de cada etapa.
+\item Crecimiento de la población de células de la configuración inicial: dispondremos de dos herramientas para medir el número de células. Estudiaremos la evolución del número de células en cada etapa y la evolución del área rectángulo de menor tamaño que contenga a todas las células de cada etapa.
 \item Tasa de cambio de la configuración inicial: emplearemos el concepto de temperatura, que es el porcentaje medio el número de células que nacen o mueren por generación.
 \item Distribución de las células en cúmulos: contabilizaremos el número de cúmulos por cada generación, entendiendo por cúmulo al mayor conjunto de células cuyo vecindario no es disjunto, es decir, en un cúmulo cada célula del mismo está contenido en el vecindario de otra célula del cúmulo.
 \end{itemize}
