@@ -4,31 +4,14 @@
 
 \chapter{Metodología}
 
-Antes de continuar con la implementación y exposición de la técnica de simulación Monte Carlo es necesario introducir un marco teórico matemático que nos servirá de referencia además de establecer una base de trabajo concisa. Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización del autómata celular, cuyo homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de perturbaciones derivadas del medio o de la interacción con otros individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
+Los formalismos nos permitirán articular la intuición de asincronismo en el esquema de actualización del autómata celular, cuyo posible homónimo biológico sería el procesamiento imperfecto de información entre individuos a causa de perturbaciones derivadas del medio o de la interacción con otros individuos. En este trabajo nos restringimos a un caso simple de asincronismo en la actualización: examinaremos que ocurre si todas las transiciones ocurren al mismo tiempo pero los individuos reciben la información del estado de sus vecinos de forma imperfecta.
 
-%En primer lugar introduciremos los conceptos básicos de teoría de conjuntos, probabilidad, computación y generación de números aleatorios sobre los que desarrollaremos las estimaciones Monte Carlo. Las claves de este desarrollo serán el teorema central del límite y la ley de los grandes números que esencialmente justifican la efectividad del método Monte Carlo. Continuaremos con la exposición del autómata celular m-asíncrono, el juego de vida de Conway $\alpha$-asíncrono y su representación,mostraremos las principales categorías de configuraciones iniciales y finalmente expondremos qué criterios utilizaremos para intentar caracterizar el comportamiento de nuestras simulaciones.
-
-
+En primer lugar introducimos el autómata celular m-asíncrono que nos permite articular el juego de vida de Conway $\alpha$-asíncrono, a continuación exponemos los conceptos básicos de teoría de conjuntos, probabilidad y generación de números aleatorios sobre los que desarrollaremos las estimaciones Monte Carlo. Las claves de este desarrollo son el teorema central del límite y la ley de los grandes números que esencialmente justifican la efectividad del método Monte Carlo.
+ 
 \section{Teoría de la computación}
 
 \subsection{Introducción}
-Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o a casos particulares de asíncronicidad. Tomaremos el concepto de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada unidad discreta de tiempo dice las células que tienen que ser actualizadas. Dicho oráculo se implementa empleando una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
-
-Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente o no del resto de células actualizadas en cada instante de tiempo. El concepto de ultrafiltro nos permitirá establecer una clase de autómata celular lo suficientemente general como para abarcar los nuevos tipos de autómatas celulares que introduciremos en posteriores secciones. 
-
-Dado un conjunto X, $\mathcal{P}(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in \mathcal{P}(X)$, notaremos su complementario $A^{c}$. 
-\begin{defi}
-Un ultrafiltro de X es $U \in \mathcal{P}(X)$ tal que:
-
-\begin{enumerate}
-\item $\emptyset \in U$.
-\item Sean $A,B \in \mathcal{P}(X)$ tales que $A \subset B$ y $ A \in U$, entonces $B \in U$.
-\item Si $A,B \in U$, entonces $A \cap B \in U$.
-\item Si $A \in \mathcal{P}(X)$ entonces o bien $A \in U$, o bien $ A^{c} \in U$.
-\end{enumerate}
-
-Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el más pequeño que contiene a $p$, esto es, la colección de todos los conjuntos que contienen a $p$.
-\end{defi}
+Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o bien a casos particulares de asíncronicidad. Tomaremos el concepto de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada iteración escoge las células que tienen que ser actualizadas. Dicho oráculo se implementa a través de una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
 
 \subsection{Autómata celular determinista}
 Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, tiene un estado de un conjunto finito de estados y actualiza su estado de acuerdo a una función de transición local, la cual determina el siguiente estado de una célula considerando su propio estado y el de su vecindario. 
@@ -54,6 +37,22 @@ La función de transición local induce una función de transición global $F:Q^
 $$
 \forall x \in Q^{\mathds{Z}^{d}}, \quad \forall i \in \mathds{Z}^{d}, \quad F(x)(i) = f(x(i),x(i+n_{1}),...,x(i+n_{k})).
 $$
+\end{defi}
+
+Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente o no del resto de células actualizadas en cada iteración. El concepto de ultrafiltro nos permitirá establecer una clase de autómata celular lo suficientemente general como para abarcar los nuevos tipos de autómatas celulares que introduciremos en posteriores secciones. 
+
+Dado un conjunto X, $\mathcal{P}(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in \mathcal{P}(X)$, notaremos su complementario $A^{c}$. 
+\begin{defi}
+$U \in \mathcal{P}(X)$ es un ultrafiltro de X si:
+
+\begin{enumerate}
+\item $\emptyset \in U$.
+\item Sean $A,B \in \mathcal{P}(X)$ tales que $A \subset B$ y $ A \in U$, entonces $B \in U$.
+\item Si $A,B \in U$, entonces $A \cap B \in U$.
+\item Si $A \in \mathcal{P}(X)$ entonces o bien $A \in U$, o bien $ A^{c} \in U$.
+\end{enumerate}
+
+Además dado $p \in X$, el ultrafiltro $U_{p}$ diremos que es principal si es el más pequeño que contiene a $p$, esto es, la colección de todos los conjuntos que contienen a $p$.
 \end{defi}
 
 \begin{defi}
@@ -215,7 +214,7 @@ Cada valor de $A$ se corresponde con un subconjunto de puntos de $X$ que se apli
 %Con esta útil notación podremos notar fácilmente la probabilidad de sucesos de mayor interés.
 
 \begin{prop} \label{funcion_de_va}
-Si $g:\mathds{R}\to\mathds{R}$ es una función real de variable real, medible y $A$ es una variable aleatoria entonces $A'=g(A)$ es una variable aleatoria.
+Si $g:\mathds{R}\to\mathds{R}$ es medible y $A$ es una variable aleatoria entonces $A'=g(A)$ es una variable aleatoria.
 \end{prop}
 
 \begin{defi}
@@ -382,7 +381,7 @@ Sea $N(\mu,\sigma^2)$ una distribución normal con media $\mu<\infty$ y varianza
 
 \begin{teorema} \label{central}
 Sean $A_{1},A_{2},...,A_{n}$ variables aleatorias independientes, con esperanza $\mu < \infty$, varianza $\sigma^2 < \infty$ e idénticamente distribuidas. Entonces: $$
-\frac{ \frac{1}{n}\sum_{i=1}^nA_i - n\mu}{ \sigma \sqrt{n}} \to^d N(0,1).
+\frac{1}{ \sigma \sqrt{n}} \left( \frac{1}{n}\sum_{i=1}^nA_i - n\mu \right) \to^d N(0,1).
 $$
 \end{teorema}
 
@@ -546,23 +545,25 @@ El nombre \textit{Monte Carlo} fue acuñado por los científicos que trabajaban 
 
 Curiosamente, en las definiciones de los métodos de Monte Carlo no hay referencia explícita al empleo de la capacidades de cómputo de los ordenadores, sin embargo el gran desarrollo que han experimentado éstos desde el último tercio de siglo XX hasta nuestros días, los ha convertido en herramientas indispensables en las simulaciones Monte Carlo. La generación de números aleatorios ha experimentado también un importante crecimiento en las últimas décadas.
 
-\subsection{Generadores de números aleatorios}
+\subsection{Generadores de números pseudo-aleatorios}
 
-Los generadores de números aleatorios no generan números realmente aleatorios, es decir, no son variables aleatorias idénticamente distribuidas. Dado un valor de inicialización de la secuencia o semilla generan siempre la misma sucesión de números, por tanto diremos que un generador de números aleatorios produce una secuencia indistinguible de una realmente aleatoria. Dicho ésto, podemos afirmar que un ordenador solo es capaz de generar secuencias de números pseudoaleatorios con un periodo de longitud finita.
+Los generadores de números pseudo-aleatorios producen secuencias indistinguibles de una realmente aleatoria, es decir, no generan valores de una distribución uniforme si no que dado una semilla o valor de inicialización generan siempre la misma sucesión de números.
 
- Un tipo generador de números aleatorios muy usado venía dado por la siguiente ecuación recurrente:
+Un tipo generador de números aleatorios muy usado venía dado por la siguiente ecuación expresión:
 
 \begin{equation} \label{cong}
 I_{j+1} = aI_{j} +c \mod (m)
 \end{equation}
 
-donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, \ref{cong} es conocido por el nombre: \textit{generador lineal congruente de números aleatorios}. Claramente, en $n<m$ pasos la ecuación comienza a generar valores duplicados en el mismo orden, conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que obtuvieran en mayor periodo posible. En \cite{knuth} podemos encontrar algunos resultados notables sobre la elección parámetros $a,c$ y $m$. La elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. Sin embargo no es suficiente con generar una sucesión de números de un largo periodo, además deben superar rigurosas baterías de test empíricos que aseguren una buena distribución de las secuencias de números además de la ausencia de patrones en las mismas. En el caso de los generadores lineales congruentes existe un resultado que afirma que las sucesivas n-tuplas de valores generados residen en al menos $(n!m)^\frac{1}{m}$ hiperplanos paralelos \cite{marsagliaRandom}, luego esta clase de generadores no son adecuados para la generación de números aleatorios.
+donde $a$ es un entero positivo llamado multiplicador y $c$ es un número natural llamado incremento. Para $c \neq 0$, el generador de la ecuación \ref{cong} es conocido por el nombre de \textit{generador lineal congruente}. Claramente, en $n<m$ pasos la ecuación comienza a generar valores duplicados en el mismo orden. Conocido ésto, se hacían elecciones particulares de $a,c$ y $m$ que proporcionaran el mayor periodo posible. En \cite{knuth} podemos encontrar algunos resultados notables sobre la elección parámetros $a,c$ y $m$. La elección del valor inicial $I_{0}$ no es relevante, pues se generarán todos los naturales posibles entre $0$ y $m-1$ antes de la primera repetición. Sin embargo no es suficiente con generar una sucesión de números de un largo periodo, además deben superar rigurosas baterías de tests empíricos que aseguren una buena distribución de las secuencias, además de la ausencia de patrones en las mismas. En el caso de los generadores lineales congruentes existe un resultado que afirma que las sucesivas n-tuplas de valores generados residen en al menos $(n!m)^\frac{1}{m}$ hiperplanos paralelos \cite{marsagliaRandom}, luego esta clase de generadores no son adecuados para la generación de números aleatorios.
 
-Dado el carácter empírico de las baterías de test, superarlas con éxito no aseguran un generador de números perfecto si no que probablemente se trate de un buen generador, ya que eventualmente con el suficiente tiempo se podría encontrar un test que no fuera superado con éxito. Por tanto nos interesaremos en tests que demuestren el mal comportamiento de un generador en un tiempo razonable. Hay numerosas baterías de test, destacamos dos \cite{dieharder,testu01}: \textit{Dieharder} la cual está basada en los primeros test estadísticos propuestos en \textit{Diehard battery of tests}, incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) y además dispone de un programa, \textit{dieharder}, para realizar dichos tests y ejecutar la batería de test \textit{TestU01}.
+Dado el carácter empírico de las baterías de test, superarlas con éxito no asegura un generador de números perfecto, sino que probablemente se trate de un buen generador, ya que eventualmente con el suficiente tiempo se podría encontrar un test que no fuera superado con éxito. Por tanto nos interesaremos en tests que demuestren el mal comportamiento de un generador en un tiempo razonable. 
 
-Nuestra elección de generador de números aleatorios es una variante del generador \textit{Mersenne Twister} \cite{mt} presente en la biblioteca estándar del lenguaje de programación Python, el cual es el generador por defecto en las versiones del lenguaje de programación Python posteriores a la $2.3$ \cite{pyver} y en el lenguaje de programación estadística $R$\cite{langR}. Dicho generador de números aleatorios en su implementación en Python genera números en coma flotante de 53-bits de precisión y tiene un periodo de $2^{19937}-1$. 
+De entre las numerosas baterías de tests existantes destacamos dos \cite{dieharder,testu01}: \textit{Dieharder}, que está basada en los primeros test estadísticos propuestos en \textit{Diehard battery of tests}, incluye también los test desarrollados por el NIST (National Institute for Standards and Technology) y la batería de tests \textit{TestU01} \cite{dieharder,testu01}.
 
-\subsection{Métodos Monte Carlo}
+Nuestra elección es una variante del generador \textit{Mersenne Twister} \cite{mt} presente en la biblioteca estándar del lenguaje de programación Python en las versiones posteriores a la $2.3$ \cite{pyver}, y en el lenguaje de programación estadística $R$\cite{langR}.
+
+\subsection{Métodos Monte Carlo} \label{carlino}
 
 Los métodos de Monte Carlo se apoyan fundamentalmente en dos grandes resultados de la teoría de la probabilidad: la ley de los grandes números y el teorema central de límite. Ambos nos permiten describir la distribución límite de la suma de las variables aleatorias independientes, proporcionando también una estimación del error. 
 
@@ -590,7 +591,7 @@ $$
 
 \end{defi}
 
-El primer gran resultado o \textit{primer teorema fundamental de Monte Carlo} que podemos deducir de los anteriores, en particular es una consecuencia directa del teorema \ref{teo_grandes_numeros}, el estimador $G$ de la media de una muestra aleatoria simple, $S_n$, de media $\mu < \infty$ y varianza $\sigma^2 < \infty$ converge en probabilidad al valor esperado $\mu$:
+El gran resultado o \textit{teorema fundamental de las simulaciones Monte Carlo} que podemos deducir de los anteriores, en particular es una consecuencia directa del teorema \ref{teo_grandes_numeros}, el estimador $G$ de la media de una muestra aleatoria simple, $S_n$, de media $\mu < \infty$ y varianza $\sigma^2 < \infty$ converge en probabilidad al valor esperado $\mu$:
 $$
 \forall \epsilon > 0,\quad \lim_{n\to\infty} P( |G - \mu|> \epsilon ) = 0.
 $$
