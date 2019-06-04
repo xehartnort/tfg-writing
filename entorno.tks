@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TexmakerSession quickmode="12">
-    <document bookmark3="0" line="0" bookmark2="0" hasfocus="false" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/Bibliography.bib" master="false" bookmark1="0"/>
-    <document bookmark3="0" line="0" bookmark2="0" hasfocus="false" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/proyecto.tex" master="true" bookmark1="0"/>
-    <document bookmark3="0" line="0" bookmark2="0" hasfocus="false" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/chapters/01_introduction.tex" master="false" bookmark1="0"/>
-    <document bookmark3="0" line="0" bookmark2="0" hasfocus="false" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/chapters/03_analisis.tex" master="false" bookmark1="0"/>
-    <document bookmark3="0" line="0" bookmark2="0" hasfocus="false" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/chapters/021_metodologia.tex" master="false" bookmark1="0"/>
-    <document bookmark3="0" line="0" bookmark2="0" hasfocus="true" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/chapters/022_metodologia.tex" master="false" bookmark1="0"/>
+<TexmakerSession quickmode="3">
+    <document bookmark3="0" bookmark2="0" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/Bibliography.bib" line="0" master="false" bookmark1="0" hasfocus="false"/>
+    <document bookmark3="0" bookmark2="0" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/proyecto.tex" line="0" master="true" bookmark1="0" hasfocus="false"/>
+    <document bookmark3="0" bookmark2="0" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/chapters/03_analisis.tex" line="0" master="false" bookmark1="0" hasfocus="false"/>
+    <document bookmark3="0" bookmark2="0" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/chapters/01_introduction.tex" line="0" master="false" bookmark1="0" hasfocus="false"/>
+    <document bookmark3="0" bookmark2="0" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/chapters/021_metodologia.tex" line="0" master="false" bookmark1="0" hasfocus="true"/>
+    <document bookmark3="0" bookmark2="0" file="/home/xehartnort/Escritorio/Trabajo/escrito-tfg/tfg-writing/chapters/022_metodologia.tex" line="0" master="false" bookmark1="0" hasfocus="false"/>
 </TexmakerSession>

@@ -195,7 +195,7 @@ En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de pe
         \caption{}
         \label{fig:toad3}
     \end{subfigure}
-	\caption{Ejemplos de osciladores de periodo dos del juego de vida de Conway.}
+	\caption{Primeras 3 iteraciones de 2 osciladores de periodo 2 del juego de vida de Conway.}
 	\label{fig:congIniciales3}
 \end{figure} 
 
@@ -234,7 +234,7 @@ En la \autoref{fig:congIniciales4} encontramos dos naves espaciales que se despl
 	\label{fig:congIniciales4}
 \end{figure} 
 
-\subsection{Selección de configuraciones iniciales}
+\subsection{Selección de configuraciones iniciales} \label{seleccion}
 
 Los primeros censos de configuraciones iniciales fueron \textit{The Online Life-Life CA Soup Search} y \textit{Achim Flammenkamp's census}, en los que se contabilizaron 174.631.866.050 y 50.158.095.316 configuraciones del juego de vida, respectivamente. El primero de ellos consistió en la evolución de 6.412.048.029 configuraciones iniciales aleatorias que cubren un cuadrado de lado 20 con densidad inicial de 0.5 sobre una malla rectangular infinita \cite{sopa1}. El segundo exploró la evolución de 1.829.196 configuraciones iniciales aleatorias sobre una malla cuadrada de lado 2048 con los bordes opuestos identificados y con una densidad inicial de 0.375 \cite{sopa2}. De ambos censos se puede extraer la conclusión de que las configuraciones que aparecen más a menudo son las vidas inmóviles, seguidas por los osciladores y por último las naves espaciales.
 
@@ -298,7 +298,7 @@ Ranking & Nombre                          & Periodo & Ocurrencias    \\ \hline
 
 % aquí hay que exponer que se descartan las vidas inmóviles porque no se ven afectadas por la perturbación de la actualización
 
-\section{Características medidas sobre las simulaciones}
+\section{Características medidas sobre las simulaciones} \label{vars}
 
 Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación exponemos. Nuestras variables de interés son:
 
