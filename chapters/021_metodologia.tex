@@ -2,8 +2,7 @@
 
 \begin{document}
 
-\chapter{Descripción del contexto}
-
+\chapter{Aproximación conceptual}
 
 \section{Representación y actualización del juego de vida de Conway}
 
@@ -17,9 +16,7 @@ Como se comentaba en la introducción, plantearse la simulación del juego de vi
 \item El comportamiento de las configuraciones iniciales es difícil de predecir, por lo que aquellas que crezcan sin límite podrían agotar los recursos de memoria disponibles haciendo que la ejecución sea inválida. En particular, una situación con alto consumo de memoria dificulta la ejecución de múltiples simulaciones independientes en paralelo.
 \end{itemize}
 
-Este último punto es, en nuestra opinión, el más restrictivo. Un planteamiento inicial nos podría sugerir que limitar el tamaño de la malla dos dimensional, sin embargo se perdería información en aquellas configuraciones iniciales que excedieran el tamaño fijado de la malla. Para reducir el impacto de la finitud de la malla se ha estudiado la identificación de los bordes opuestos simulando un espacio \textit{infinito} que imita la superficie de un toro, obteniendo resultados favorables \cite{finitudMalla, finitudMalla2}. Pero no es necesario lidiar con los errores derivados de este planteamiento. Una implementación en nuestra opinión más \textit{literal} de la descripción formal del juego de vida, nos permite romper con el paradigma de la limitación de la malla. En lugar de almacenar en memoria la malla completa independientemente de su utilización, se almacenan las células dadas por coordenadas sobre la malla rectangular identificada con el plano cartesiano \cite{boardless}. 
-
-Si suponemos que la malla dos dimensional con los bordes opuestos identificados es cuadrada con lado de tamaño $m$, la complejidad en espacio viene dada por $O(m^2)$ independientemente a la configuración inicial escogida. Por otro lado si suponemos una malla dos dimensional infinita, una configuración inicial con $c$ células y $c(t)$ el número de células en el instante $t$, la complejidad en espacio para cada instante $t$ es $O(c(t))$ y la complejidad en espacio de $C_n^t$ es $O(\max_{0\leq t\leq n}\{c(t)\})$. Así al optar por la implementación de la malla infinita haremos un uso más eficiente de la memoria disponible. Con dicha implementación el vecindario de una célula se calcula sumando a sus coordenadas $(x,y)$ a cada uno de los puntos de este conjunto $\{(-1, 1),\ (0, 1),\ (1, 1),\ (-1, 0),\ (1, 0),\ (-1,-1),\ (0,-1),\ (1,-1)\}$:
+Este último punto es, en nuestra opinión, el más restrictivo. Un planteamiento inicial nos podría sugerir que limitar el tamaño de la malla dos dimensional, sin embargo se perdería información en aquellas configuraciones iniciales que excedieran el tamaño fijado de la malla. Para reducir el impacto de la finitud de la malla se ha estudiado la identificación de los bordes opuestos simulando un espacio \textit{infinito} que imita la superficie de un toro, obteniendo resultados favorables \cite{finitudMalla, finitudMalla2}. Pero no es necesario lidiar con los errores derivados de este planteamiento. Una implementación en nuestra opinión más \textit{literal} de la descripción formal del juego de vida, nos permite romper con el paradigma de la limitación de la malla. En lugar de almacenar en memoria la malla completa independientemente de su utilización, se almacenan las células dadas por coordenadas sobre la malla rectangular identificada con el plano cartesiano \cite{boardless}. Con dicha implementación el proceso de evolución viene dado en el algoritmo \ref{alg:normal}, el cual describimos a continuación: el vecindario de una célula se calcula sumando a sus coordenadas $(x,y)$ a cada uno de los puntos de este conjunto $\{(-1, 1),\ (0, 1),\ (1, 1),\ (-1, 0),\ (1, 0),\ (-1,-1),\ (0,-1),\ (1,-1)\}$ (algoritmo ):
 
 \begin{align*}
 \begin{array}{lcr}
@@ -29,9 +26,9 @@ Si suponemos que la malla dos dimensional con los bordes opuestos identificados 
 \end{array} 
 \end{align*}
 
-Una vez calculado el vecindario de una célula, las células vivas en el vecindario se calculan como la intersección del vecindario con el conjunto de células vivas. Esta operación es de tiempo constante si se almacenan tanto las células vivas como el vecindario en estructuras de datos de tiempo de búsqueda constante, esto son, tablas hash. Tras el conteo de células vivas en el vecindario de una célula dada, es suficiente con aplicar la tabla de transición de estados \ref{tab:estados} para determinar el siguiente estado de la célula.
+Una vez calculado el vecindario de una célula, las células vivas en el vecindario se calculan como la intersección del vecindario con el conjunto de células vivas. Esta operación es de tiempo constante si se almacenan tanto las células vivas como el vecindario en estructuras de datos de tiempo de búsqueda constante, es decir, tablas hash. Tras el conteo de células vivas en el vecindario de una célula dada, es suficiente con aplicar la tabla de transición de estados \ref{tab:estados} para determinar el siguiente estado de la célula. Esta tabla está formada por dos columnas, la primera columna, \textit{Estado actual}, muestra en sus filas todos los estados posibles en los que puede encontrarse una célula. Por otra parte, la segunda columna, \textit{Siguiente estado}, contiene en su segunda fila múltiples columnas, una por cada posible número de vecinos que pueda tener una célula y las siguientes filas muestran cuál es el estado siguiente a los dados en las mismas filas de la primera columna respecto al número de vecinos que la célula tenga. 
 
-\begin{table}[]
+\begin{table}[h]
 \centering
 \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
 \hline
@@ -45,11 +42,59 @@ Estado actual           & \multicolumn{9}{c|}{Siguiente estado}  \\ \hline
 \label{tab:estados}
 \end{table}
 
+\begin{algorithm}
+\caption{Evolución síncrona del estado de una célula}
+\label{alg:normal}
+\begin{algorithmic}
+\REQUIRE $cells$
+\REQUIRE $transition\_table[0] \leftarrow [0,\ 0,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0]$
+\REQUIRE $transition\_table[1] \leftarrow [0,\ 1,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0]$
+\STATE $n \leftarrow [(-1, 1),\ (0, 1),\ (1, 1),\ (-1, 0),\ (1, 0),\ (-1,-1),\ (0,-1),\ (1,-1)]$
+\STATE $c \leftarrow cells.pop$
+\STATE $current\_state \leftarrow c.state$
+\FOR{$i=0$ \TO $8$}
+\STATE $n[i] = c + n[i]$
+\ENDFOR
+\STATE $neighborhood \leftarrow cells\ \cap\ n$
+\STATE $a \leftarrow count(neighborhood)$
+\STATE $nextState \leftarrow transition\_table[current\_state][a]$
+\RETURN $nextState$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Evolución $\alpha$-asíncrona del estado de una célula}
+\label{alg:async}
+\begin{algorithmic}
+\REQUIRE $cells$
+\REQUIRE $\alpha$
+\REQUIRE $transition\_table[0] \leftarrow [0,\ 0,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0]$
+\REQUIRE $transition\_table[1] \leftarrow [0,\ 1,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0]$
+\REQUIRE $getRandomNumber()$
+\ENSURE  $0< \alpha \leq 1$
+\ENSURE $0< getRandomNumber() < 1$
+\STATE $n \leftarrow [(-1, 1),\ (0, 1),\ (1, 1),\ (-1, 0),\ (1, 0),\ (-1,-1),\ (0,-1),\ (1,-1)]$
+\STATE $c \leftarrow cells.pop$
+\STATE $current\_state \leftarrow c.state$
+\FOR{$i=0$ \TO $8$}
+\STATE $n[i] = c + n[i]$
+\ENDFOR
+\STATE $neighborhood \leftarrow cells\ \cap\ n$
+\STATE $a \leftarrow count(neighborhood)$
+\IF{ $getRandomNumber() < \alpha$ }
+\STATE $next\_state \leftarrow transition\_table[current\_state][a]$
+\ELSE
+\STATE $next\_state \leftarrow current\_state$
+\ENDIF
+\RETURN $next\_state$
+\end{algorithmic}
+\end{algorithm}
+
 \section{Representación y actualización del juego de vida de Conway $\alpha$-asíncrono}
 
 Los comentarios realizados en la sección anterior son aplicables al juego de vida de Conway \textit{síncrono}, sin embargo para el juego $\alpha$-asíncrono hay que introducir una pequeña variación en el mecanismo de actualización que vamos a exponer en esta sección. Notar que la descripción de la representación interna de la malla comentada anteriormente se reutiliza en el juego $\alpha$-asíncrono, es decir, la perturbación introducida en la actualización no afecta a la malla rectangular.
 
-En un juego de vida $\alpha$-asíncrono cada célula tiene probabilidad $\alpha$ de ser actualizada y probabilidad $1-\alpha$ de mantener su estado actual, esto es, tiene probabilidad $\alpha$ de que se le aplique la tabla de transición de estados \ref{tab:estados}. A cada célula se le dota la capacidad de generar números pseudo-aleatorios de una distribución uniforme estándar. De esta manera cuando se va a consultar la tabla de transición de estados genera un número aleatorio, si éste es superior a $\alpha$ entonces consulta la tabla y en caso contrario no lo hace, manteniendo su estado actual.
+En un juego de vida $\alpha$-asíncrono cada célula tiene probabilidad $\alpha$ de ser actualizada y probabilidad $1-\alpha$ de mantener su estado actual, esto es, tiene probabilidad $\alpha$ de que se le aplique la tabla de transición de estados \ref{tab:estados}. A cada célula se le dota la capacidad de generar números pseudo-aleatorios de una distribución uniforme estándar. De esta manera cuando se va a consultar la tabla de transición de estados genera un número aleatorio, si éste es superior a $\alpha$ entonces consulta la tabla y en caso contrario no lo hace, manteniendo su estado actual. Éste proceso se puede observar en detalle en el algoritmo \ref{alg:async}. Notar que si $\alpha=1$ el algoritmo de actualización $\alpha$-asíncrono es equivalente al síncrono.
 
 \section{Configuraciones iniciales del juego de vida de Conway} \label{zoo}
 
@@ -199,7 +244,7 @@ En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de pe
 	\label{fig:congIniciales3}
 \end{figure} 
 
-\subsection{Naves espaciales}
+\subsection{Naves espaciales} \label{spaceships}
 
 %\begin{defi}
 %Una  nave espacial es una configuración inicial $z$ finita y no vacía que se repite tras la aplicación de $k$ veces de la función de transición global pero en una posición distinta, esto es, fijado $n\in\mathds{N}$, se verifica que existen $k\in\mathds{N}$ y una traslación distinta de la identidad, $\phi:\mathds{Z}^2\to\mathds{Z}^2$, tal que $C^n_t(z) = \phi(C^n_{t+k}(z))$ para todo $t \leq n-k$ y diremos que $k$ es el periodo de la nave espacial.
@@ -209,9 +254,10 @@ En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de pe
 Una  nave espacial es una configuración inicial es una configuración inicial que tras un número fijo de iteraciones se repite pero en una posición desplazada.
 \end{defi}
 
-Dado que este tipo de configuraciones iniciales se desplaza sobre la malla rectangular es interesante medir la velocidad con la que lo hacen. Si una configuración inicial se desplaza $(x, y)$ unidades cada periodo de longitud $n$, la velocidad de desplazamiento de la nave espacial es: $$
+Notar que las naves espaciales pueden ser vistas como osciladores que en el periodo de oscilación se desplazan. Dado que este tipo de configuraciones iniciales se desplaza sobre la malla rectangular es interesante considerar la velocidad con la que lo hacen. Si una configuración inicial se desplaza $(x, y)$ unidades cada periodo de longitud $n$, la velocidad de desplazamiento de la nave espacial es: $$
  v = \frac{\max\{|x|,|y|\}c}{k}
- $$  y su pendiente es $x/y$, donde $c$ es la velocidad máxima teórica, un desplazamiento por iteración. Curiosamente se ha demostrado que para cada pendiente existe una nave espacial con dicha pendiente \cite{pendienteNaves}.
+$$ 
+y su pendiente es $x/y$, donde $c$ es la velocidad máxima teórica, esto es, un desplazamiento por iteración. Curiosamente se ha probado que para cada pendiente existe una nave espacial con dicha pendiente \cite{pendienteNaves}.
 
 En la \autoref{fig:congIniciales4} encontramos dos naves espaciales que se desplazan en distintas direcciones. La \autoref{fig:glider} es la nave espacial más pequeña conocida de velocidad $c/4$ y su desplazamiento es diagonal y la \autoref{fig:lightweightspaceship} es la más pequeña conocida de velocidad $c/2$ y su desplazamiento es horizontal.
 
@@ -238,7 +284,7 @@ En la \autoref{fig:congIniciales4} encontramos dos naves espaciales que se despl
 
 Los primeros censos de configuraciones iniciales fueron \textit{The Online Life-Life CA Soup Search} y \textit{Achim Flammenkamp's census}, en los que se contabilizaron 174.631.866.050 y 50.158.095.316 configuraciones del juego de vida, respectivamente. El primero de ellos consistió en la evolución de 6.412.048.029 configuraciones iniciales aleatorias que cubren un cuadrado de lado 20 con densidad inicial de 0.5 sobre una malla rectangular infinita \cite{sopa1}. El segundo exploró la evolución de 1.829.196 configuraciones iniciales aleatorias sobre una malla cuadrada de lado 2048 con los bordes opuestos identificados y con una densidad inicial de 0.375 \cite{sopa2}. De ambos censos se puede extraer la conclusión de que las configuraciones que aparecen más a menudo son las vidas inmóviles, seguidas por los osciladores y por último las naves espaciales.
 
-Para nuestro trabajo tomaremos de referencia el censo más actual \textit{Catalogue} que recoge las ejecuciones de 19.640.649.096.999 configuraciones iniciales aleatorias cuadradas de lado 16 del juego de vida de Conway. Se han obtenido un total de 429.049.899.985.558 patrones de los cuales se encontraron 161.861 tipos diferentes \cite{sopa3}. En la tabla \autoref{tab:sopa1naves} se muestran las primeras 5 naves espaciales más frecuentes, las cuales escogeremos para realizar nuestro experimento. Destacar que todas son de periodo 4 y que no tomaremos más dado que el número de ocurrencias disminuye drásticamente de la cuarta a la quitan posición. En la \autoref{fig:congIniciales5} podemos observar la forma de estas configuraciones iniciales. Como representantes de la categoría de osciladores estudiaremos los dos osciladores más frecuente de periodo 2, 3 y 4.
+Para nuestro trabajo tomaremos de referencia el censo más actual \textit{Catalogue} que recoge las ejecuciones de 19.640.649.096.999 configuraciones iniciales aleatorias cuadradas de lado 16 del juego de vida de Conway. Se han obtenido un total de 429.049.899.985.558 patrones de los cuales se encontraron 161.861 tipos diferentes \cite{sopa3}. En la tabla \autoref{tab:sopa1naves} se muestran las primeras 5 naves espaciales más frecuentes, las cuales escogeremos para realizar nuestro experimento. Destacar que todas son de periodo 4 y que no tomaremos más dado que el número de ocurrencias disminuye drásticamente de la cuarta a la quitan posición. En la \autoref{fig:congIniciales5} podemos observar la forma de estas configuraciones iniciales. Como representantes de la categoría de osciladores estudiaremos los dos osciladores más frecuente de periodo 2, 3 y 4. [Sin concretar porque está sujeto a cambios]
 
 \begin{table}[]
 \centering
