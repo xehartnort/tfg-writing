@@ -4,120 +4,152 @@
 
 \chapter{Aproximación conceptual}
 
-\section{Representación y actualización del juego de vida de Conway}
+En este capítulo daremos una descripción conceptual del universo del juego de vida de Conway, junto con la descripción del juego de vida de Conway $\alpha$-asíncrono. Con éste contexto, se describirán en qué han consistido las simulaciones y sobre qué configuraciones iniciales se han realizado.
+
+\section{Juego de vida de Conway}
+
+Una configuración del juego de vida de Conway es la disposición sobre la malla de un conjunto de células. Por tanto una configuración inicial hace referencia a la disposición inicial de células sobre las que aún no se han aplicado las reglas de evolución. De esta manera cada nodo de la malla tiene dos estados posibles: vacío (0) o  ocupado (1). 
+
+Las reglas de evolución que se aplican en cada iteración simultáneamente a todos los nodos de la malla son las siguientes:
+\begin{itemize}
+\item Un nodo ocupado se mantiene así si en su vecindario tiene solamente dos o tres nodos ocupados, en otro caso el nodo se vacía.
+\item Un nodo vacío se ocupa cuando en su vecindario hay exactamente tres nodos, en otro caso mantiene su estado vacío.
+\end{itemize}
+Usualmente se consideran como pertenecientes al vecindario los nodos adyacentes en las direcciones horizontal, vertical y diagonales. 
+
+En lo que hemos interpretado como un sentido \textit{biológico}, las reglas se pueden describir también interpretando los nodos ocupados como células vivas y la configuración inicial como una población de células:
+\begin{itemize}
+\item Una célula puede \textit{morir de soledad}, es decir, tiene solamente una célula en su vecindario o por \textit{superpoblación}, esto es, tiene cuatro o más células en su vecindario.
+\item En un nodo vacío \textit{nace} una célula si en su vecindario hay exactamente tres células vivas.
+\end{itemize}
+
+La elección de las reglas de evolución parecería \textit{a priori} aleatoria, sin embargo, Conway las escogió aplicando las siguientes pautas \cite{libroGardner}:
+\begin{itemize}
+	\item No debe existir una disposición inicial de células para la cual haya una \textit{prueba simple} de que la población crezca sin límite. Esto es, no debe de ser posible predecir fácilmente la evolución de una configuración inicial.
+	\item Debe haber disposiciones iniciales de células que aparentemente crezcan sin límite. 
+	\item Debe haber disposiciones iniciales de células \textit{sencillas} que crezcan y cambien durante un periodo relativamente largo, llegando a tres posibles finales: desaparecer completamente ya sea debido a superpoblación o a dispersión, estabilizarse en una configuración que se mantenga constante o entrar en un ciclo sin fin de oscilación.
+\end{itemize}
+
+Sin embargo las reglas que proporcionó Conway no son las únicas que muestran evoluciones interesantes. La siguiente notación nos es útil para expresar distintas reglas de evolución abreviadamente. La reglas de evolución vienen dadas en la forma \textit{Bx/Sy} donde \textit{y} define el número de nodos ocupados en el vecindario para que un nodo ocupado se mantenga y \textit{x} el número de nodos ocupados en el vecindario para que un nodo vacío se ocupe. Por ejemplo, para el juego de vida es B3/S23. Destacamos la regla B1357/S1357 conocida como \textit{Edward Fredkin's replicating automaton}, en la cual cada configuración es eventualmente reemplazada por múltiples copias de sí misma, la regla B3/S12345 conocida como \textit{Maze}, genera configuraciones similares a laberintos, una variación muy curiosa es que si añadimos el número 7 a la parte \textit{B} es posible observar como un nodo ocupado recorre el laberinto y la regla B3/S012345678 conocida como \textit{Life without Death}, en la cual los nodos ocupados nunca se vacían, se caracteriza por un crecimiento caótico y la aparición de configuraciones similares a escaleras que pueden ser usadas para simular circuitos booleanos \cite{regla1}.
+
+%Estaría muy bien añadir imágenes aquí pero me va a tomar un ratete hacerlo.
 
 %Fijada una configuración inicial $z$, enteremos por ejecución o simulación del juego de vida de Conway de duración $n \in \mathds{N} \cup \{ \infty\}$ al resultado de aplicar $n$ veces la función de transición global del juego de vida de Conway a la configuración inicial y lo notaremos $C_{n}(z)$. Sea $t$ tal que $1 \leq t \leq n$, diremos que es el instante $t$ de la ejecución/simulación/experimento del juego de vida de Conway de duración $t$, el resultado de aplicar $t$ veces la función de transición global a una configuración inicial $z$ y lo notaremos $C^t_n(z)$. Por último, los conjuntos de puntos $C^{t'}_{n'}(z')$, $C^{t}_{n}(z)$ si los conjuntos de células de cada simulación son idénticos. De la misma manera, entederemos por ejecución o simulación del juego de vida de Conway $\alpha$-asíncrono de duración $n$ al resultado de aplicar $n$ veces la función de transición global a la configuración inicial $z$ y lo notaremos $C_{n}(z)(\alpha)$ donde $\alpha$ es un número real en el intervalo $(0,1)$.
 
-Como se comentaba en la introducción, plantearse la simulación del juego de vida implica afrontar el problema de representar una malla infinita de dos dimensiones en la memoria finita de los ordenadores. Mientras que la cantidad de memoria y velocidad de acceso de la misma ha mejorado significativamente con el paso del tiempo, perseguimos una representación que cumpla las siguientes dos características:
+\subsection{Representación interna y actualización}
+
+Como se comentaba en la introducción, plantearse la simulación del juego de vida implica afrontar el problema de representar una malla infinita de dos dimensiones en la memoria finita de un ordenador. Aunque la cantidad de memoria y velocidad de acceso a la misma ha mejorado significativamente con el paso del tiempo, perseguimos una representación que cumpla las siguientes dos características:
 
 \begin{itemize}
 \item Una simulación de una configuración inicial del juego de vida tiene que finalizar en un tiempo razonable, pues la clave de los métodos Monte Carlo son la repetición de las mismas y como se comenta posteriormente en \ref{carlino}, al aumentar el número de simulaciones disminuye la varianza, permitiendo mayor precisión.
 
-\item El comportamiento de las configuraciones iniciales es difícil de predecir, por lo que aquellas que crezcan sin límite podrían agotar los recursos de memoria disponibles haciendo que la ejecución sea inválida. En particular, una situación con alto consumo de memoria dificulta la ejecución de múltiples simulaciones independientes en paralelo.
+\item El comportamiento de las configuraciones iniciales es difícil de predecir, por lo que aquellas que crezcan sin límite podrían agotar los recursos de memoria disponibles haciendo que la ejecución sea imposible. En particular, una situación con alto consumo de memoria dificulta la ejecución de múltiples simulaciones independientes en paralelo.
 \end{itemize}
 
-Este último punto es, en nuestra opinión, el más restrictivo. Un planteamiento inicial nos podría sugerir que limitar el tamaño de la malla dos dimensional, sin embargo se perdería información en aquellas configuraciones iniciales que excedieran el tamaño fijado de la malla. Para reducir el impacto de la finitud de la malla se ha estudiado la identificación de los bordes opuestos simulando un espacio \textit{infinito} que imita la superficie de un toro, obteniendo resultados favorables \cite{finitudMalla, finitudMalla2}. Pero no es necesario lidiar con los errores derivados de este planteamiento. Una implementación en nuestra opinión más \textit{literal} de la descripción formal del juego de vida, nos permite romper con el paradigma de la limitación de la malla. En lugar de almacenar en memoria la malla completa independientemente de su utilización, se almacenan las células dadas por coordenadas sobre la malla rectangular identificada con el plano cartesiano \cite{boardless}. Con dicha implementación el proceso de evolución viene dado en el algoritmo \ref{alg:normal}, el cual describimos a continuación: el vecindario de una célula se calcula sumando a sus coordenadas $(x,y)$ a cada uno de los puntos de este conjunto $\{(-1, 1),\ (0, 1),\ (1, 1),\ (-1, 0),\ (1, 0),\ (-1,-1),\ (0,-1),\ (1,-1)\}$ (algoritmo ):
+Este último punto es, en nuestra opinión, el más restrictivo. Un planteamiento inicial nos podría sugerir que limitar el tamaño de la malla dos dimensional, sin embargo se perdería información en aquellas configuraciones iniciales que excedieran el tamaño fijado de la malla. Para reducir el impacto de la finitud de la malla se ha estudiado la identificación de los bordes opuestos simulando un espacio \textit{infinito} que imita la superficie de un toro, obteniendo resultados favorables \cite{finitudMalla, finitudMalla2}. Pero no es necesario lidiar con los errores derivados de este planteamiento. Una implementación en nuestra opinión más \textit{literal} de la descripción formal del juego de vida, nos permite romper con el paradigma de la limitación de la malla. En lugar de almacenar en memoria la malla completa independientemente de su utilización, se almacenan los nodos ocupados, dados por coordenadas sobre la malla rectangular identificada con el plano cartesiano \cite{boardless}. La contrapartida de esta representación es que los nodos ocupados no son los únicos sobre los que se aplican las reglas, existen nodos vacíos sobre los que también se aplican. Así la implementación del proceso de evolución se puede desglosar en dos etapas:
+
+\begin{itemize}
+\item Calcular todos los nodos sobre los que se van a aplicar las reglas de evolución.
+\item Aplicar las reglas de evolución sobre cada nodo.
+\end{itemize}
+
+El algoritmo de la primera etapa es el siguiente (Algoritmo \ref{alg:pre}). Para cada nodo ocupado se genera su vecindario y en una tabla común a todos los nodos se apunta el número de veces que aparece cada nodo del vecindario. De esta manera en la tabla resultante tenemos enumerados cada nodo que va a evolucionar y el número de nodos ocupados en su vecindario. El vecindario de un nodo ocupado con coordenadas $(x,y)$ viene dado por el conjunto de posiciones que difieren del nodo en cuestión en una unidad como máximo:
 
 \begin{align*}
 \begin{array}{lcr}
-(x,\ y)+(-1,\ 1) & (x,\ y)+(0,\ 1) & (x,\ y)+(1,\ 1)\\
-(x,\ y)+(-1,\ 0) & (x,\ y) & (x,\ y)+(1,\ 0)\\
-(x,\ y)+(-1,-1) & (x,\ y)+(0,-1) & (x,\ y)+(1,-1)\\
+(x-1,\ y+1) & (x,\ y+1) & (x+1,\ y+1)\\
+(x-1,\ y) & (x,\ y) & (x+1,\ y)\\
+(x-1,\ y-1) & (x,\ y-1) & (x+1,\ y-1)\\
 \end{array} 
 \end{align*}
 
-Una vez calculado el vecindario de una célula, las células vivas en el vecindario se calculan como la intersección del vecindario con el conjunto de células vivas. Esta operación es de tiempo constante si se almacenan tanto las células vivas como el vecindario en estructuras de datos de tiempo de búsqueda constante, es decir, tablas hash. Tras el conteo de células vivas en el vecindario de una célula dada, es suficiente con aplicar la tabla de transición de estados \ref{tab:estados} para determinar el siguiente estado de la célula. Esta tabla está formada por dos columnas, la primera columna, \textit{Estado actual}, muestra en sus filas todos los estados posibles en los que puede encontrarse una célula. Por otra parte, la segunda columna, \textit{Siguiente estado}, contiene en su segunda fila múltiples columnas, una por cada posible número de vecinos que pueda tener una célula y las siguientes filas muestran cuál es el estado siguiente a los dados en las mismas filas de la primera columna respecto al número de vecinos que la célula tenga. 
 
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
-\hline
-Estado actual           & \multicolumn{9}{c|}{Siguiente estado}  \\ \hline
-\multirow{2}{*}{}       & \multicolumn{9}{c|}{Número de vecinos} \\ \cline{2-10} 
-                        & 0   & 1  & 2  & 3  & 4 & 5 & 6 & 7 & 8 \\ \hline
-\multicolumn{1}{|c|}{0} & 0   & 0  & 0  & 1  & 0 & 0 & 0 & 0 & 0 \\ \hline
-\multicolumn{1}{|c|}{1} & 0   & 0  & 1  & 1  & 0 & 0 & 0 & 0 & 0 \\ \hline
-\end{tabular}
-\caption{Tabla de transición de estados del juego de vida de Conway}
-\label{tab:estados}
-\end{table}
+\begin{algorithm}[H]
+\caption{Cálculo de los nodos sobre los que se van a aplicar las reglas de evolución}
+\label{alg:pre}
+\begin{algorithmic}
+\REQUIRE $occupiedNodes$ 
+\STATE $n \leftarrow [(-1, 1),\ (0, 1),\ (1, 1),\ (-1, 0),\ (1, 0),\ (-1,-1),\ (0,-1),\ (1,-1)]$
+\FORALL{$node \in occupiedNodes$}
+\FOR{$i=0$ \TO $8$}
+\STATE $neighborhoodNode = node + n[i]$
+\IF{ $neighborhoodNode \notin table$}
+\STATE $table[neighborhoodNode] = 1$
+\ELSE
+\STATE $table[neighborhoodNode] += 1$
+\ENDIF
+\ENDFOR
+\ENDFOR
+\RETURN $table$
+\end{algorithmic}
+\end{algorithm}
 
-\begin{algorithm}
-\caption{Evolución síncrona del estado de una célula}
+El proceso de evolución de cada nodo almacenado en la variable \textit{table} que devuelve el algoritmo de la etapa anterior se describe en el algoritmo \ref{alg:normal}.
+
+\begin{algorithm}[H]
+\caption{Evolución síncrona}
 \label{alg:normal}
 \begin{algorithmic}
-\REQUIRE $cells$
-\REQUIRE $transition\_table[0] \leftarrow [0,\ 0,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0]$
-\REQUIRE $transition\_table[1] \leftarrow [0,\ 1,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0]$
-\STATE $n \leftarrow [(-1, 1),\ (0, 1),\ (1, 1),\ (-1, 0),\ (1, 0),\ (-1,-1),\ (0,-1),\ (1,-1)]$
-\STATE $c \leftarrow cells.pop$
-\STATE $current\_state \leftarrow c.state$
-\FOR{$i=0$ \TO $8$}
-\STATE $n[i] = c + n[i]$
+\REQUIRE $table$
+\REQUIRE $occupiedNodes$
+\STATE $nextOccupiedNodes \leftarrow []$
+\FORALL{$node \in table$}
+\IF{($table[node] = 3$ \OR $table[node] = 2$) \AND $node\in ocuppiedNodes$}
+\STATE $nextOccupiedNodes.append(node)$
+\ELSIF{$table[node] = 3$ \AND $node\notin ocuppiedNodes$}
+\STATE $nextOccupiedNodes.append(node)$
+\ENDIF
 \ENDFOR
-\STATE $neighborhood \leftarrow cells\ \cap\ n$
-\STATE $a \leftarrow count(neighborhood)$
-\STATE $nextState \leftarrow transition\_table[current\_state][a]$
-\RETURN $nextState$
+\RETURN $nextOccupiedNodes$
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}
-\caption{Evolución $\alpha$-asíncrona del estado de una célula}
+Notar que existen algoritmos notablemente más complejos que el descrito en esta sección, como el algoritmo \textit{QuickLife}, el cual se utiliza en una implementación de software libre de un simulador de autómatas celulares llamado \textit{Golly} \cite{quicklife} o el algoritmo \textit{HashLife}. La idea principal de este último algoritmo se basa en el reconocimiento de configuraciones más pequeñas repetidas dentro de la configuración a la que se le están aplicando las reglas de evolución \cite{hashlife}. Nuestra elección viene motivada por la facilidad con la que se puede implementar, describir y modificar para más tarde representar la evolución $\alpha$-asíncrona.
+
+\section{Juego de vida de Conway $\alpha$-asíncrono}
+
+Antes de nada, es importante señalar que la modificación que el juego $\alpha$-asíncrono introduce en las iteraciones de actualización de los estados de los nodos de la malla, sólo afecta a éstos y no a las características de la propia malla.
+
+En un juego de vida $\alpha$-asíncrono cada nodo tiene probabilidad $\alpha$ de ser actualizado y probabilidad $1-\alpha$ de mantener su estado actual. Para ello se ha de generar, para cada nodo, un número pseudo-aleatorio de acuerdo a una distribución uniforme estándar. Si el número obtenido es superior a $\alpha$ las reglas se aplican tal y como están establecidas y, en caso contrario, no se hace, manteniendo el nodo su estado actual. Éste proceso se puede observar en detalle en el algoritmo \ref{alg:async}. Notar que si $\alpha=1$ el algoritmo de actualización $\alpha$-asíncrono coincide con el síncrono.
+
+\begin{algorithm}[H]
+\caption{Evolución $\alpha$-síncrona}
 \label{alg:async}
 \begin{algorithmic}
-\REQUIRE $cells$
-\REQUIRE $\alpha$
-\REQUIRE $transition\_table[0] \leftarrow [0,\ 0,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0]$
-\REQUIRE $transition\_table[1] \leftarrow [0,\ 1,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0]$
+\REQUIRE $table$
+\REQUIRE $occupiedNodes$
 \REQUIRE $getRandomNumber()$
-\ENSURE  $0< \alpha \leq 1$
+\ENSURE  $0 < \alpha \leq 1$
 \ENSURE $0< getRandomNumber() < 1$
-\STATE $n \leftarrow [(-1, 1),\ (0, 1),\ (1, 1),\ (-1, 0),\ (1, 0),\ (-1,-1),\ (0,-1),\ (1,-1)]$
-\STATE $c \leftarrow cells.pop$
-\STATE $current\_state \leftarrow c.state$
-\FOR{$i=0$ \TO $8$}
-\STATE $n[i] = c + n[i]$
-\ENDFOR
-\STATE $neighborhood \leftarrow cells\ \cap\ n$
-\STATE $a \leftarrow count(neighborhood)$
+\STATE $nextOccupiedNodes \leftarrow []$
+\FORALL{$node \in table$}
 \IF{ $getRandomNumber() < \alpha$ }
-\STATE $next\_state \leftarrow transition\_table[current\_state][a]$
-\ELSE
-\STATE $next\_state \leftarrow current\_state$
+\IF{($table[node] = 3$ \OR $table[node] = 2$) \AND $node\in ocuppiedNodes$}
+\STATE $nextOccupiedNodes.append(node)$
+\ELSIF{$table[node] = 3$ \AND $node\notin ocuppiedNodes$}
+\STATE $nextOccupiedNodes.append(node)$
 \ENDIF
-\RETURN $next\_state$
+\ENDIF
+\ENDFOR
+\RETURN $nextOccupiedNodes$
 \end{algorithmic}
 \end{algorithm}
-
-\section{Representación y actualización del juego de vida de Conway $\alpha$-asíncrono}
-
-Los comentarios realizados en la sección anterior son aplicables al juego de vida de Conway \textit{síncrono}, sin embargo para el juego $\alpha$-asíncrono hay que introducir una pequeña variación en el mecanismo de actualización que vamos a exponer en esta sección. Notar que la descripción de la representación interna de la malla comentada anteriormente se reutiliza en el juego $\alpha$-asíncrono, es decir, la perturbación introducida en la actualización no afecta a la malla rectangular.
-
-En un juego de vida $\alpha$-asíncrono cada célula tiene probabilidad $\alpha$ de ser actualizada y probabilidad $1-\alpha$ de mantener su estado actual, esto es, tiene probabilidad $\alpha$ de que se le aplique la tabla de transición de estados \ref{tab:estados}. A cada célula se le dota la capacidad de generar números pseudo-aleatorios de una distribución uniforme estándar. De esta manera cuando se va a consultar la tabla de transición de estados genera un número aleatorio, si éste es superior a $\alpha$ entonces consulta la tabla y en caso contrario no lo hace, manteniendo su estado actual. Éste proceso se puede observar en detalle en el algoritmo \ref{alg:async}. Notar que si $\alpha=1$ el algoritmo de actualización $\alpha$-asíncrono es equivalente al síncrono.
 
 \section{Configuraciones iniciales del juego de vida de Conway} \label{zoo}
 
-Dado que las configuraciones iniciales son muy diversas, han existido algunos esfuerzos por realizar una taxonomía de patrones pero no existe un consenso global y como consecuencia aceptamos la existencia de principalmente tres categorías. En este trabajo trataremos de caracterizar el comportamiento de configuraciones iniciales del juego de vida de Conway bajo la hipótesis de actualización $\alpha$-asíncrona. Nuestras elecciones de patrones está inicialmente motivada por la simplicidad de los mismos, que nos permite visualizar el impacto de la $\alpha$-asincronismo en la actualización. %y a continuación verificar si esta caracterización es extensible a todas las configuraciones iniciales de la misma categoría. 
+Como ya se ha indicado anteriormente, en este trabajo tratamos de caracterizar el comportamiento de configuraciones iniciales del juego de vida de Conway bajo la hipótesis de actualización $\alpha$-asíncrona. Nuestra elección de patrones iniciales está motivada por la simplicidad de los mismos, lo que nos permite visualizar de manera sencilla el impacto del $\alpha$-asincronismo.
 
+Dado que las configuraciones iniciales son muy diversas, han existido algunos esfuerzos por realizar una taxonomía de patrones, pero no existe un consenso global. A pesar de ello, hemos considerado la existencia de tres categorías principales que, a continuación, pasamos a describir.
+
+% hay que reestructurar esta parte para que las subcategorías desaparezcan y solo haya tres categorías grandes
 \subsection{Vidas inmóviles}
-Probablemente las vidas inmóviles sean las configuraciones con el comportamiento más simple y fácil de observar. Esta sección está extraída de las siguientes fuentes: \cite{stillLifeProblem},\cite{stillLifeTheory} y \cite{LikeWikiStill}.
+Probablemente las \textit{vidas inmóviles} sean las configuraciones con el comportamiento más simple y fácil de observar. Esta sección está extraída de las siguientes fuentes: \cite{stillLifeProblem},\cite{stillLifeTheory} y \cite{LikeWikiStill}.
 
 %\begin{defi}
 %Una vida inmóvil es una configuración inicial que permanece en cada iteración, esto es, fijado $n\in\mathds{N}$, se verifica que $z = C^n_0(z) = C^n_t(z)$ para todo $t \leq n$.
 %\end{defi}
 
-\begin{defi}
-Una vida inmóvil es una configuración inicial que permanece inmutada en cada iteración.
-\end{defi}
-
-Distinguimos tres tipos de vidas inmóviles:
-
-\begin{defi}
-Una vida inmóvil estricta es aquella vida inmóvil tal que al eliminar una de sus células vivas deja de ser una vida inmóvil.
-\end{defi}
-
-A continuación mostramos ejemplos de estos tipos de vidas inmóviles en la \autoref{fig:congIniciales}. La \autoref{fig:2-1} es una vida inmóvil estricta pues todos los elementos dependen entre sí los unos de los otros, la \autoref{fig:2-2} nuevo es también una vida inmóvil estricta a pesar de que contenga a otra vida inmóvil estricta y la \autoref{fig:2-3} es también una vida inmóvil estricta pues el patrón de la mitad horizontal derecha conserva su estabilidad gracias a su homólogo reflejado de la mitad horizontal izquierda y al alterar el estado de cualquier célula viva se pierde la estabilidad.
+Una \textit{vida inmóvil} es una configuración inicial que permanece inalterada en su evolución. A continuación mostramos ejemplos de estos tipos de vidas inmóviles en la \autoref{fig:inmoviles}. La \autoref{fig:2-1} es una \textit{vida inmóvil} en la que todos los nodos ocupados dependen entre sí los unos de los otros, si alguno se queda libre entonces la configuración deja de serlo. Análogamente, en la \autoref{fig:2-2} la mitad horizontal derecha conserva su estabilidad gracias a su homólogo reflejado de la mitad horizontal izquierda y al alterar el estado de cualquier nodo ocupado dicha estabilidad se desvanece. Por último, la \autoref{fig:2-3} es una \textit{vida inmóvil} y a su vez contiene a otra \textit{vida inmóvil}.
 
 \begin{figure}[H]
 	\centering
@@ -130,60 +162,39 @@ A continuación mostramos ejemplos de estos tipos de vidas inmóviles en la \aut
     \quad
 	\begin{subfigure}[b]{0.3\linewidth} 
         \centering
-        \includegraphics[height=.5\linewidth]{./images/beehive_with_tail.png}
+        \includegraphics[height=.5\linewidth]{./images/table_on_table.png}
         \caption{}
         \label{fig:2-2}
     \end{subfigure}
 	\\    
     \begin{subfigure}[b]{0.3\linewidth} 
         \centering
-        \includegraphics[height=0.5\linewidth]{./images/table_on_table.png}
+        \includegraphics[height=0.5\linewidth]{./images/beehive_with_tail.png}
         \caption{}
         \label{fig:2-3}
-    \end{subfigure}
-	\caption{Ejemplos de vidas inmóviles estrictas del juego de vida de Conway.}
-	\label{fig:congIniciales}
-\end{figure} 
-
-\begin{defi}
-Una vida pseudo inmóvil es una vida inmóvil que puede ser particionada en vidas inmóviles independientes, es decir, la estabilidad de una de ellas no depende de la presencia de las otras. Además debe de existir al menos una célula muerta por superpoblación (más de tres vecinos vivos) que al particionar en vidas inmóviles independientes la célula continúe muerta por soledad (menos de tres vecinos vivos).
-\end{defi}
-
-Las vidas inmóviles que particionan a una vida pseudo inmóvil pueden ser a su vez vidas pseudo inmóviles \autoref{fig:bisnake} o vidas inmóviles estrictas \autoref{fig:biblock}. Notar que una vida inmóvil puede estar formada por varias vidas inmóviles y aún así ser una vida estrictamente inmóvil (y no pseudo inmóvil) en caso de que dependan entre sí para mantener su estabilidad como en la \autoref{fig:2-3}.
-
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}[b]{0.3\linewidth} 
-        \centering
-        \includegraphics[height=.35\linewidth]{./images/biblock.png}
-        \caption{}
-        \label{fig:biblock}
     \end{subfigure}
     \quad
 	\begin{subfigure}[b]{0.3\linewidth} 
         \centering
-        \includegraphics[height=\linewidth]{./images/bisnake.png}
+        \includegraphics[height=.35\linewidth]{./images/biblock.png}
         \caption{}
-        \label{fig:bisnake}
+        \label{fig:2-4}
     \end{subfigure}
-	\caption{Ejemplos de vidas pseudo inmóviles del juego de vida de Conway.}
-	\label{fig:congIniciales2}
+	\caption{Algunas vidas inmóviles del juego de vida de Conway.}
+	\label{fig:inmoviles}
 \end{figure} 
 
-\begin{defi}
-Una vida quasi inmóvil es una vida inmóvil que puede ser particionada en vidas inmóviles independientes, es decir, la estabilidad de una de ellas no depende de la presencia de las otras. Además existen células que tanto en la configuración inicial como en las vidas inmóviles independientes se mantengan muertas por soledad (menos de tres vecinos vivos). 
-\end{defi}
 
-Notar que la \autoref{fig:biblock} no es una vida quasi inmóvil y sin embargo \autoref{fig:bimoved} sí. Este tipo de vida inmóvil está habitualmente formada por dos vidas inmóviles que comparten una diagonal.
+Notar que pueden estar formadas a su vez por varias \textit{vida inmóvil} y que o bien dependan entre sí para mantener su estabilidad como en la \autoref{fig:2-3}, o bien sean independientes y al eliminar algunas de ellas la estabilidad se mantenga como en la \autoref{fig:2-4}. También existen \textit{vida inmóvil} que pueden ser separadas en vidas inmóviles independientes y que además existan nodos vacíos que tanto en la configuración inicial como en las \textit{vidas inmóviles} independientes se mantengan así. Un ejemplo de esta situación se pueden observar en \autoref{fig:bimoved}.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=.2\linewidth]{./images/bimoved.png}
-	\caption{Configuración inicial que en el centro tiene una célula que se mantiene muerta por soledad tanto en las vidas inmóviles independientes como en el total.}
+	\caption{Configuración inicial que en el centro hay un nodo vacío que se mantiene tanto en las \textit{vidas inmóviles} independientes como en el total.}
 	\label{fig:bimoved}
 \end{figure} 
 
-Por último, cabría preguntarse el problema de dado un número finito de células, ¿cuántas vidas inmóviles existen? Dicho problema ha sido resuelto para vidas inmóviles estrictas y pseudo inmóviles de hasta 32 células, como se puede consultar en \cite{countStillLifes} y en \cite{countPseudoStillLifes}.
+Por último, cabría preguntarse el problema de dado un número finito de nodos ocupados, ¿cuántas \textit{vidas inmóviles} existen? Dicho problema ha sido resuelto para \textit{vidas inmóviles} de hasta 32 nodos ocupados, como se puede consultar en \cite{countStillLifes}.
 
 \subsection{Osciladores}
 
@@ -191,13 +202,9 @@ Por último, cabría preguntarse el problema de dado un número finito de célul
 %Un oscilador es una configuración inicial $z$ finita y no vacía que se repite tras la aplicación de $k$ veces de la función de transición global, esto es, fijado $n\in\mathds{N}$, se verifica que existe $k>1, \in\mathds{N}$ tal que $C^n_t(z) = C^n_{t+k}(z)$ para todo $t \leq n-k$ y diremos que $k$ es el periodo del oscilador.
 %\end{defi}
 
-\begin{defi}
-Un oscilador es una configuración inicial que tras un número fijo de iteraciones se repite en la misma posición, al número de iteraciones se le conoce por periodo del oscilador.
-\end{defi}
+Un \textit{oscilador} es una configuración inicial que tras un número fijo de iteraciones se repite en la misma posición, al número de iteraciones se le conoce por periodo del \textit{oscilador}. En particular, las vidas inmóviles pueden ser interpretadas como \textit{osciladores} de periodo una iteración.
 
-Notar que las vidas inmóviles pueden ser interpretadas como osciladores de periodo una iteración.
-
-En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de periodo dos, a lo largo de tres iteraciones. Por un lado la \autoref{fig:blinker1}, \autoref{fig:blinker2} y \autoref{fig:blinker3} son tres iteraciones de la configuración inicial nombrada \textit{blinker} y por otro la \autoref{fig:toad1}, \autoref{fig:toad2} y \autoref{fig:toad3} son tres iteraciones de la configuración inicial \textit{toad}.
+En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de periodo dos, durante tres iteraciones. Por un lado la \autoref{fig:blinker1}, \autoref{fig:blinker2} y \autoref{fig:blinker3} son tres iteraciones de la configuración inicial nombrada \textit{blinker} y por otro la \autoref{fig:toad1}, \autoref{fig:toad2} y \autoref{fig:toad3} son tres iteraciones de la configuración inicial \textit{toad}.
 
 \begin{figure}[H]
 	\centering
@@ -240,7 +247,7 @@ En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de pe
         \caption{}
         \label{fig:toad3}
     \end{subfigure}
-	\caption{Primeras 3 iteraciones de 2 osciladores de periodo 2 del juego de vida de Conway.}
+	\caption{Primeras 3 iteraciones de 2 \textit{osciladores} de periodo 2 del juego de vida de Conway.}
 	\label{fig:congIniciales3}
 \end{figure} 
 
@@ -250,16 +257,12 @@ En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de pe
 %Una  nave espacial es una configuración inicial $z$ finita y no vacía que se repite tras la aplicación de $k$ veces de la función de transición global pero en una posición distinta, esto es, fijado $n\in\mathds{N}$, se verifica que existen $k\in\mathds{N}$ y una traslación distinta de la identidad, $\phi:\mathds{Z}^2\to\mathds{Z}^2$, tal que $C^n_t(z) = \phi(C^n_{t+k}(z))$ para todo $t \leq n-k$ y diremos que $k$ es el periodo de la nave espacial.
 %\end{defi}
 
-\begin{defi}
-Una  nave espacial es una configuración inicial es una configuración inicial que tras un número fijo de iteraciones se repite pero en una posición desplazada.
-\end{defi}
-
-Notar que las naves espaciales pueden ser vistas como osciladores que en el periodo de oscilación se desplazan. Dado que este tipo de configuraciones iniciales se desplaza sobre la malla rectangular es interesante considerar la velocidad con la que lo hacen. Si una configuración inicial se desplaza $(x, y)$ unidades cada periodo de longitud $n$, la velocidad de desplazamiento de la nave espacial es: $$
- v = \frac{\max\{|x|,|y|\}c}{k}
+Una \textit{nave espacial} es una configuración inicial es una configuración inicial que tras un número fijo de iteraciones se repite pero en una posición desplazada. Particularmente, pueden ser vistas como osciladores que en el periodo de oscilación se desplazan. Dado que este tipo de configuraciones iniciales se desplaza sobre la malla rectangular es interesante considerar la velocidad con la que lo hacen. Si una configuración inicial se desplaza $(x, y)$ unidades cada periodo de longitud $n$, la velocidad de desplazamiento de la nave espacial es: $$
+ v = \frac{\max\{|x|,|y|\}}{k}
 $$ 
-y su pendiente es $x/y$, donde $c$ es la velocidad máxima teórica, esto es, un desplazamiento por iteración. Curiosamente se ha probado que para cada pendiente existe una nave espacial con dicha pendiente \cite{pendienteNaves}.
+y su pendiente es $x/y$.  $c$ es la velocidad máxima teórica, esto es, un desplazamiento por iteración. Curiosamente se ha probado que para cada pendiente existe una \textit{nave espacial} con dicha pendiente \cite{pendienteNaves}.
 
-En la \autoref{fig:congIniciales4} encontramos dos naves espaciales que se desplazan en distintas direcciones. La \autoref{fig:glider} es la nave espacial más pequeña conocida de velocidad $c/4$ y su desplazamiento es diagonal y la \autoref{fig:lightweightspaceship} es la más pequeña conocida de velocidad $c/2$ y su desplazamiento es horizontal.
+En la \autoref{fig:congIniciales4} encontramos dos \textit{naves espaciales} que se desplazan en distintas direcciones. La \autoref{fig:glider} es la \textit{nave espacial} más pequeña conocida de velocidad $c/4$ y su desplazamiento es diagonal y la \autoref{fig:lightweightspaceship} es la más pequeña conocida de velocidad $c/2$ y su desplazamiento es horizontal.
 
 \begin{figure}[H]
 	\centering
@@ -276,9 +279,10 @@ En la \autoref{fig:congIniciales4} encontramos dos naves espaciales que se despl
         \caption{}
         \label{fig:lightweightspaceship}
     \end{subfigure}
-	\caption{Ejemplos de vidas pseudo inmóviles del juego de vida de Conway.}
+	\caption{Algunas \textit{naves espaciales} del juego de vida de Conway.}
 	\label{fig:congIniciales4}
 \end{figure} 
+
 
 \subsection{Selección de configuraciones iniciales} \label{seleccion}
 
@@ -344,7 +348,7 @@ Ranking & Nombre                          & Periodo & Ocurrencias    \\ \hline
 
 % aquí hay que exponer que se descartan las vidas inmóviles porque no se ven afectadas por la perturbación de la actualización
 
-\section{Características medidas sobre las simulaciones} \label{vars}
+\section{Simulaciones} \label{vars}
 
 Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación exponemos. Nuestras variables de interés son:
 
