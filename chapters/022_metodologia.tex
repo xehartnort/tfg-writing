@@ -11,25 +11,25 @@ En primer lugar introducimos el autómata celular m-asíncrono que nos permite a
 \section{Teoría de la computación}
 
 \subsection{Introducción}
-Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o bien a casos particulares de asíncronicidad. Tomaremos el concepto de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada iteración escoge las células que tienen que ser actualizadas. Dicho oráculo se implementa a través de una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
+Dado que el comportamiento completamente síncrono de un autómata celular como herramienta de modelado es una rareza, se han realizado numerosas investigaciones empíricas del autómata celular asíncrono. Sin embargo, los pocos análisis formales realizados o bien se refieren a ejemplos o bien a casos particulares de asíncronicidad. Tomaremos el concepto de autómata celular $m$-asíncrono \cite{oraculo}, cuya idea principal es tener algún tipo de oráculo el cual en cada iteración escoge los nodos que tienen que ser actualizados. Dicho oráculo se implementa a través de una medida de probabilidad $\mu$ sobre subconjuntos de enteros d-dimensionales, $\mathds{Z}^{d}$. Notar que la definición con la que trataremos es la extensión a espacios multidimensionales de la dada en \cite{oraculo}.
 
 \subsection{Autómata celular determinista}
-Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados células. Cada célula está conectada uniformemente a un vecindario formado por un número finito de células, tiene un estado de un conjunto finito de estados y actualiza su estado de acuerdo a una función de transición local, la cual determina el siguiente estado de una célula considerando su propio estado y el de su vecindario. 
+Un autómata celular determinista es un sistema dinámico discreto consistente en un array $d$-dimensional de autómatas finitos, llamados nodos. Cada nodo está conectado uniformemente a un vecindario formado por un número finito de nodos, tiene un estado de un conjunto finito de estados y actualiza su estado de acuerdo a una función de transición local, la cual determina el siguiente estado de un nodo considerando su propio estado y el de su vecindario. 
 
 \begin{defi}
 Formalmente, la tupla $A=(\mathds{Z}^{d}, N, Q, f)$ es un autómata celular determinista, de ahora en adelante autómata celular, donde:
 
 \begin{itemize}
-\item $\mathds{Z} ^{d}$ es un espacio de células $d$-dimensional.
-\item $Q$ el conjunto de estados posibles para cada célula.
-\item $N \in (\mathds{Z}^{d})^{k}$ es el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ célula, cada célula en $\{(a+n_{1},...,a+n_{k})\}$ es una célula vecina de $a$.
-\item $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada célula como función de su propio estado y del estado de cada célula en su vecindario. 
+\item $\mathds{Z} ^{d}$ es un espacio $d$-dimensional.
+\item $Q$ el conjunto de estados posibles para cada nodo.
+\item $N \in (\mathds{Z}^{d})^{k}$ es el vecindario genérico de un autómata celular, esto es, para $N=(n_{1},...,n_{k})$, $a \in \mathds{Z} ^{d}$ nodo, cada nodo ocupado en $\{(a+n_{1},...,a+n_{k})\}$ es un nodo ocupado vecino de $a$.
+\item $f:Q^{k+1} \rightarrow Q$ es la función de transición local que define la transición de estado de cada nodo como función de su propio estado y del estado de cada nodo ocupado en su vecindario. 
 \end{itemize}
 
 \end{defi}
 
 \begin{defi}
-Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuración lo notaremos $Q^{\mathds{Z}^{d}}$. Entenderemos por configuración inicial, a aquella configuración a la que aún no se le ha aplicado la función de transición global.
+Una configuración es una función $g: \mathds{Z}^{d} \rightarrow Q$, la cual a cada punto del espacio $\mathds{Z}^{d}$ le asigna un estado del conjunto de estados $Q$, al conjunto de las configuraciones lo notaremos $Q^{\mathds{Z}^{d}}$. Entenderemos por configuración inicial, a aquella a la que aún no se le ha aplicado la función de transición global.
 \end{defi}
 
 \begin{defi}
@@ -39,7 +39,7 @@ $$
 $$
 \end{defi}
 
-Nos gustaría poder plasmar la intuición de que una célula tenga la misma probabilidad de ser actualizada independientemente o no del resto de células actualizadas en cada iteración. El concepto de ultrafiltro nos permitirá establecer una clase de autómata celular lo suficientemente general como para abarcar los nuevos tipos de autómatas celulares que introduciremos en posteriores secciones. 
+Nos gustaría poder plasmar la intuición de que un nodo tenga la misma probabilidad de ser actualizada independientemente o no del resto de nodos actualizados en cada iteración. El concepto de ultrafiltro nos permitirá establecer una clase de autómata celular lo suficientemente general como para abarcar los nuevos tipos de autómatas celulares que introduciremos en posteriores secciones. 
 
 Dado un conjunto X, $\mathcal{P}(X)$ denota el conjunto de todos los subconjuntos de X. Dado $A \in \mathcal{P}(X)$, notaremos su complementario $A^{c}$. 
 \begin{defi}
@@ -79,7 +79,7 @@ Para cada función de transición local $f$ y cada conjunto $\tau \in \mathcal{P
 Es decir, $F_{\tau}$ aplica la función de transición local solo sobre los elementos de $\tau \subset \mathds{Z}^{d}$. 
 \end{defi}
 
-Notar que cada célula $i \in \mathds{Z}^{d}$ es actualizada con probabilidad $\mu(U_{i})$.
+Notar que cada nodo $i \in \mathds{Z}^{d}$ es actualizado con probabilidad $\mu(U_{i})$.
 
 Esta nueva definición de autómata celular $m$-asíncrono, incluye la de autómata celular síncrono. Fijada una $\sigma$-álgebra $\mathds{B}$ sobre $\mathds{Z}^{d}$ y sea $C_{0}=(A, \mu_{0})$ un autómata celular $m$-asíncrono donde $\mu_{0}: \mathds{B} \rightarrow [0,1]$ viene dada por: 
 
@@ -94,7 +94,7 @@ Esta nueva definición de autómata celular $m$-asíncrono, incluye la de autóm
 
 De esta manera, $\mu_{0}(\{\mathds{Z}^{d}\})=1$ y por lo tanto, en cada instante de tiempo se aplicará la función de transición local sobre $\mathds{Z}^{d}$.
 
-Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante se aplica la función de transición local a una sola célula. 
+Por otro lado, también contiene el concepto de evolución totalmente asíncrona comentado en la introducción, esto es, en cada instante se aplica la función de transición local a un solo nodo. 
 
 \begin{defi}
 Consideramos ahora el autómata celular $m$-asíncrono $C=(A, \mu_{1})$ donde $\mu_{1}: \mathds{B} \rightarrow [0,1]$ verifica lo siguiente:
@@ -109,7 +109,7 @@ Así solo los ultrafiltros de la forma $\{k\}$ $(k \in \mathds{Z}^{d})$ se les a
 
 Por último, contiene el concepto de evolución $\alpha$-asíncrona que nos interesa. 
 \begin{defi} \label{alhpaasin}
-Dado $C=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan las células, donde $\mu_{2}: \mathds{B} \to [0,1]$ satisface:
+Dado $C=(A, \mu_{2})$ un autómata celular $m$-asíncrono y sea $\alpha \in (0,1)$ la probabilidad con la que se actualizan los nodos, donde $\mu_{2}: \mathds{B} \to [0,1]$ satisface:
 
 \begin{enumerate}
 \item $\mu_{2}(U_{i}) = \alpha, \quad \forall i \in \mathds{Z}^{d}$.
@@ -122,7 +122,7 @@ y lo notaremos $C(\alpha)$.
 
 \begin{defi}  \label{original}
 El juego de vida de Conway es un autómata celular síncrono: $$
-C = (\mathds{Z}^{2}, N, Q, f)
+\mathds{A} = (\mathds{Z}^{2}, N, Q, f)
 $$
 donde
 \begin{itemize}
@@ -138,14 +138,33 @@ f(x)= \left\{ \begin{array}{lcc}
              \end{array}
    \right. 
 \end{equation}
-y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ célula.
+y $x = (x_{0}, x_{1}, ...,x_{8}) = (c,c+n_{1},...,c+n_{8})$ con $c \in \mathds{Z} ^{d}$ nodo.
 
 \end{itemize}
 \end{defi}
 
+\subsubsection{Configuraciones iniciales}
+
+Fijada una configuración inicial $z\in Q^{\mathds{Z}^{2}}$, enteremos por ejecución o simulación del juego de vida de Conway de duración $n \in \mathds{N} \cup \{ \infty\}$ al resultado de aplicar $n$ veces la función de transición global del juego de vida de Conway a la configuración inicial y lo notaremos $\mathds{A}_{n}(z)$. Sea $t$ tal que $1 \leq t \leq n$, diremos que es el instante $t$ de la ejecución del juego de vida de Conway de duración $t$, el resultado de aplicar $t$ veces la función de transición global a una configuración inicial $z$ y lo notaremos $\mathds{A}^t_n(z)$. Por último, los conjuntos de puntos $\mathds{A}^{t'}_{n'}(z')$, $\mathds{A}^{t}_{n}(z)$ serán iguales, si los conjuntos de nodos ocupados de cada simulación lo son. 
+
+%De la misma manera, entenderemos por ejecución o simulación del juego de vida de Conway $\alpha$-asíncrono de duración $n$ al resultado de aplicar $n$ veces la función de transición global a la configuración inicial $z$ y lo notaremos $mathds{A}_{n}(z)(\alpha)$ donde $\alpha$ es un número real en el intervalo $(0,1)$.
+
+
+\begin{defi}
+Una \textit{vida inmóvil} es una configuración inicial que permanece en cada iteración, esto es, fijado $n\in\mathds{N}$, se verifica que $z = \mathds{A}^n_0(z) = \mathds{A}^n_t(z)$ para todo $t \leq n$.
+\end{defi}
+
+\begin{defi}
+Un \textit{oscilador} es una configuración inicial $z\in Q^{\mathds{Z}^{2}}$ que se repite tras la aplicación de $k$ veces de la función de transición global, esto es, fijado $n\in\mathds{N}$, se verifica que existe $k>1, \in\mathds{N}$ tal que $\mathds{A}^n_t(z) = \mathds{A}^n_{t+k}(z)$ para todo $t \leq n-k$ y diremos que $k$ es el periodo del \textit{oscilador}.
+\end{defi}
+
+\begin{defi}
+Una \textit{nave espacial} es una configuración inicial $z\in Q^{\mathds{Z}^{2}}$ que se repite tras la aplicación de $k$ veces de la función de transición global pero en una posición distinta, esto es, fijado $n\in\mathds{N}$, se verifica que existen $k\in\mathds{N}$ y una traslación distinta de la identidad, $\phi:\mathds{Z}^2\to\mathds{Z}^2$, tal que $\mathds{A}^n_t(z) = \phi(\mathds{A}^n_{t+k}(z))$ para todo $t \leq n-k$ y diremos que $k$ es el periodo de la \textit{nave espacial}.
+\end{defi}
+
 \subsection{Juego de vida de Conway $\alpha$-asíncrono}
 \begin{defi}
-El juego de vida de Conway $\alpha$-asíncrono es un autómata celular $m$-asíncrono formado por $C=(\mathds{Z}^{2}, N, Q, f)$, el autómata celular síncrono definido anteriormente \ref{original}, y una medida de probabilidad $\mu: \mathds{B} \rightarrow [0,1]$ verificando las condiciones expuestas en \ref{alhpaasin} para $\alpha \in (0,1)$. 
+El juego de vida de Conway $\alpha$-asíncrono es un autómata celular $m$-asíncrono $\mathds{A}_\alpha=(\mathds{A}, \mu)$ donde $\mathds{A}$ es el autómata celular síncrono del juego de vida de Conway, $\mu: \mathds{B} \rightarrow [0,1]$ una medida de probabilidad verificando las condiciones expuestas en \ref{alhpaasin} y $\alpha \in (0,1)$. 
 \end{defi}
 
 

@@ -4,11 +4,11 @@
 
 \chapter{Aproximación conceptual}
 
-En este capítulo daremos una descripción conceptual del universo del juego de vida de Conway, junto con la descripción del juego de vida de Conway $\alpha$-asíncrono. Con éste contexto, se describirán en qué han consistido las simulaciones y sobre qué configuraciones iniciales se han realizado.
+En este capítulo daremos una descripción conceptual del universo del juego de vida de Conway junto con la del juego de vida de Conway $\alpha$-asíncrono. En este contexto se describe en qué han consistido las simulaciones y sobre qué configuraciones iniciales se han realizado.
 
 \section{Juego de vida de Conway}
 
-Una configuración del juego de vida de Conway es la disposición sobre la malla de un conjunto de células. Por tanto una configuración inicial hace referencia a la disposición inicial de células sobre las que aún no se han aplicado las reglas de evolución. De esta manera cada nodo de la malla tiene dos estados posibles: vacío (0) o  ocupado (1). 
+Una configuración del juego de vida de Conway es la disposición sobre la malla de un conjunto de nodos ocupados. Por tanto una configuración inicial hace referencia a la disposición inicial de nodos ocupados sobre las que aún no se han aplicado las reglas de evolución. De esta manera cada nodo de la malla tiene dos estados posibles: vacío (0) o  ocupado (1). 
 
 Las reglas de evolución que se aplican en cada iteración simultáneamente a todos los nodos de la malla son las siguientes:
 \begin{itemize}
@@ -25,16 +25,14 @@ En lo que hemos interpretado como un sentido \textit{biológico}, las reglas se 
 
 La elección de las reglas de evolución parecería \textit{a priori} aleatoria, sin embargo, Conway las escogió aplicando las siguientes pautas \cite{libroGardner}:
 \begin{itemize}
-	\item No debe existir una disposición inicial de células para la cual haya una \textit{prueba simple} de que la población crezca sin límite. Esto es, no debe de ser posible predecir fácilmente la evolución de una configuración inicial.
-	\item Debe haber disposiciones iniciales de células que aparentemente crezcan sin límite. 
-	\item Debe haber disposiciones iniciales de células \textit{sencillas} que crezcan y cambien durante un periodo relativamente largo, llegando a tres posibles finales: desaparecer completamente ya sea debido a superpoblación o a dispersión, estabilizarse en una configuración que se mantenga constante o entrar en un ciclo sin fin de oscilación.
+	\item No debe existir una disposición inicial de nodos ocupados para la cual haya una \textit{prueba simple} de que la población crezca sin límite. Esto es, no debe de ser posible predecir fácilmente la evolución de una configuración inicial.
+	\item Debe haber disposiciones iniciales de nodos ocupados que aparentemente crezcan sin límite. 
+	\item Debe haber disposiciones iniciales de nodos ocupados \textit{sencillas} que crezcan y cambien durante un periodo relativamente largo, llegando a tres posibles finales: desaparecer completamente ya sea debido a superpoblación o a dispersión, estabilizarse en una configuración que se mantenga constante o entrar en un ciclo sin fin de oscilación.
 \end{itemize}
 
 Sin embargo las reglas que proporcionó Conway no son las únicas que muestran evoluciones interesantes. La siguiente notación nos es útil para expresar distintas reglas de evolución abreviadamente. La reglas de evolución vienen dadas en la forma \textit{Bx/Sy} donde \textit{y} define el número de nodos ocupados en el vecindario para que un nodo ocupado se mantenga y \textit{x} el número de nodos ocupados en el vecindario para que un nodo vacío se ocupe. Por ejemplo, para el juego de vida es B3/S23. Destacamos la regla B1357/S1357 conocida como \textit{Edward Fredkin's replicating automaton}, en la cual cada configuración es eventualmente reemplazada por múltiples copias de sí misma, la regla B3/S12345 conocida como \textit{Maze}, genera configuraciones similares a laberintos, una variación muy curiosa es que si añadimos el número 7 a la parte \textit{B} es posible observar como un nodo ocupado recorre el laberinto y la regla B3/S012345678 conocida como \textit{Life without Death}, en la cual los nodos ocupados nunca se vacían, se caracteriza por un crecimiento caótico y la aparición de configuraciones similares a escaleras que pueden ser usadas para simular circuitos booleanos \cite{regla1}.
 
 %Estaría muy bien añadir imágenes aquí pero me va a tomar un ratete hacerlo.
-
-%Fijada una configuración inicial $z$, enteremos por ejecución o simulación del juego de vida de Conway de duración $n \in \mathds{N} \cup \{ \infty\}$ al resultado de aplicar $n$ veces la función de transición global del juego de vida de Conway a la configuración inicial y lo notaremos $C_{n}(z)$. Sea $t$ tal que $1 \leq t \leq n$, diremos que es el instante $t$ de la ejecución/simulación/experimento del juego de vida de Conway de duración $t$, el resultado de aplicar $t$ veces la función de transición global a una configuración inicial $z$ y lo notaremos $C^t_n(z)$. Por último, los conjuntos de puntos $C^{t'}_{n'}(z')$, $C^{t}_{n}(z)$ si los conjuntos de células de cada simulación son idénticos. De la misma manera, entederemos por ejecución o simulación del juego de vida de Conway $\alpha$-asíncrono de duración $n$ al resultado de aplicar $n$ veces la función de transición global a la configuración inicial $z$ y lo notaremos $C_{n}(z)(\alpha)$ donde $\alpha$ es un número real en el intervalo $(0,1)$.
 
 \subsection{Representación interna y actualización}
 
@@ -145,10 +143,6 @@ Dado que las configuraciones iniciales son muy diversas, han existido algunos es
 \subsection{Vidas inmóviles}
 Probablemente las \textit{vidas inmóviles} sean las configuraciones con el comportamiento más simple y fácil de observar. Esta sección está extraída de las siguientes fuentes: \cite{stillLifeProblem},\cite{stillLifeTheory} y \cite{LikeWikiStill}.
 
-%\begin{defi}
-%Una vida inmóvil es una configuración inicial que permanece en cada iteración, esto es, fijado $n\in\mathds{N}$, se verifica que $z = C^n_0(z) = C^n_t(z)$ para todo $t \leq n$.
-%\end{defi}
-
 Una \textit{vida inmóvil} es una configuración inicial que permanece inalterada en su evolución. A continuación mostramos ejemplos de estos tipos de vidas inmóviles en la \autoref{fig:inmoviles}. La \autoref{fig:2-1} es una \textit{vida inmóvil} en la que todos los nodos ocupados dependen entre sí los unos de los otros, si alguno se queda libre entonces la configuración deja de serlo. Análogamente, en la \autoref{fig:2-2} la mitad horizontal derecha conserva su estabilidad gracias a su homólogo reflejado de la mitad horizontal izquierda y al alterar el estado de cualquier nodo ocupado dicha estabilidad se desvanece. Por último, la \autoref{fig:2-3} es una \textit{vida inmóvil} y a su vez contiene a otra \textit{vida inmóvil}.
 
 \begin{figure}[H]
@@ -194,13 +188,11 @@ Notar que pueden estar formadas a su vez por varias \textit{vida inmóvil} y que
 	\label{fig:bimoved}
 \end{figure} 
 
-Por último, cabría preguntarse el problema de dado un número finito de nodos ocupados, ¿cuántas \textit{vidas inmóviles} existen? Dicho problema ha sido resuelto para \textit{vidas inmóviles} de hasta 32 nodos ocupados, como se puede consultar en \cite{countStillLifes}.
+Cabría preguntarse el problema de dado un número finito de nodos ocupados, ¿cuántas \textit{vidas inmóviles} diferentes existen? Dicho problema ha sido resuelto para \textit{vidas inmóviles} de hasta 32 nodos ocupados, como se puede consultar en \cite{countStillLifes}.
+
+Por último, hemos observado experimentalmente que las \textit{vidas inmóviles} se mantienen inalteradas también en el juego de vida $\alpha$-asíncrono. Ya que si se actualiza alguno de sus nodos, éste permanece en el mismo estado y si no se actualiza, también. Por tanto podemos concluir que la categoría de \textit{vidas inmóviles} no se ve alterada por la introducción de la evolución $\alpha$-asíncrona. Notar que esto no quiere decir cuando una vida inmóvil colisione con otros tipos de configuraciones se mantenga inalterada. Sin embargo, existen \textit{vidas inmóviles} que cuando colisionan con cierto tipo de naves espaciales generan la destrucción de las mismas y tras algunas iteraciones la configuración vuelve a ser inmóvil. Este tipo de vidas inmóviles se les conoce como \textit{eaters} y existen algunos que mientras que se da la interacción con una configuración, la cual más tarde desaparece, se mantienen en todo el proceso de desaparición inalterados \cite{eater}. 
 
 \subsection{Osciladores}
-
-%\begin{defi}
-%Un oscilador es una configuración inicial $z$ finita y no vacía que se repite tras la aplicación de $k$ veces de la función de transición global, esto es, fijado $n\in\mathds{N}$, se verifica que existe $k>1, \in\mathds{N}$ tal que $C^n_t(z) = C^n_{t+k}(z)$ para todo $t \leq n-k$ y diremos que $k$ es el periodo del oscilador.
-%\end{defi}
 
 Un \textit{oscilador} es una configuración inicial que tras un número fijo de iteraciones se repite en la misma posición, al número de iteraciones se le conoce por periodo del \textit{oscilador}. En particular, las vidas inmóviles pueden ser interpretadas como \textit{osciladores} de periodo una iteración.
 
@@ -253,14 +245,10 @@ En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de pe
 
 \subsection{Naves espaciales} \label{spaceships}
 
-%\begin{defi}
-%Una  nave espacial es una configuración inicial $z$ finita y no vacía que se repite tras la aplicación de $k$ veces de la función de transición global pero en una posición distinta, esto es, fijado $n\in\mathds{N}$, se verifica que existen $k\in\mathds{N}$ y una traslación distinta de la identidad, $\phi:\mathds{Z}^2\to\mathds{Z}^2$, tal que $C^n_t(z) = \phi(C^n_{t+k}(z))$ para todo $t \leq n-k$ y diremos que $k$ es el periodo de la nave espacial.
-%\end{defi}
-
-Una \textit{nave espacial} es una configuración inicial es una configuración inicial que tras un número fijo de iteraciones se repite pero en una posición desplazada. Particularmente, pueden ser vistas como osciladores que en el periodo de oscilación se desplazan. Dado que este tipo de configuraciones iniciales se desplaza sobre la malla rectangular es interesante considerar la velocidad con la que lo hacen. Si una configuración inicial se desplaza $(x, y)$ unidades cada periodo de longitud $n$, la velocidad de desplazamiento de la nave espacial es: $$
+Una \textit{nave espacial} es una configuración inicial que tras un número fijo de iteraciones se repite pero en una posición desplazada. Particularmente, pueden ser vistas como osciladores que en el periodo de oscilación se desplazan. Dado que este tipo de configuraciones iniciales se desplaza sobre la malla rectangular es interesante considerar la velocidad con la que lo hacen. Si una configuración se desplaza $(x, y)$ unidades cada periodo de longitud $n$, la velocidad de desplazamiento de la nave espacial es: $$
  v = \frac{\max\{|x|,|y|\}}{k}
 $$ 
-y su pendiente es $x/y$.  $c$ es la velocidad máxima teórica, esto es, un desplazamiento por iteración. Curiosamente se ha probado que para cada pendiente existe una \textit{nave espacial} con dicha pendiente \cite{pendienteNaves}.
+y su pendiente es $x/y$. Curiosamente se ha probado que para cada pendiente existe una \textit{nave espacial} con dicha pendiente \cite{pendienteNaves}. Notar que $c$ es la velocidad máxima teórica, esto es, un desplazamiento por iteración.
 
 En la \autoref{fig:congIniciales4} encontramos dos \textit{naves espaciales} que se desplazan en distintas direcciones. La \autoref{fig:glider} es la \textit{nave espacial} más pequeña conocida de velocidad $c/4$ y su desplazamiento es diagonal y la \autoref{fig:lightweightspaceship} es la más pequeña conocida de velocidad $c/2$ y su desplazamiento es horizontal.
 
@@ -283,27 +271,12 @@ En la \autoref{fig:congIniciales4} encontramos dos \textit{naves espaciales} que
 	\label{fig:congIniciales4}
 \end{figure} 
 
+% posibilidad figuras de crecimiento infinito
 
 \subsection{Selección de configuraciones iniciales} \label{seleccion}
 
-Los primeros censos de configuraciones iniciales fueron \textit{The Online Life-Life CA Soup Search} y \textit{Achim Flammenkamp's census}, en los que se contabilizaron 174.631.866.050 y 50.158.095.316 configuraciones del juego de vida, respectivamente. El primero de ellos consistió en la evolución de 6.412.048.029 configuraciones iniciales aleatorias que cubren un cuadrado de lado 20 con densidad inicial de 0.5 sobre una malla rectangular infinita \cite{sopa1}. El segundo exploró la evolución de 1.829.196 configuraciones iniciales aleatorias sobre una malla cuadrada de lado 2048 con los bordes opuestos identificados y con una densidad inicial de 0.375 \cite{sopa2}. De ambos censos se puede extraer la conclusión de que las configuraciones que aparecen más a menudo son las vidas inmóviles, seguidas por los osciladores y por último las naves espaciales.
+Los primeros censos de configuraciones iniciales fueron \textit{The Online Life-Life CA Soup Search} y \textit{Achim Flammenkamp's census}, en los que se contabilizaron 174.631.866.050 y 50.158.095.316 configuraciones del juego de vida, respectivamente. El primero de ellos consistió en la evolución de 6.412.048.029 configuraciones iniciales aleatorias que cubren un cuadrado de lado 20 con densidad inicial de 0.5 sobre una malla rectangular infinita \cite{sopa1}. El segundo exploró la evolución de 1.829.196 configuraciones iniciales aleatorias sobre una malla cuadrada de lado 2048 con los bordes opuestos identificados y con una densidad inicial de 0.375 \cite{sopa2}. De ambos censos se puede extraer la conclusión de que las configuraciones que aparecen más a menudo son las \textit{vidas inmóviles}, seguidas por los \textit{osciladores} y por último las \textit{naves espaciales}.
 
-Para nuestro trabajo tomaremos de referencia el censo más actual \textit{Catalogue} que recoge las ejecuciones de 19.640.649.096.999 configuraciones iniciales aleatorias cuadradas de lado 16 del juego de vida de Conway. Se han obtenido un total de 429.049.899.985.558 patrones de los cuales se encontraron 161.861 tipos diferentes \cite{sopa3}. En la tabla \autoref{tab:sopa1naves} se muestran las primeras 5 naves espaciales más frecuentes, las cuales escogeremos para realizar nuestro experimento. Destacar que todas son de periodo 4 y que no tomaremos más dado que el número de ocurrencias disminuye drásticamente de la cuarta a la quitan posición. En la \autoref{fig:congIniciales5} podemos observar la forma de estas configuraciones iniciales. Como representantes de la categoría de osciladores estudiaremos los dos osciladores más frecuente de periodo 2, 3 y 4. [Sin concretar porque está sujeto a cambios]
-
-\begin{table}[]
-\centering
-\begin{tabular}{|l|l|l|l|}
-\hline
-Ranking & Nombre                          & Periodo & Ocurrencias    \\ \hline
-1       & \textit{Glider}                 & 4       & 37.699.263.597.381 \\ \hline
-2       & \textit{Lightweight spaceship}  & 4       & 55.075.316.989     \\ \hline
-3       & \textit{Middleweight spaceship} & 4       & 14.511.262.233      \\ \hline
-4       & \textit{Heavyweight spaceship}  & 4       & 2.521.819.486      \\ \hline
-5       & \textit{MWSS on MWSS}  & 4       & 7.077      \\ \hline
-\end{tabular}
-\caption{Naves espaciales más frecuentes}
-\label{tab:sopa1naves}
-\end{table}
 
 \begin{figure}[H]
 	\centering
@@ -341,21 +314,88 @@ Ranking & Nombre                          & Periodo & Ocurrencias    \\ \hline
         \caption{\textit{MWSS on MWSS}}
         \label{fig:mwss2}
     \end{subfigure}
-	\caption{Top 5 naves espaciales más frecuentes en el censo {Catalogue}.}
+	\caption{5 \textit{naves espaciales} más frecuentes en el censo {Catalogue}.}
 	\label{fig:congIniciales5}
 \end{figure} 
 
 
-% aquí hay que exponer que se descartan las vidas inmóviles porque no se ven afectadas por la perturbación de la actualización
+Para nuestro trabajo tomaremos de referencia el censo más actual \textit{Catalogue} que recoge las ejecuciones de 19.640.649.096.999 configuraciones iniciales aleatorias cuadradas de lado 16 del juego de vida de Conway. Se han obtenido un total de 429.049.899.985.558 patrones de los cuales se encontraron 161.861 tipos diferentes \cite{sopa3}. En la \autoref{tab:sopa1naves} se muestran las primeras 5 \textit{naves espaciales} más frecuentes, de las cuales hemos seleccionado 4 para realizar nuestro experimento. Destacar que todas son de periodo 4 y que no tomaremos más dado que el número de ocurrencias disminuye drásticamente de la cuarta a la quinta posición. En la \autoref{fig:congIniciales5} podemos observar la forma de estas configuraciones iniciales. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Nombre}                          & \textbf{Periodo} & \textbf{Ocurrencias}    \\ \hline
+\textit{Glider}                 & 4       & 37.699.263.597.381 \\ \hline
+\textit{Lightweight spaceship}  & 4       & 55.075.316.989     \\ \hline
+\textit{Middleweight spaceship (MWSS)} & 4       & 14.511.262.233      \\ \hline
+\textit{Heavyweight spaceship}  & 4       & 2.521.819.486      \\ \hline
+\textit{MWSS on MWSS}  & 4       & 7.077      \\ \hline
+\end{tabular}
+\caption{\textit{Naves espaciales} más frecuentes en el censo {Catalogue}.}
+\label{tab:sopa1naves}
+\end{table}
+
+Como representantes de la categoría de \textit{osciladores} vamos a estudiar los dos \textit{osciladores} más frecuentes de periodo 2, 3 y 4, cuyas frecuencias se muestran en la \autoref{tab:osciladores}. Los \textit{osciladores} más comunes de periodo 2 son \textit{blinker} y \textit{toad} introducidos anteriormente en la \autoref{fig:congIniciales3}. Los de periodo 3 y 4 son respectivamente \textit{pulsar} y \textit{jam}, y  \textit{mold} y \textit{mazing} (\autoref{fig:toposciladores}).
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.3\linewidth} 
+        \centering
+        \includegraphics[height=0.95\linewidth]{./images/pulsar.png}
+        \caption{\textit{Pulsar}}
+        \label{fig:pulsar}
+    \end{subfigure}
+    \quad
+	\begin{subfigure}[b]{0.3\linewidth} 
+        \centering
+        \includegraphics[height=0.7\linewidth]{./images/jam.png}
+        \caption{\textit{Jam}}
+        \label{fig:jam}
+    \end{subfigure}
+    \\
+	\begin{subfigure}[b]{0.3\linewidth} 
+        \centering
+        \includegraphics[height=0.65\linewidth]{./images/mold.png}
+        \caption{\textit{Mold}}
+        \label{fig:mold}
+    \end{subfigure}
+    \quad
+	\begin{subfigure}[b]{0.3\linewidth} 
+        \centering
+        \includegraphics[height=0.65\linewidth]{./images/mazing.png}
+        \caption{\textit{Mazing}}
+        \label{fig:mazing}
+    \end{subfigure}
+	\caption{Osciladores de periodo 3 y 4 más frecuentes en el censo {Catalogue}.}
+	\label{fig:toposciladores}
+\end{figure} 
+
+
+\begin{table}
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Nombre}  & \textbf{Periodo} & \textbf{Ocurrencias} \\ \hline
+\textit{Blinker} & 2                & 124.127.579.342.223  \\ \hline
+\textit{Toad}    & 2                & 947.040.964.637      \\ \hline
+\textit{Pulsar}  & 3                & 30.512.370.641       \\ \hline
+\textit{Jam}     & 3                & 676.267              \\ \hline
+\textit{Mold}    & 4                & 6.731.991            \\ \hline
+\textit{Mazing}  & 4                & 1.281.808            \\ \hline
+\end{tabular}
+\caption{\textit{Osciladores} de periodos 2, 3 y 4 más frecuentes}
+\label{tab:osciladores}
+\end{table}
 
 \section{Simulaciones} \label{vars}
 
 Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación exponemos. Nuestras variables de interés son:
 
 \begin{itemize}
-\item Crecimiento de la población de células de la configuración inicial: dispondremos de dos herramientas para medir el número de células. Estudiaremos la evolución del número de células en cada etapa, la evolución del área del rectángulo de menor tamaño que contenga a todas las células de cada etapa y su densidad, esto es, el cociente del número de células entre el área anterior.
-\item Tasa de cambio de la configuración inicial: emplearemos el concepto de calor, el número de células que nacen o mueren por generación.
-\item Distribución de las células en cúmulos: contabilizaremos el número de cúmulos por cada generación, entendiendo por cúmulo al mayor conjunto de células cuyo vecindario no es disjunto, es decir, en un cúmulo cada célula está contenida en el vecindario de otra célula del cúmulo.
+\item Crecimiento de la configuración inicial: dispondremos de tres herramientas para medir el número de nodos ocupados. Estudiaremos la evolución del número de nodos ocupados en cada etapa, la evolución del área del rectángulo de menor tamaño que contenga a todas los nodos ocupados de cada iteración y su densidad, esto es, el cociente del número de nodos ocupados por el área anterior.
+\item Tasa de cambio de la configuración inicial: emplearemos el concepto de calor, el número de nodos que cambian de estado por iteración.
+\item Distribución de los nodos ocupados en cúmulos: contabilizaremos el número de cúmulos por iteración, entendiendo por cúmulo al mayor conjunto de nodos ocupados cuyo vecindario no es disjunto, es decir, en un cúmulo cada nodo ocupado está contenido en el vecindario de otro nodo ocupado del cúmulo.
 \end{itemize}
 
 Estas variables serán medidas para distintos valores de $\alpha$ con el fin de estudiar el efecto de la aleatoriedad en las configuraciones iniciales. Notar que el número de simulaciones realizadas para cada patrón será variable puesto que algunos patrones son de mayor tamaño y en consecuencia tienen simulaciones más lentas.
