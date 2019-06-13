@@ -194,50 +194,24 @@ Por último, hemos observado experimentalmente que las \textit{vidas inmóviles}
 
 \subsection{Osciladores}
 
-Un \textit{oscilador} es una configuración inicial que tras un número fijo de iteraciones se repite en la misma posición, al número de iteraciones se le conoce por periodo del \textit{oscilador}. En particular, las vidas inmóviles pueden ser interpretadas como \textit{osciladores} de periodo una iteración.
+Un \textit{oscilador} es una configuración inicial que tras un número fijo de iteraciones se repite en la misma posición, al número de iteraciones se le conoce como periodo del \textit{oscilador}. En particular, las vidas inmóviles pueden ser interpretadas como \textit{osciladores} de periodo una iteración.
 
-En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de periodo dos, durante tres iteraciones. Por un lado la \autoref{fig:blinker1}, \autoref{fig:blinker2} y \autoref{fig:blinker3} son tres iteraciones de la configuración inicial nombrada \textit{blinker} y por otro la \autoref{fig:toad1}, \autoref{fig:toad2} y \autoref{fig:toad3} son tres iteraciones de la configuración inicial \textit{toad}.
+En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de periodo dos, durante tres iteraciones. Por un lado la \autoref{fig:blinker_evo} muestra tres iteraciones de la configuración inicial nombrada \textit{blinker} y por otro la \autoref{fig:toad_evo} son muestra iteraciones de la configuración inicial \textit{toad}.
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}[b]{0.3\linewidth} 
+	\begin{subfigure}[b]{\linewidth} 
         \centering
-        \includegraphics[height=.35\linewidth]{./images/blinker1.png}
+        \includegraphics[height=.2\linewidth]{./images/blinker_evo.png}
         \caption{}
-        \label{fig:blinker1}
-    \end{subfigure}
-    \ 
-	\begin{subfigure}[b]{0.3\linewidth} 
-        \centering
-        \includegraphics[height=.45\linewidth]{./images/blinker2.png}
-        \caption{}
-        \label{fig:blinker2}
-    \end{subfigure}
-    \ 	
-    \begin{subfigure}[b]{0.3\linewidth} 
-        \centering
-        \includegraphics[height=.35\linewidth]{./images/blinker3.png}
-        \caption{}
-        \label{fig:blinker3}
+        \label{fig:blinker_evo}
     \end{subfigure}
     \\
-	\begin{subfigure}[b]{0.3\linewidth} 
+	\begin{subfigure}[b]{\linewidth} 
         \centering
-        \includegraphics[height=0.35\linewidth]{./images/toad1.png}
+        \includegraphics[height=0.2\linewidth]{./images/toad_evo.png}
         \caption{}
-        \label{fig:toad1}
-    \end{subfigure}
-	\begin{subfigure}[b]{0.3\linewidth} 
-        \centering
-        \includegraphics[height=0.45\linewidth]{./images/toad2.png}
-        \caption{}
-        \label{fig:toad2}
-    \end{subfigure}
-	\begin{subfigure}[b]{0.3\linewidth} 
-        \centering
-        \includegraphics[height=0.35\linewidth]{./images/toad3.png}
-        \caption{}
-        \label{fig:toad3}
+        \label{fig:toad_evo}
     \end{subfigure}
 	\caption{Primeras 3 iteraciones de 2 \textit{osciladores} de periodo 2 del juego de vida de Conway.}
 	\label{fig:congIniciales3}
@@ -245,8 +219,8 @@ En la \autoref{fig:congIniciales3} mostramos dos configuraciones iniciales de pe
 
 \subsection{Naves espaciales} \label{spaceships}
 
-Una \textit{nave espacial} es una configuración inicial que tras un número fijo de iteraciones se repite pero en una posición desplazada. Particularmente, pueden ser vistas como osciladores que en el periodo de oscilación se desplazan. Dado que este tipo de configuraciones iniciales se desplaza sobre la malla rectangular es interesante considerar la velocidad con la que lo hacen. Si una configuración se desplaza $(x, y)$ unidades cada periodo de longitud $n$, la velocidad de desplazamiento de la nave espacial es: $$
- v = \frac{\max\{|x|,|y|\}}{k}
+Una \textit{nave espacial} es una configuración inicial que tras un número fijo de iteraciones se repite pero en una posición desplazada. Particularmente, pueden ser vistas como osciladores que en el periodo de oscilación se desplazan. Dado que este tipo de configuraciones iniciales se desplaza sobre la malla rectangular es interesante considerar la velocidad con la que lo hacen. Si una configuración se desplaza $(dx, dy)$ unidades cada periodo de longitud $n$, la velocidad de desplazamiento de la nave espacial es: $$
+ v = \frac{\max\{|dx|,|dy|\}}{k}
 $$ 
 y su pendiente es $x/y$. Curiosamente se ha probado que para cada pendiente existe una \textit{nave espacial} con dicha pendiente \cite{pendienteNaves}. Notar que $c$ es la velocidad máxima teórica, esto es, un desplazamiento por iteración.
 
@@ -254,20 +228,20 @@ En la \autoref{fig:congIniciales4} encontramos dos \textit{naves espaciales} que
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}[b]{0.3\linewidth} 
+	\begin{subfigure}[b]{\linewidth} 
         \centering
-        \includegraphics[height=.35\linewidth]{./images/glider.png}
+        \includegraphics[height=.20\linewidth]{./images/glider_evo.png}
         \caption{}
-        \label{fig:glider}
+        \label{fig:glider_evo}
     \end{subfigure}
-    \quad
-	\begin{subfigure}[b]{0.3\linewidth} 
+    \\
+	\begin{subfigure}[b]{\linewidth} 
         \centering
-        \includegraphics[height=0.45\linewidth]{./images/lightweightspaceship.png}
+        \includegraphics[height=0.18\linewidth]{./images/lightweightspaceship_evo.png}
         \caption{}
-        \label{fig:lightweightspaceship}
+        \label{fig:lightweightspaceship_evo}
     \end{subfigure}
-	\caption{Algunas \textit{naves espaciales} del juego de vida de Conway.}
+	\caption{De derecha a izquierda, 4 iteraciones de dos \textit{naves espaciales} del juego de vida de Conway.}
 	\label{fig:congIniciales4}
 \end{figure} 
 
@@ -367,7 +341,7 @@ Como representantes de la categoría de \textit{osciladores} vamos a estudiar lo
         \caption{\textit{Mazing}}
         \label{fig:mazing}
     \end{subfigure}
-	\caption{Osciladores de periodo 3 y 4 más frecuentes en el censo {Catalogue}.}
+	\caption{\textit{Osciladores} de periodo 3 y 4 más frecuentes en el censo {Catalogue}.}
 	\label{fig:toposciladores}
 \end{figure} 
 

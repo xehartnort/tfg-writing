@@ -35,9 +35,9 @@ Finalmente es posible observar la reducción del intervalo de confianza que conl
 
 En esta sección vamos a estudiar el impacto de la $\alpha$-asíncronicidad. Las configuraciones iniciales son las escogidas en la sección \ref{seleccion}. Las ejecuciones son de 50 iteraciones con los valores de $\alpha$: 0.15, 0.3, 0.45, 0.6, 0.75 y 0.9. Cada iteración simulada 5000 veces aplicando el método de reducción de la varianza descrito en la sección anterior. Como resultado hemos obtenido los valores medios de las variables expuestas en la sección \ref{vars} junto con sus correspondientes intervalos de confianza para cada iteración.
 
-\subsection{Osciladores de periodo 2}
+\subsection{\textit{Osciladores} de periodo 2}
 
-Comentamos los efectos de la variación de la $\alpha$-asincronicidad sobre la configuración inicial \textit{blinker}. Como se observa en las \autoref{fig:blinker1}, \autoref{fig:blinker2} y \autoref{fig:blinker3}, cuando no existe perturbación en el intercambio de información entre células, el calor en cada iteración es 4, es decir, 2 células mueren y 2 células nacen en cada iteración, ocupa un área de 3 \textit{nodos}$^2$ y está conformada por un solo clúster. En primer lugar, podemos observar en la \autoref{fig:4-1} que los valores de $\alpha$ se aproximan inferiormente a $0.5$, imprimen un cambio de crecimiento en el área medio. Mientras que para $\alpha=0.15$, el promedio de área a partir la vigésima iteración decrece ligeramente, para $\alpha=0.3$ el decrecimiento prácticamente desaparece, adquiriendo un valor constante y a partir de $\alpha=0.45$ comienza una acusada tendencia de crecimiento. Esta tendencia se incrementa cuando $\alpha$ se aproxima a la unidad. En particular para $\alpha=0.60$ el crecimiento a partir de la décima iteración mantiene su pendiente, hecho que no se repite para $\alpha=0.75$, donde en la vigésima iteración cambia ligeramente la pendiente y finalmente en la décimo quinta iteración de $\alpha=0.9$, el cambio de pendiente es más notable y desacelera marcadamente el crecimiento del área medio. A la vez que estos fenómenos ocurren, la iteración a partir de la cual se produce el crecimiento del área medio, decrece. Ésto es algo más visible en los valores de $\alpha$ superiores a $0.5$.
+Comentamos los efectos de la variación de la $\alpha$-asincronicidad sobre la configuración inicial \textit{blinker}. Como se observa en la \autoref{fig:blinker_evo}, cuando no existe perturbación en el intercambio de información entre células, el calor en cada iteración es 4, es decir, 2 células mueren y 2 células nacen en cada iteración, ocupa un área de 3 \textit{nodos}$^2$ y está conformada por un solo clúster. En primer lugar, podemos observar en la \autoref{fig:4-1} que los valores de $\alpha$ se aproximan inferiormente a $0.5$, imprimen un cambio de crecimiento en el área medio. Mientras que para $\alpha=0.15$, el promedio de área a partir la vigésima iteración decrece ligeramente, para $\alpha=0.3$ el decrecimiento prácticamente desaparece, adquiriendo un valor constante y a partir de $\alpha=0.45$ comienza una acusada tendencia de crecimiento. Esta tendencia se incrementa cuando $\alpha$ se aproxima a la unidad. En particular para $\alpha=0.60$ el crecimiento a partir de la décima iteración mantiene su pendiente, hecho que no se repite para $\alpha=0.75$, donde en la vigésima iteración cambia ligeramente la pendiente y finalmente en la décimo quinta iteración de $\alpha=0.9$, el cambio de pendiente es más notable y desacelera marcadamente el crecimiento del área medio. A la vez que estos fenómenos ocurren, la iteración a partir de la cual se produce el crecimiento del área medio, decrece. Ésto es algo más visible en los valores de $\alpha$ superiores a $0.5$.
 
 Si observamos la \autoref{fig:4-2}, contemplamos un comportamiento similar al descrito anteriormente, por tanto resulta interesante explorar el valor medio de densidad que relaciona la variación conjunta de ambas variables. 
 
@@ -74,8 +74,6 @@ La \autoref{fig:5-1} muestra la variación del calor medio para distintos valore
 
 Si consultamos la \autoref{fig:5-2} que recoge la variación del número de clústeres medio respecto de $\alpha$, observamos la diferencia principal con la \autoref{fig:5-1} es que para valores de $\alpha$ mayores o iguales a $0.45$ el promedio de clústeres decrece en aproximadamente la décima iteración a un valor cercano a $0.6$, a partir de esta iteración el comportamiento es muy similar al del calor medio. En particular, el cambio de pendiente a partir de la décima iteración se reconoce unicamente para $\alpha=0.9$, mientras que para $\alpha=0.45,0.60,0.75$ la pendiente es prácticamente constante.
 
-El otro oscilador de periodo dos que hemos estudiado, la configuración \textit{toad} (\autoref{fig:toad1}, \autoref{fig:toad2} y \autoref{fig:toad3}) formada por 6 células que ocupan un área de 8 \textit{nodos}$^2$ en las iteraciones pares y 16 \textit{nodos}$^2$ en las impares, muestra un comportamiento muy similar a \textit{blinker} frente a la introducción de $\alpha$-asíncronismo en su evolución.
-
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}[b]{0.9\textwidth} 
@@ -96,14 +94,27 @@ El otro oscilador de periodo dos que hemos estudiado, la configuración \textit{
     \label{fig:55}
 \end{figure}
 
-\subsection{Osciladores de periodo 3}
+El otro oscilador de periodo dos que hemos estudiado, la configuración \textit{toad} (\autoref{fig:toad_evo}) formada por 6 células que ocupan un área de 8 \textit{nodos}$^2$ en las iteraciones pares y 16 \textit{nodos}$^2$ en las impares, muestra un comportamiento muy similar a \textit{blinker} frente a la introducción de $\alpha$-asíncronismo en su evolución. Por ejemplo, en la \autoref{fig:66} se puede apreciar como el comportamiento es profundamente similar al mostrado en la \autoref{fig:4-2}. % no quería mal añadir aquí algo más loco, ésto está muy soso
 
-\subsection{Osciladores de periodo 4}
 
-\subsection{Naves espaciales}
-Hasta ahora solo hemos descrito el comportamiento de osciladores. Como se expuso en la sección \ref{spaceships}, las naves espaciales pueden ser vistas como osciladores que se desplazan, luego es interesante explorar si los comportamientos que hemos observado en las configuraciones iniciales anteriores se reproducen en este tipo de configuraciones iniciales. 
+\begin{figure}[H]
+		\centering
+    	\includegraphics[width=\textwidth]{./images/data/toad/{Area_multiple_alpha}.png}
+    \caption{Variación del área medio en la configuración \textit{toad} para distintos valores de $\alpha$.}
+    \label{fig:66}
+\end{figure}
 
-La configuración inicial \textit{glider} es una nave espacial de periodo 4 formada por 5 células agrupadas en un único clúster, que desprende un calor de 4 células y ocupa un área de 9 \textit{nodos}$^2$.
+\subsection{\textit{Osciladores} de periodo 3}
+
+\subsection{\textit{Osciladores} de periodo 4}
+
+\subsection{\textit{Naves espaciales}}
+Hasta ahora solo hemos descrito el comportamiento de \textit{osciladores}. Como se expuso en la sección \ref{spaceships}, las \textit{naves espaciales} pueden ser vistas como \textit{osciladores} que se desplazan, luego es interesante explorar si los comportamientos que hemos observado en las configuraciones iniciales anteriores se reproducen en este tipo de configuraciones iniciales. 
+
+Comenzamos la sección estudiando la configuración inicial \textit{Lightweightspaceship} (\autoref{fig:lightweightspaceship})
+
+
+Por último, la configuración inicial \textit{glider} es una nave espacial de periodo 4 formada por 5 células agrupadas en un único clúster, tiene un calor de 4 nodos y ocupa un área de 9 \textit{nodos}$^2$. Esta configuración inicial desarrolla un comportamiento sorprendentemente similar al descrito para los osciladores de periodo 2.
 
 % Existen dos intervalos bien marcados, uno de decrecimiento (que va disminuyendo en tamaño) y otro de crecimiento que va creciendo
 %\section{Efecto de la variación de la distribución de probabilidad}
