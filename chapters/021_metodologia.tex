@@ -228,24 +228,48 @@ En la \autoref{fig:congIniciales4} encontramos dos \textit{naves espaciales} que
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}[b]{\linewidth} 
+	\begin{subfigure}[b]{0.3\linewidth} 
         \centering
-        \includegraphics[height=.20\linewidth]{./images/glider_evo.png}
+        \includegraphics[height=.45\linewidth]{./images/glider.png}
         \caption{}
         \label{fig:glider_evo}
     \end{subfigure}
-    \\
-	\begin{subfigure}[b]{\linewidth} 
+    \ 
+	\begin{subfigure}[b]{0.3\linewidth} 
         \centering
-        \includegraphics[height=0.18\linewidth]{./images/lightweightspaceship_evo.png}
+        \includegraphics[height=0.45\linewidth]{./images/lightweightspaceship.png}
         \caption{}
         \label{fig:lightweightspaceship_evo}
     \end{subfigure}
-	\caption{De derecha a izquierda, 4 iteraciones de dos \textit{naves espaciales} del juego de vida de Conway.}
+	\caption{Dos \textit{naves espaciales} del juego de vida de Conway.}
 	\label{fig:congIniciales4}
 \end{figure} 
 
 % posibilidad figuras de crecimiento infinito
+\subsection{Almacenamiento de las configuraciones iniciales} \label{rle}
+
+Al igual que no existe un consenso global sobre las categorías de configuraciones del juego de vida, tampoco existe una única representación globalmente aceptada para almacenar una configuración en disco. Este problema es similar al de representar una malla rectangular infinita en una memoria finita. Existen soluciones que almacenan el rectángulo más pequeño que contiene a todos los nodos ocupados como sigue: cada fila de este rectángulo esta representada por una cadena de caracteres en la cual los nodos ocupados se identifican por un carácter y los nodos vacíos por otro. Un ejemplo de este tipo de formato es $Life 1.05$ que utiliza el carácter \textbf{*} para los nodos ocupados y el \textbf{.} para los nodos vacíos. 
+
+Sin embargo, este tipo de representación puede ocupar mucho espacio en configuraciones de gran tamaño, por lo que en este trabajo hemos utilizado una versión simplificada del formato \textit{rle} \cite{rle}, el cual es más compacto que el anterior. La primera línea de este formato tiene la forma $x\ =\ m,\ y\ =\ n$ donde m y n son las dimensiones del rectángulo de menor tamaño que contiene a todos los nodos ocupados. La siguiente línea codifica la configuración en una secuencia de elementos de la forma {número de repeticiones}{etiqueta}, donde {número de repeticiones} es el número de ocurrencias de una {etiqueta} que puede ser alguno de los siguientes caracteres: \textbf{b} que representa un nodo vacío, \textbf{o} que representa un nodo ocupado y el carácter \textbf{\$} se emplea para indicar el final de la columna del rectángulo de menor tamaño que contiene a todos los nodos ocupados. El último elemento va seguido del carácter \textbf{!} que indica el final de la configuración. El número de nodos vacíos al final de la última fila de la configuración no tiene que estar necesariamente codificado y tampoco el final de la última fila tiene que incluir al carácter \textbf{\$}. La líneas iniciales de este formato que comiencen por el carácter \# se interpretan como comentarios y por defecto se omiten. Por ejemplo las configuraciones de la \autoref{fig:inmoviles} tendrían la siguiente codificación \textit{rle}:
+
+\begin{itemize}
+\item \# Configuración \autoref{fig:2-1} \\
+x = 4, y = 3 \\
+b2o\$o2bo\$b2o! \\
+
+\item \# Configuración \autoref{fig:2-2} \\
+x = 5, y = 4 \\
+2ob2o\$bobo\$bobo\$2ob2o!
+
+\item \# Configuración \autoref{fig:2-3} \\
+x = 6, y = 5 \\
+b2o\$o2bo\$b2obo\$4bo\$4b2o!
+
+\item \# Configuración \autoref{fig:2-4} \\
+x = 5, y = 2 \\
+2ob2o\$2ob2o!
+
+\end{itemize}
 
 \subsection{Selección de configuraciones iniciales} \label{seleccion}
 
@@ -374,8 +398,47 @@ Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos lo
 
 Estas variables serán medidas para distintos valores de $\alpha$ con el fin de estudiar el efecto de la aleatoriedad en las configuraciones iniciales. Notar que el número de simulaciones realizadas para cada patrón será variable puesto que algunos patrones son de mayor tamaño y en consecuencia tienen simulaciones más lentas.
 
-% Características a medir si sobra tiempo: simulaciones utilizando cadenas de markov y métodos de monte carlo
+\subsection{Arquitectura de las simulaciones}
 
+Dado que realizar múltiples simulaciones de una configuración inicial toma una cantidad considerable de tiempo, hemos considerado la separación del proceso de obtención de datos de las simulaciones en tres etapas bien diferenciadas:
+\begin{enumerate}
+\item Obtención de las variables de interés para cada conjunto de simulaciones de una configuración inicial.
+\item Cálculo de los promedios y sus intervalos de confianza para cada variable en cada iteración. %Adicionalmente se calcula el \textit{p-value} de un test de hipótesis que nos permita afirmar que la distribución de los valores medios es probablemente normal.
+\item Representación gráfica de los múltiples datos obtenidos para visualizar el impacto de la $\alpha$-asincronicidad en la evolución.
+\end{enumerate}
 
+La primera etapa recibe como entrada: \begin{itemize}
+\item Número de simulaciones
+\item Número de iteraciones que va a realizar cada simulación
+\item Distintos valores de $\alpha$ para los que se van a realizar las simulaciones.
+\item Una lista de configuraciones iniciales.
+\end{itemize}
+
+Con estos datos realiza la ejecución de múltiples simulaciones con un número dijo de iteraciones de una o múltiples configuraciones iniciales. En cada iteración se calcula el número de nodos ocupados, el área del menor rectángulo que contiene a todos ellos, el calor y el número de clústeres. Adicionalmente se calcula un valor que represente unívocamente a una configuración, de manera que en caso de que en la misma iteración de múltiples simulaciones se repita un valor, éste no se almacene por duplicado. Esta etapa genera un archivo en formato \textit{JSON} \cite{json} con las siguientes entradas:
+
+\begin{itemize}
+\item \textit{samplerSeed}: dado que cada simulación individual tiene una semilla propia, hemos decidido que dicha semilla sea generada a su vez por otro generador de números pseudo-aleatorios para asegurar una correcta distribución de las mismas. Este campo almacena la semilla que se ha empleado para el generador de semillas, asegurando la reproducibilidad de cada conjunto de simulaciones.
+\item \textit{pattern}: este campo almacena el nombre de la configuración inicial sobre la que se han realizado las simulaciones.
+\item \textit{alpha}: representa el valor de $\alpha$-asincronismo en la evolución que se ha aplicado las simulaciones, éste valor tiene que estar entre 0 y 1 para ser un valor correcto. En particular, es el valor de $\alpha$ con el que se aplica el algoritmo \ref{alg:async} en cada iteración.
+\item \textit{numberOfSteps}: este campo representa el número de iteraciones que se han realizado en cada simulación.
+\item \textit{numberOfRuns}: este campo almacena el número de simulaciones que se han realizado.
+\item \textit{runs}: es una lista en la cual cada posición corresponde con una iteración, a su vez cada iteración contiene un lista que representa las distintas configuraciones y las variables medidas sobre estas en la iteración. Cada elemento de la lista tiene las siguientes entradas:
+\begin{itemize}
+	\item \textit{hash}: este valor representa unívocamente a una configuración.
+	\item \textit{ncells}: este valor es el número de nodos ocupados.
+	\item \textit{nclusters}: este campo es el número de clústeres calculados.
+	\item \textit{area}: este valor es el área del menor rectángulo que contiene a todas los nodos ocupados.
+	\item \textit{ocurrences}: este campo almacena el número de veces que se repite esta configuración, evitando almacenar duplicados.
+\end{itemize}
+\end{itemize}
+
+%%Añadir un ejemplo
+
+Notar que dado que las simulaciones no comparten información entre sí, pueden ser realizadas en procesos independientes para más tarde agregar todos los resultados en una sola salida.
+
+La siguiente etapa acepta como entrada el archivo en formato JSON de la etapa anterior y calcula el valor medio y de la desviación típica de cada variable, generando un archivo en formato CSV \cite{csv} para cada variable medida en el cual cada fila tiene tres columnas: número de iteración, media y el radio del intervalo de confianza, esto es, tres veces la desviación típica. El nombre que recibe cada archivo está compuesto por la variable medida, el valor de $\alpha$, el número de simulaciones y el número de iteraciones. En la etapa final utilizaremos el nombre de los ficheros generados para interpretar su contenido adecuadamente y nombrar a su vez los gráficos de salida. 
+
+Finalmente la última etapa recibe como entrada los archivos CSV generados en la etapa anterior y realiza dos tipos de gráficos. En primer lugar realiza un gráfico para cada archivo de entrada, dónde el eje X viene dado por el número de la iteración y el eje Y por la variable observada, esta última se pinta en conjunción con su intervalo de confianza. A continuación, para cada variable medida realiza un nuevo gráfico, esta vez en lugar de representar la evolución de una variable para un solo valor de $\alpha$, representa la evolución de la variable para todos los valores de $\alpha$. 
+%añadir ejemplo
 
 \end{document}
