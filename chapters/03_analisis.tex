@@ -40,14 +40,7 @@ Notar que para valores extremos de $\alpha$ hemos observado que se pueden encont
 
 \subsection{\textit{Osciladores} de periodo 2} \label{osci2}
 
-Comenzamos el análisis con la \autoref{fig:blinker_evo}. Cuando no existe perturbación en el intercambio de información entre nodos ocupados, el calor en cada iteración es de 4 nodos, ocupa un área de 3 \textit{nodos}$^2$ y está conformada por un solo clúster de 3 nodos ocupados. En primer lugar destacamos que independientemente al valor que tome $\alpha$ el número medio de clústeres permanece constantemente 1 como se puede observar en la \autoref{fig:blinker_clusters}.
-
-\begin{figure}[H]
-	\centering
-    \includegraphics[width=0.8\textwidth]{./images/data/blinker/{Clusteres_multiple_alpha}.png}
-    \caption{Evolución $\alpha$-asíncrona del promedio de clústeres de la configuración \textit{blinker}.}
-    \label{fig:blinker_clusters}
-\end{figure}
+Comenzamos el análisis con la \autoref{fig:blinker_evo}. Cuando no existe perturbación en el intercambio de información entre nodos ocupados, el calor en cada iteración es de 4 nodos, ocupa un área de 3 \textit{nodos}$^2$ y está conformada por un solo clúster de 3 nodos ocupados. En primer lugar destacamos que independientemente al valor que tome $\alpha$ el número medio de clústeres es constantemente la unidad.
 
 Si observamos la \autoref{fig:blinker_calor} es posible ver que los valores medios permanecen aproximadamente constantes para cada valor de $\alpha$. Además a medida que $\alpha$ se aproxima a la unidad, el promedio de calor se aproxima al que se obtiene en condiciones síncronas de evolución. También que puede observar notablemente que la variación de $\alpha$ produce que el calor medio varíe en más de 3 unidades, lo que nos hace pensar que el efecto de la $\alpha$-asincronicidad sobre esta configuración ralentiza la evolución de la misma.
 
@@ -84,7 +77,7 @@ El número de clústeres medio deja de ser constante y varía en aproximadamente
 
 \subsection{\textit{Osciladores} de periodo 3}
 
-En la \autoref{fig:jam_evo} podemos observar tres iteraciones de la configuración \textit{jam}, la cual curiosamente contiene una vida inmóvil. En situación de actualización síncrona esta configuración inicial está formada por 13 nodos ocupados agrupados en tres clústeres y ocupa un área de 42 \textit{nodos}$^2$. En su primera iteración se incrementa el número de nodos a 16, agrupados en un clúster y con un calor de [MISSING VALUE!] nodos, manteniendo el mismo área. La siguiente iteración incrementa su área a 49 \textit{nodos}$^2$, disminuyendo el número de nodos ocupados a 14, agrupados en dos clústeres con un calor de [MISSING VALUE!] nodos. Al avanzar una iteración más, la configuración retorna al estado de la configuración inicial. 
+En la \autoref{fig:jam_evo} podemos observar tres iteraciones de la configuración \textit{jam}, la cual curiosamente contiene una vida inmóvil. En situación de actualización síncrona esta configuración inicial está formada por 13 nodos ocupados agrupados en tres clústeres y ocupa un área de 42 \textit{nodos}$^2$. En su primera iteración se incrementa el número de nodos a 16, agrupados en un clúster y con un calor de 4 nodos, manteniendo el mismo área. La siguiente iteración incrementa su área a 49 \textit{nodos}$^2$, disminuyendo el número de nodos ocupados a 14, agrupados en dos clústeres con un calor de 9 nodos. Al avanzar una iteración más, la configuración retorna al estado de la configuración inicial. 
 
 \begin{figure}[H]
 	\centering
@@ -102,7 +95,7 @@ En esta configuración se observa el mismo comportamiento para los promedios de 
     \label{fig:jam_clusters}
 \end{figure}
 
-A continuación, en la \autoref{fig:pulsar_evo} podemos observar tres iteraciones de la configuración \textit{pulsar}, la cual es notablemente la configuración de mayor tamaño que hemos estudiado. En situación de actualización síncrona esta configuración inicial está formada por 48 nodos ocupados agrupados en 12 clústeres y ocupa un área de 169 \textit{nodos}$^2$. En su primera iteración se incrementa el número de nodos a 72, agrupados en el mismo número de clústeres y con un calor de [MISSING VALUE!] nodos, incrementando el área a 225\textit{nodos}$^2$. La siguiente iteración retorna su área a 169 \textit{nodos}$^2$, manteniendo el número de nodos ocupados, agrupados en 4 clústeres con un calor de [MISSING VALUE!] nodos. Al avanzar una iteración más, la configuración retorna al estado de la configuración inicial. 
+A continuación, en la \autoref{fig:pulsar_evo} podemos observar tres iteraciones de la configuración \textit{pulsar}, la cual es notablemente la configuración de mayor tamaño que hemos estudiado. En situación de actualización síncrona esta configuración inicial está formada por 48 nodos ocupados agrupados en 12 clústeres y ocupa un área de 169 \textit{nodos}$^2$. En su primera iteración se incrementa el número de nodos a 72, agrupados en el mismo número de clústeres y con un calor de 32 nodos, incrementando el área a 225\textit{nodos}$^2$. La siguiente iteración retorna su área a 169 \textit{nodos}$^2$, manteniendo el número de nodos ocupados, agrupados en 4 clústeres con un calor de 40 nodos. Al avanzar una iteración más, la configuración retorna al estado de la configuración inicial con un calor de 56 nodos. 
 
 \begin{figure}[H]
 	\centering
@@ -139,7 +132,7 @@ El número medio de clústeres (\autoref{fig:pulsar_clusteres}) decrece de $\alp
 
 \subsection{\textit{Osciladores} de periodo 4}
 
-En esta sección estudiaremos la variación $\alpha$-asíncrona de las configuraciones \textit{mold} y \textit{mazing}. En la \autoref{fig:mold_evo} es posible observar la 4 iteraciones de la evolución en condiciones de sincronicidad de la configuración \textit{mold}. Esta configuración inicial cuenta con 12 nodos ocupados, agrupados en dos clústeres con un área de 36 \textit{nodos}$^2$. En su primera iteración genera un calor de [MISSING VALUE!], variando tanto el número de nodos ocupados como el área que ocupan, a 14 nodos ocupados y 30 \textit{nodos}$^2$, agrupados en un solo cluster. Esta iteración genera un calor de [MISSING VALUE!]. La siguiente iteración la configuración retorna al mismo área, nodos ocupados y clústeres de la configuración inicial pero en diferente disposición, con un calor de [MISSING VALUE!]. La tercera iteración ocupa un área de 30 \textit{nodos}$^2$, que se reparten 14 nodos ocupados en un único clúster con un calor de [MISSING VALUE!]. En la cuarta iteración la configuración coincide con la configuración inicial.
+En esta sección estudiaremos la variación $\alpha$-asíncrona de las configuraciones \textit{mold} y \textit{mazing}. En la \autoref{fig:mold_evo} es posible observar la 4 iteraciones de la evolución en condiciones de sincronicidad de la configuración \textit{mold}. Esta configuración inicial cuenta con 12 nodos ocupados, agrupados en dos clústeres con un área de 36 \textit{nodos}$^2$. En su primera iteración genera un calor de 8 nodos, variando tanto el número de nodos ocupados como el área que ocupan, a 14 nodos ocupados y 30 \textit{nodos}$^2$, agrupados en un solo cluster. Esta iteración genera un calor de 6 nodos. La siguiente iteración la configuración retorna al mismo área, nodos ocupados y clústeres de la configuración inicial pero en diferente disposición, con un calor de 8. La tercera iteración ocupa un área de 30 \textit{nodos}$^2$, que se reparten 14 nodos ocupados en un único clúster con un calor de 6. En la cuarta iteración la configuración coincide con la configuración inicial con un calor de 8 nodos.
 
 \begin{figure}[H]
 	\centering
@@ -167,7 +160,7 @@ El área media varía de una forma muy curiosa (\autoref{fig:mold_area}). En lug
 \end{figure}
 
 
-En la \autoref{fig:mazing_evo} es posible observar la 4 iteraciones de la evolución en condiciones de sincronicidad de la configuración \textit{mazing}. Esta configuración inicial cuenta con 12 nodos ocupados, agrupados en 4 clústeres con un área de 49 \textit{nodos}$^2$. En su primera iteración genera un calor de [MISSING VALUE!], variando tanto el número de nodos ocupados como el de clústeres a 18 nodos ocupados y un clúster, manteniendo el área anterior. Esta iteración genera un calor de [MISSING VALUE!]. La siguiente iteración la configuración retorna al mismo área, nodos ocupados y clústeres de la configuración inicial pero en diferente disposición, con un calor de [MISSING VALUE!]. La tercera iteración tiene el mismo área, nodos ocupados y clústeres de la primera iteración pero en diferente disposición con un calor de [MISSING VALUE!]. En la cuarta iteración la configuración coincide con la configuración inicial.
+En la \autoref{fig:mazing_evo} es posible observar la 4 iteraciones de la evolución en condiciones de sincronicidad de la configuración \textit{mazing}. Esta configuración inicial cuenta con 12 nodos ocupados, agrupados en 4 clústeres con un área de 49 \textit{nodos}$^2$. En su primera iteración genera un calor de 14 nodos, variando tanto el número de nodos ocupados como el de clústeres a 18 nodos ocupados y un clúster, manteniendo el área anterior. Esta iteración genera un calor de 14 nodos. La siguiente iteración la configuración retorna al mismo área, nodos ocupados y clústeres de la configuración inicial pero en diferente disposición, con un calor de 14 nodos. La tercera iteración tiene el mismo área, nodos ocupados y clústeres de la primera iteración pero en diferente disposición con un calor de 14 nodos. En la cuarta iteración la configuración coincide con la configuración inicial.
 
 \begin{figure}[H]
 	\centering
@@ -199,7 +192,7 @@ Por último, el número medio de clústeres decrece respecto de $\alpha$ (\autor
 \subsection{\textit{Naves espaciales}}
 Hasta ahora solo hemos descrito el comportamiento de \textit{osciladores}. Como se expuso en la sección \ref{spaceships}, las \textit{naves espaciales} pueden ser vistas como \textit{osciladores} que se desplazan, luego es interesante explorar si los comportamientos que hemos observado en las configuraciones iniciales anteriores se reproducen en este tipo de configuraciones iniciales. 
 
-Comenzamos la sección estudiando la configuración inicial \textit{lightweight spaceship} (\autoref{fig:lightweightspaceship}). En la \autoref{fig:lightweightspaceship_evo} se muestran 4 iteraciones de esta configuración inicial. Se trata de una configuración de velocidad $c/2$ que se desplaza paralelamente al eje horizontal con un área constante de 20 \textit{nodos}$^2$. En las iteraciones pares tiene 9 nodos ocupados agrupados en dos clústeres con un calor de [MISSING VALUE!] nodos y en las iteraciones impares tiene 12 nodos agrupados en un solo clúster con un calor de 8 nodos.
+Comenzamos la sección estudiando la configuración inicial \textit{lightweight spaceship} (\autoref{fig:lightweightspaceship}). En la \autoref{fig:lightweightspaceship_evo} se muestran 4 iteraciones de esta configuración inicial. Se trata de una configuración de velocidad $c/2$ que se desplaza paralelamente al eje horizontal con un área constante de 20 \textit{nodos}$^2$. En las iteraciones pares tiene 9 nodos ocupados agrupados en dos clústeres con un calor de 9 nodos y en las iteraciones impares tiene 12 nodos agrupados en un solo clúster con un calor de 13 nodos.
 
 \begin{figure}[H]
 	\centering
@@ -226,7 +219,7 @@ Mientras que la densidad y el calor medios de esta configuración tienen un comp
     \label{fig:7-3}
 \end{figure}
 
-La configuración inicial \textit{middleweight spaceship} (\autoref{fig:middleweightspaceship}) tiene un aspecto y una evolución síncrona similar a la configuración \textit{lightweight spaceship}. En la \autoref{fig:middleweightspaceship_evo} se muestran 4 iteraciones de esta configuración inicial. Se trata de una configuración de velocidad $c/2$ que se desplaza paralelamente al eje horizontal con un área constante de 24 \textit{nodos}$^2$. En las iteraciones pares tiene 11 nodos ocupados agrupados en tres clústeres con un calor de [MISSING VALUE!] nodos y en las iteraciones impares tiene 15 nodos agrupados en un solo clúster con un calor de [MISSING VALUE!] nodos.
+La configuración inicial \textit{middleweight spaceship} (\autoref{fig:middleweightspaceship}) tiene un aspecto y una evolución síncrona similar a la configuración \textit{lightweight spaceship}. En la \autoref{fig:middleweightspaceship_evo} se muestran 4 iteraciones de esta configuración inicial. Se trata de una configuración de velocidad $c/2$ que se desplaza paralelamente al eje horizontal con un área constante de 24 \textit{nodos}$^2$. En las iteraciones pares tiene 11 nodos ocupados agrupados en tres clústeres con un calor de 12 nodos y en las iteraciones impares tiene 15 nodos agrupados en un solo clúster con un calor de 18 nodos.
 
 \begin{figure}[H]
 	\centering
@@ -239,7 +232,7 @@ Al igual que en la configuración anterior, \textit{lightweight spaceship}, el n
 
 Por otro lado, una diferencia notable con la configuración anterior es que la longitud del intervalo en el que varía el promedio crece aproximadamente una unidad más.
 
-La siguiente configuración que vamos a estudiar, \textit{heavyweight spaceship} muestra un aspecto similar a las dos anteriores tanto en forma como en su evolución síncrona. En la \autoref{fig:heavyweightspaceship_evo} se muestran 4 iteraciones de esta configuración inicial. Se trata de una configuración de velocidad $c/2$ que se desplaza paralelamente al eje horizontal con un área constante de 35 \textit{nodos}$^2$. En las iteraciones pares tiene 13 nodos ocupados agrupados en tres clústeres con un calor de [MISSING VALUE!] nodos y en las iteraciones impares tiene 18 nodos agrupados en un solo clúster con un calor de [MISSING VALUE!] nodos.
+La siguiente configuración que vamos a estudiar, \textit{heavyweight spaceship} muestra un aspecto similar a las dos anteriores tanto en forma como en su evolución síncrona. En la \autoref{fig:heavyweightspaceship_evo} se muestran 4 iteraciones de esta configuración inicial. Se trata de una configuración de velocidad $c/2$ que se desplaza paralelamente al eje horizontal con un área constante de 35 \textit{nodos}$^2$. En las iteraciones pares tiene 13 nodos ocupados agrupados en tres clústeres con un calor de 15 nodos y en las iteraciones impares tiene 18 nodos agrupados en un solo clúster con un calor de 23 nodos.
 
 \begin{figure}[H]
 	\centering

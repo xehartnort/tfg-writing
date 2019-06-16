@@ -380,7 +380,7 @@ Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos lo
 \item Crecimiento de la configuración inicial: dispondremos de tres herramientas para medir el cambio de crecimiento. Estudiaremos la evolución del número de nodos ocupados en cada etapa, la evolución del área del rectángulo de menor tamaño que contenga a todas los nodos ocupados de cada iteración y su densidad, esto es, el cociente del número de nodos ocupados por el área anterior. Cuyas unidades son respectivamente \textit{nodos}, \textit{nodos}$^2$ y \textit{nodos}$^-1$.
 \item Tasa de cambio de la configuración inicial: emplearemos el concepto de calor, el número de nodos que cambian de estado por iteración. Cuya unidad es \textit{nodos}.
 \item Distribución de los nodos ocupados en cúmulos: contabilizaremos el número de cúmulos por iteración, entendiendo por cúmulo al mayor conjunto de nodos ocupados cuyo vecindario no es disjunto, es decir, en un cúmulo cada nodo ocupado está contenido en el vecindario de otro nodo ocupado del cúmulo.
-\item Número de vida inmóviles, esto es, en cada iteración comprobamos cuales de los conjuntos de cúmulos son vidas inmóviles.
+\item Número de vida inmóviles simples, esto es, en cada iteración comprobamos cuales de los clústeres calculados es una vida inmóvil. Notar que como se comentaba anteriormente existen vidas inmóviles compuestas a su vez por otras vidas inmóviles, este tipo de vidas inmóviles no serán contabilizadas.
 \end{itemize}
 
 Estas variables serán medidas para distintos valores de $\alpha$ con el fin de estudiar el efecto de la aleatoriedad en las configuraciones iniciales. 
