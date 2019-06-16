@@ -232,14 +232,14 @@ En la \autoref{fig:congIniciales4} encontramos dos \textit{naves espaciales} que
         \centering
         \includegraphics[height=.45\linewidth]{./images/glider.png}
         \caption{}
-        \label{fig:glider_evo}
+        \label{fig:glider}
     \end{subfigure}
     \ 
 	\begin{subfigure}[b]{0.3\linewidth} 
         \centering
         \includegraphics[height=0.45\linewidth]{./images/lightweightspaceship.png}
         \caption{}
-        \label{fig:lightweightspaceship_evo}
+        \label{fig:lightweightspaceship}
     \end{subfigure}
 	\caption{Dos \textit{naves espaciales} del juego de vida de Conway.}
 	\label{fig:congIniciales4}
@@ -280,39 +280,25 @@ Los primeros censos de configuraciones iniciales fueron \textit{The Online Life-
 	\centering
 	\begin{subfigure}[b]{0.3\linewidth} 
         \centering
-        \includegraphics[height=.45\linewidth]{./images/glider.png}
-        \caption{\textit{Glider}}
-        \label{fig:glider}
-    \end{subfigure}
-    \ 
-	\begin{subfigure}[b]{0.3\linewidth} 
-        \centering
-        \includegraphics[height=0.45\linewidth]{./images/lightweightspaceship.png}
-        \caption{\textit{Lightweight spaceship}}
-        \label{fig:lightweightspaceship}
-    \end{subfigure}
-    \
-	\begin{subfigure}[b]{0.3\linewidth} 
-        \centering
         \includegraphics[height=0.45\linewidth]{./images/middleweightspaceship.png}
         \caption{\textit{Middleweight spaceship}}
         \label{fig:middleweightspaceship}
     \end{subfigure}
-    \\
+    \
 	\begin{subfigure}[b]{0.3\linewidth} 
         \centering
         \includegraphics[height=0.45\linewidth]{./images/heavyweightspaceship.png}
         \caption{\textit{Heavyweight spaceship}}
         \label{fig:heavyweightspaceship}
     \end{subfigure}
-    \
+    \\
 	\begin{subfigure}[b]{0.3\linewidth} 
         \centering
         \includegraphics[height=0.65\linewidth]{./images/MWSS_on_MWSS.png}
         \caption{\textit{MWSS on MWSS}}
         \label{fig:mwss2}
     \end{subfigure}
-	\caption{5 \textit{naves espaciales} más frecuentes en el censo {Catalogue}.}
+	\caption{Tres últimas \textit{naves espaciales} de las 5 más frecuentes en el censo {Catalogue}.}
 	\label{fig:congIniciales5}
 \end{figure} 
 
@@ -391,7 +377,7 @@ Como representantes de la categoría de \textit{osciladores} vamos a estudiar lo
 Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación exponemos.
 
 \begin{itemize}
-\item Crecimiento de la configuración inicial: dispondremos de tres herramientas para medir el cambio de crecimiento. Estudiaremos la evolución del número de nodos ocupados en cada etapa, la evolución del área del rectángulo de menor tamaño que contenga a todas los nodos ocupados de cada iteración y su densidad, esto es, el cociente del número de nodos ocupados por el área anterior. Cuyas unidad son respectivamente \textit{nodos}, \textit{nodos}$^2$ y \textit{nodos}$^-1$.
+\item Crecimiento de la configuración inicial: dispondremos de tres herramientas para medir el cambio de crecimiento. Estudiaremos la evolución del número de nodos ocupados en cada etapa, la evolución del área del rectángulo de menor tamaño que contenga a todas los nodos ocupados de cada iteración y su densidad, esto es, el cociente del número de nodos ocupados por el área anterior. Cuyas unidades son respectivamente \textit{nodos}, \textit{nodos}$^2$ y \textit{nodos}$^-1$.
 \item Tasa de cambio de la configuración inicial: emplearemos el concepto de calor, el número de nodos que cambian de estado por iteración. Cuya unidad es \textit{nodos}.
 \item Distribución de los nodos ocupados en cúmulos: contabilizaremos el número de cúmulos por iteración, entendiendo por cúmulo al mayor conjunto de nodos ocupados cuyo vecindario no es disjunto, es decir, en un cúmulo cada nodo ocupado está contenido en el vecindario de otro nodo ocupado del cúmulo.
 \item Número de vida inmóviles, esto es, en cada iteración comprobamos cuales de los conjuntos de cúmulos son vidas inmóviles.
