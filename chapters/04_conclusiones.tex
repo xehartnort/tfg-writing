@@ -4,8 +4,16 @@
 
 \chapter{Conclusiones}
 
-\section{Teoría de conjuntos}
+Una de las cuestiones más interesantes que se han observado en todos los experimentos es que los valores medios de las variables medidas alcanzan un valor aproximadamente constante para cada valor escogido de $\alpha$. Esto nos quiere decir que el $\alpha$-asíncronismo introduce cierta \textit{estabilidad} en las variables observadas. Dados los promedios constantes de calor, número de nodos ocupados y área para cada $\alpha$ se puede concluir que las categorías restantes de configuraciones estudiadas reproducen un esquema de auto-organización, el cual ya se describe en \cite{syncVSasync} pero para configuraciones iniciales aleatorias. Ya que si por el contrario, éstos crecieran o disminuyeran para algún valor fijado de $\alpha$ se tendría que o bien la configuración crece indefinidamente o bien la configuración colapsa, estando formada únicamente por nodos vacíos. 
 
-\subsection{Introducción}
+A menudo se ha observado que cuando $\alpha$ se aproxima a la unidad es habitual que los valores medios estudiados se aproximen a los valores que se obtienen en un esquema de actualización síncrono durante las primeras iteraciones, mientras que por lo contrario cuando $\alpha$ se aproxima a cero los comportamientos son diversos y en general se alejan del comportamiento síncrono.
+
+Otra observación de interés es que cuando $\alpha$ decrece se tiende a ralentizar el número de cambios de estados en los nodos y que por el contrario cuando $\alpha$ se aproxima a la unidad la actividad crece. Este fenómeno se ve reflejado en el comportamiento global del calor medio sobre las configuraciones estudiadas. Esta observación confirma la intuición de que cuanto menor sea la probabilidad de actualizar los nodos, menor será el cambio de estado de los mismos.
+
+En general se puede observar que de las categorías propuestas de configuraciones, solo se preservan las vidas inmóviles debido a su carácter estable. Por otra parte, hemos observado que en la evolución $\alpha$-asíncrona de las \textit{naves espaciales} estudiadas se puede caracterizar por la ausencia de vidas inmóviles dado que no ocurre en los otros tipos de configuraciones iniciales estudiadas.
+
+\section{Trabajo futuro}
+
+Desde el punto de vista experimental, proponemos la continuación de éste trabajo sobre más configuraciones de cada categoría, además de añadir categorías nuevas que permitan recoger comportamientos más complejos así como un tratamiento estadístico más profundo. También atrae nuestro interés la profundización del trabajo a través de la observación de más variables que sean computacionalmente más costosas, las cuales nos permitan realizar una extrapolación del censo utilizado en éste trabajo a la situación de actualización $\alpha$-asincrona.
 
 \end{document}

@@ -34,7 +34,7 @@ Sin embargo las reglas que proporcionó Conway no son las únicas que muestran e
 
 %Estaría muy bien añadir imágenes aquí pero me va a tomar un ratete hacerlo.
 
-\subsection{Representación interna y actualización}
+\subsection{Representación interna y actualización} \label{celulitas}
 
 Como se comentaba en la introducción, plantearse la simulación del juego de vida implica afrontar el problema de representar una malla infinita de dos dimensiones en la memoria finita de un ordenador. Aunque la cantidad de memoria y velocidad de acceso a la misma ha mejorado significativamente con el paso del tiempo, perseguimos una representación que cumpla las siguientes dos características:
 
@@ -383,9 +383,19 @@ Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos lo
 \item Número de vida inmóviles, esto es, en cada iteración comprobamos cuales de los conjuntos de cúmulos son vidas inmóviles.
 \end{itemize}
 
-Estas variables serán medidas para distintos valores de $\alpha$ con el fin de estudiar el efecto de la aleatoriedad en las configuraciones iniciales. Notar que el número de simulaciones realizadas para cada patrón será variable puesto que algunos patrones son de mayor tamaño y en consecuencia tienen simulaciones más lentas.
+Estas variables serán medidas para distintos valores de $\alpha$ con el fin de estudiar el efecto de la aleatoriedad en las configuraciones iniciales. 
 
-\subsection{Arquitectura de las simulaciones}
+%\subsection{Descripción algorítmica}
+
+%Esta sección está dedicada a la exposición de los algoritmos que se han diseñado para la extracción de las variables de interés anteriores. Para realizar las simulaciones del juego de vida se ha diseñado una clase, la cual representa el estado interno de un juego de vida $\alpha$-asíncrono, la cual permite evolucionar el
+
+%\subsubsection{Medidas de crecimiento de la configuración inicial}
+
+%La primera herramienta que se comenta para medir el crecimiento de la configuración inicial es el cálculo del número de nodos ocupados en cada etapa. Dado que hemos escogido una representación de la malla en la cual solo se almacenan los nodos ocupados, es suficiente con obtener el tamaño de la estructura de datos en la que se almacena
+
+
+
+\subsection{Obtención de los datos}
 
 Dado que realizar múltiples simulaciones de una configuración inicial toma una cantidad considerable de tiempo, hemos considerado la separación del proceso de obtención de datos de las simulaciones en tres etapas bien diferenciadas:
 \begin{enumerate}
