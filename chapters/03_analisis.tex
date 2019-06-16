@@ -4,107 +4,153 @@
 
 \chapter{Análisis}
 
-Las estimaciones de los métodos Monte Carlo dependen en gran medida de la anchura del intervalo de confianza $[\mu+3\sigma, \mu-3\sigma]$. Dicha anchura se reduce con el incremento del número de muestras aleatorias pero lo hace lentamente con el consecuente incremento de tiempo de computación. Por esta razón se crean métodos alternativos conocidos como métodos de reducción de la varianza. En esta sección introducimos uno que se adecúa a nuestro problema, que utilizaremos en las todas las ejecuciones posteriores y a continuación procedemos a estudiar el efecto de la $\alpha$-asincronicidad en la evolución de algunas configuraciones.
+%\section{$\alpha$-asincronismo en la evolución de las configuraciones iniciales}
 
-\section{Reducción de la varianza}
+En esta sección vamos a estudiar el impacto de la $\alpha$-asíncronicidad. Las configuraciones iniciales son las escogidas en la sección \ref{seleccion}. Las ejecuciones son de 50 iteraciones con los valores de $\alpha$: 0.15, 0.3, 0.45, 0.6, 0.75, 0.9 y 0.99. Cada iteración simulada 7500 veces. Como resultado hemos obtenido los valores medios de las variables expuestas en la sección \ref{vars} junto con sus correspondientes intervalos de confianza para cada iteración.
 
-El intervalo de confianza $[\mu+3\sigma, \mu-3\sigma]$ crece a medida que la iteración se aleja de la configuración inicial, de decir, la varianza aumenta. Es posible reducirla aumentando el número de simulaciones globalmente e incrementando notablemente el tiempo de cálculo. Por tanto proponemos incrementar el número de simulaciones a medida que las iteraciones aumenten. Este incremento requiere de la adición de nuevas simulaciones en cada iteración, las cuales serán escogidas aleatoriamente de las ya existentes modificando la semilla para no obtener simulaciones duplicadas. Experimentalmente hemos observado que un valor que muestra buenos resultados sin aumentar excesivamente el tiempo de cálculo es un incremento en cada iteración de una décima parte del valor inicial de simulaciones. 
+\subsection{Hipótesis de normalidad} \label{normalidad}
 
-Finalmente es posible observar la reducción del intervalo de confianza que conlleva dicho incremento en la \autoref{fig:33}, dónde visualizamos la evolución del promedio de nodos ocupados en cada iteración del juego de vida. Para el contenido de esta sección no es relevante la configuración de la que se han obtenido los datos. Cada punto representa una estimación Monte Carlo junto con el intervalo de confianza $[\mu+3\sigma, \mu-3\sigma]$.
+Para que las estimaciones Monte Carlo tengan los intervalos de confianza de una distribución normal, es necesario comprobar que la distribución del estimador de la media sigue una distribución normal. Para ello aplicamos el de test de normalidad de Shapiro-Wilk con un nivel de significancia de 0.05, en el cual la hipótesis nula, $H_0$, es que el estimador de la media sigue una distribución normal \cite{shapiro} y la hipótesis alternativa $H_1$ [MISSING VALUE!]. Mientras que con este test no podremos afirmar que definitivamente la distribución sea normal, nos reduciremos a afirmar que no podemos afirmar que la distribución no sea normal, esto es, no rechazar la hipótesis nula. Una buena propiedad de este test, que ha motivado su elección, es que la probabilidad de rechazar la hipótesis nula cuando es cierta es aproximadamente del 5\% independientemente del tamaño de la muestra \cite{powertest}.
+
+En la \autoref{fig:alpha} es posible observar como para cada iteración tenemos representado el intervalo de confianza $[\mu-3*\sigma, \mu+3*\sigma]$, junto con el punto central del intervalo $\mu$, la media del estimador. En las situaciones en las cuales el $p-value$ generado por el test de normalidad no supera el nivel de significación se ha pintado de color naranja, es decir, se rechaza $H_0$ y en otro caso de color azul. En caso de que la hipótesis nula sea rechazada tan solo podemos afirmar que la media del estimador converge en probabilidad como se comenta en la sección \ref{carlino}.
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}[b]{0.9\textwidth} 
-		\centering
-    	\includegraphics[width=\textwidth]{./images/iteracion_without_inc.png}
-    	\caption{Ejecución sin incremento del valor inicial de simulaciones cada iteración.}
-    	\label{fig:3-1}
-    \end{subfigure}
-    \\
-	\begin{subfigure}[b]{0.9\textwidth} 
-        \centering
-        \includegraphics[width=\textwidth]{./images/iteracion_inc.png}
-        \caption{Ejecución con incremento del 10\% del valor inicial de simulaciones en cada iteración.}
-        \label{fig:3-2}
-    \end{subfigure}
-    \caption{Aplicación del método de reducción de varianza.}
-    \label{fig:33}
-\end{figure} 
+    \includegraphics[width=0.8\textwidth]{./images/data/lightweightspaceship/{iteracion_Area_0.30_5000_50}.png}
+    \caption{Promedio de densidad para $\alpha$=0.3 de la configuración \textit{lightweight spaceship}.}
+    \label{fig:alpha}
+\end{figure}
 
-\section{$\alpha$-asincronismo en la evolución de las configuraciones iniciales}
+Notar que para valores extremos de $\alpha$ hemos observado que se pueden encontrar situaciones en la cuales se rechaze más a menudo la hipótesis de normalidad, como las que se muestran en la \autoref{fig:tiste}. Entendemos que esta situación se puede dar por dos motivos. El primero es que si existe un número de simulaciones a partir del cual es posible dejar de negar la hipótesis de normalidad, aún no se ha alcanzado y el segundo motivo es que los valores que estemos observando sean constantes en todas las simulaciones y por tanto el estimador converge en probabilidad trivialmente como se muestra en la \autoref{fig:alpha2}.
 
-En esta sección vamos a estudiar el impacto de la $\alpha$-asíncronicidad. Las configuraciones iniciales son las escogidas en la sección \ref{seleccion}. Las ejecuciones son de 50 iteraciones con los valores de $\alpha$: 0.15, 0.3, 0.45, 0.6, 0.75 y 0.9. Cada iteración simulada 5000 veces aplicando el método de reducción de la varianza descrito en la sección anterior. Como resultado hemos obtenido los valores medios de las variables expuestas en la sección \ref{vars} junto con sus correspondientes intervalos de confianza para cada iteración.
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=0.8\textwidth]{./images/data/glider/{iteracion_Celulas_0.99_5000_50}.png}
+    \caption{Promedio de nodos ocupados para $\alpha$=0.99 de la configuración \textit{glider}.}
+    \label{fig:tiste}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=0.8\textwidth]{./images/data/lightweightspaceship/{iteracion_Clusteres_0.99_5000_50}.png}
+    \caption{Promedio de clústeres para $\alpha$=0.99 de la configuración \textit{lightweightspaceship}.}
+    \label{fig:alpha2}
+\end{figure}
 
 \subsection{\textit{Osciladores} de periodo 2} \label{osci2}
 
-Comentamos los efectos de la variación de la $\alpha$-asincronicidad sobre la configuración inicial \textit{blinker}. Como se observa en la \autoref{fig:blinker_evo}, cuando no existe perturbación en el intercambio de información entre nodos ocupados, el calor en cada iteración es 4, es decir, 2 nodos se liberan y 2 nodos se ocupan iteración, ocupa un área de 3 \textit{nodos}$^2$ y está conformada por un solo clúster. En primer lugar, podemos observar en la \autoref{fig:4-1} que los valores de $\alpha$ se aproximan inferiormente a $0.5$, imprimen un cambio de crecimiento en el área media. Mientras que para $\alpha=0.15$, el promedio de área a partir la vigésima iteración decrece ligeramente, para $\alpha=0.3$ el decrecimiento prácticamente desaparece, adquiriendo un valor constante y a partir de $\alpha=0.45$ comienza una acusada tendencia de crecimiento. Esta tendencia se incrementa cuando $\alpha$ se aproxima a la unidad. En particular para $\alpha=0.60$ el crecimiento a partir de la décima iteración mantiene su pendiente, hecho que no se repite para $\alpha=0.75$, donde en la vigésima iteración cambia ligeramente la pendiente y finalmente en la décimo quinta iteración de $\alpha=0.9$, el cambio de pendiente es más notable y desacelera marcadamente el crecimiento del área media. A la vez que estos fenómenos ocurren, la iteración a partir de la cual se produce el crecimiento del área media, decrece. Ésto es algo más visible en los valores de $\alpha$ superiores a $0.5$.
-
-Si observamos la \autoref{fig:4-2}, contemplamos un comportamiento similar al descrito anteriormente, por tanto resulta interesante explorar el valor medio de densidad que relaciona la variación conjunta de ambas variables. 
+Como se observa en la \autoref{fig:blinker_evo}, cuando no existe perturbación en el intercambio de información entre nodos ocupados, el calor en cada iteración es de 4 nodos, es decir, 2 nodos se liberan y 2 nodos se ocupan iteración, ocupa un área de 3 \textit{nodos}$^2$ y está conformada por un solo clúster. En primer lugar destacamos que independientemente al valor que tome $\alpha$ el número medio de clústeres permanece constantemente 1 como se puede observar en la \autoref{fig:blinker_clusters}.
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}[b]{0.9\textwidth} 
-		\centering
-    	\includegraphics[width=\textwidth]{./images/data/blinker/{Area_multiple_alpha}.png}
-    	\caption{}
-    	\label{fig:4-1}
-    \end{subfigure}
-    \\
-	\begin{subfigure}[b]{0.9\textwidth} 
-        \centering
-        \includegraphics[width=\textwidth]{./images/data/blinker/{Celulas_multiple_alpha}.png}
-        \caption{}
-        \label{fig:4-2}
-    \end{subfigure}
-	\\
-    \caption{Variación del área y número de nodos ocupados medio en la configuración \textit{blinker} para distintos valores de $\alpha$.}
-    \label{fig:44}
-\end{figure} 
-
-El fenómeno de decrecimiento del número de iteración a partir del cual se producen los cambios descritos anteriormente, se puede visualizar más claramente en la \autoref{fig:4-3}. Cuando $\alpha$ se incrementa, la iteración a partir del cual la densidad se vuelve constante decrece. Por ejemplo, en la vigésima iteración $\alpha=0.3$ el valor medio de densidad se torna constante. Otra de las cuestiones que es posible observar sobre la variación de la densidad media es que cuando $\alpha$ crece, el valor medio de densidad constante que se alcanza se hace cada vez menor. Ésto nos informa de que durante esas iteraciones el área crece en mayor medida que el número de nodos ocupados, obteniéndose valores menores de densidad.
-
-\begin{figure}[H]
-	\centering
-    \includegraphics[width=0.9\textwidth]{./images/data/blinker/{Densidad_multiple_alpha}.png}
-    \caption{Evolución de la densidad media de la configuración \textit{blinker} para distintos valores de $\alpha$.}
-    \label{fig:4-3}
+    \includegraphics[width=0.8\textwidth]{./images/data/blinker/{Clusteres_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del promedio de clústeres de la configuración \textit{blinker}.}
+    \label{fig:blinker_clusters}
 \end{figure}
 
-La \autoref{fig:5-1} muestra la variación del calor medio para distintos valores de $\alpha$. Se pueden observar dos zonas de cambio respecto a $\alpha$, una dada por los valores de $\alpha$ menores a $0.5$ y otra por los valores superiores. La primera se caracteriza por un fuerte descenso del calor hasta el rango de iteraciones 15-20, a continuación o bien se estabiliza ($\alpha=0.45$) o bien decrece ligeramente ($\alpha=0.15,0.30$). La segunda zona decrece en mucho menor medida que la anterior, hasta el rango de iteraciones 10-15 y después para $\alpha=0.6$ crece ligeramente con una pendiente constante. A diferencia de los valores $\alpha=0.75,0.90$ que la tienen más pronunciada de la décima a la vigésima iteración y a partir de esta última, cambia frenando el desacelerando del valor medio. De hecho, el calor promedio para $\alpha=0.9$ sugiere la existencia de una asíntota vertical con un calor medio igual a 3 nodos. A diferencia de los valores medios anteriormente comentados, el crecimiento que experimenta el calor cuando es mucho menos marcado y no llega a superar los valores iniciales. 
+Si observamos la \autoref{fig:blinker_calor} es posible ver que los valores medios permanecen aproximadamente constantes para cada valor de $\alpha$, además a medida que $\alpha$ se aproxima a la unidad, el promedio de calor se aproxima al que se obtiene en condiciones síncronas de evolución. También que puede observar notablemente que la variación de $\alpha$ produce que el calor medio varíe en más de 3 unidades, lo que nos hace pensar que el efecto de la $\alpha$-asincronicidad sobre esta configuración ralentiza la evolución de la misma.
 
-Si consultamos la \autoref{fig:5-2} que recoge la variación del número de clústeres medio respecto de $\alpha$, observamos la diferencia principal con la \autoref{fig:5-1} es que para valores de $\alpha$ mayores o iguales a $0.45$ el promedio de clústeres decrece en aproximadamente la décima iteración a un valor cercano a $0.6$, a partir de esta iteración el comportamiento es muy similar al del calor medio. En particular, el cambio de pendiente a partir de la décima iteración se reconoce unicamente para $\alpha=0.9$, mientras que para $\alpha=0.45,0.60,0.75$ la pendiente es prácticamente constante.
+Por otro lado, en la \autoref{fig:blinker_area} se observa un comportamiento más variado que el promedio de calor. Aunque se mantiene el hecho de que los valores medios de área, fijado un valor de $\alpha$, se mantienen aproximadamente constantes y también que para valores de $\alpha$ cercanos a la unidad, el promedio se aproxima al que se da bajo situación de sincronicidad, en el rango de valores de $\alpha\in[0.15,0.75]$ se observa un comportamiento diferente. En este rango, el área media crece hasta alcanzar su máximo valor cercano a 4 \textit{nodos}$^2$ cuando $\alpha$ crece hasta 0.6, sin embargo a partir de este valor de $\alpha$ los promedios comienzan a descender hasta 3.5 \textit{nodos}$^2$ en $\alpha=0.75$. Este comportamiento descrito para el área media es muy similar al que se puede observar para el número medio de vidas inmóviles (\autoref{fig:blinker_fijas}).
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}[b]{0.9\textwidth} 
-		\centering
-    	\includegraphics[width=\textwidth]{./images/data/blinker/{Calor_multiple_alpha}.png}
-    	\caption{}
-    	\label{fig:5-1}
-    \end{subfigure}
-    \\
-	\begin{subfigure}[b]{0.9\textwidth} 
-        \centering
-        \includegraphics[width=\textwidth]{./images/data/blinker/{Clusteres_multiple_alpha}.png}
-        \caption{}
-        \label{fig:5-2}
-    \end{subfigure}
-    \caption{Variación del calor y número de clústeres medio en la configuración \textit{blinker} para distintos valores de $\alpha$.}
-    \label{fig:55}
+    \includegraphics[width=0.8\textwidth]{./images/data/blinker/{Calor_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del calor medio de la configuración \textit{blinker}.}
+    \label{fig:blinker_calor}
 \end{figure}
 
-El otro oscilador de periodo dos que hemos estudiado, la configuración \textit{toad} (\autoref{fig:toad_evo}) formada por 6 nodos ocupados que ocupan un área de 8 \textit{nodos}$^2$ en las iteraciones pares y 16 \textit{nodos}$^2$ en las impares, muestra un comportamiento muy similar a \textit{blinker} frente a la introducción de $\alpha$-asíncronismo en su evolución. Por ejemplo, en la \autoref{fig:66} se puede apreciar como el comportamiento es profundamente similar al mostrado en la \autoref{fig:4-2}.
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=0.8\textwidth]{./images/data/blinker/{Area_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del área media de la configuración \textit{blinker}.}
+    \label{fig:blinker_area}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=0.8\textwidth]{./images/data/blinker/{Fijas_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del número medio de vidas inmóviles de la configuración \textit{blinker}.}
+    \label{fig:blinker_fijas}
+\end{figure}
+
+La densidad media en el rango de valores de $\alpha$ se puede separar en dos regiones por el valor $\alpha=0.45$, la primera donde la densidad decrece respecto de $\alpha$ y la segunda dónde ocurre lo contrario, esto es, la densidad crece hasta acercarse a valores cercanos a los que se dan con actualización síncrona. Aunque hay que notar que estas variaciones ocurren en el intervalo de valores de $[0.8, 0.95]$, luego la densidad media varía ligeramente en situación de $\alpha$-asíncronicidad.
+
+El otro oscilador de periodo dos que hemos estudiado, la configuración \textit{toad} (\autoref{fig:toad_evo}) formada por 6 nodos ocupados que ocupan un área de 8 \textit{nodos}$^2$ en las iteraciones pares y 16 \textit{nodos}$^2$ en las impares. A diferencia de la configuración anterior tanto el área como el calor medios experimentan un comportamiento muy similar en situación de $\alpha$-asíncronicidad al que se muestra en la \autoref{fig:blinker_calor}. Comportamiento al que se suman también el número de clústeres medio que deja de ser constante y varía aproximadamente una unidad para los distintos valores de $\alpha$ (\autoref{fig:toad_clusters}). Por último la densidad media de esta configuración varía aproximadamente en el intervalo $[0.40,\ 0.65]$, observándose que el máximo valor medio se alcanza para $\alpha=0.15$ y el menor para $\alpha=0.9$, teniéndose un comportamiento decreciente respecto de $\alpha$ en los valores intermedios.
+
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=0.75\textwidth]{./images/data/blinker/{Fijas_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona de la densidad media de la configuración \textit{blinker}.}
+    \label{fig:blinker_densidad}
+\end{figure}
 
 \begin{figure}[H]
 		\centering
-    	\includegraphics[width=\textwidth]{./images/data/toad/{Area_multiple_alpha}.png}
-    \caption{Variación del área media en la configuración \textit{toad} para distintos valores de $\alpha$.}
-    \label{fig:66}
+    	\includegraphics[width=0.75\textwidth]{./images/data/toad/{Clusteres_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del número de clústeres medio de la configuración \textit{toad}.}
+    \label{fig:toad_clusters}
 \end{figure}
 
 \subsection{\textit{Osciladores} de periodo 3}
 
+En la \autoref{fig:jam_evo} podemos observar tres iteraciones de la configuración \textit{jam}, la cual curiosamente contiene una vida inmóvil. En situación de actualización síncrona esta configuración inicial está formada por 13 nodos ocupados agrupados en tres clústeres y ocupa un área de 42 \textit{nodos}$^2$. En su primera iteración se incrementa el número de nodos a 16, agrupados en un clúster y con un calor de [MISSING VALUE!] nodos, manteniendo el mismo área. La siguiente iteración incrementa su área a 49 \textit{nodos}$^2$, disminuyendo el número de nodos ocupados a 14, agrupados en dos clústeres con un calor de [MISSING VALUE!] nodos. Al avanzar una iteración más, la configuración retorna al estado de la configuración inicial. 
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=0.9\textwidth]{./images/jam_evo.png}
+    \caption{De izquierda a derecha, evolución síncrona de la configuración \textit{jam}.}
+    \label{fig:jam_evo}
+\end{figure}
+
+En esta configuración se observa el mismo comportamiento para los promedios de área y calor que para la configuración \textit{toad}. Por el contrario, para el número medio de clústeres (\autoref{fig:jam_clusters}) tiene el comportamiento opuesto, esto es, el valor decrece con el crecimiento de $\alpha$, siendo su máximo y mínimo valor, cercano a 2.7 clústeres para $\alpha=0.15$ y próximo 2 clústeres para $\alpha=0.9$, respectivamente.
+
+\begin{figure}[H]
+		\centering
+    	\includegraphics[width=0.8\textwidth]{./images/data/jam/{Clusteres_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del promedio de clústeres de la configuración \textit{jam}.}
+    \label{fig:jam_clusters}
+\end{figure}
+
+A continuación, en la \autoref{fig:pulsar_evo} podemos observar tres iteraciones de la configuración \textit{pulsar}, la cual es notablemente la configuración de mayor tamaño que hemos estudiado. En situación de actualización síncrona esta configuración inicial está formada por 48 nodos ocupados agrupados en 12 clústeres y ocupa un área de 169 \textit{nodos}$^2$. En su primera iteración se incrementa el número de nodos a 72, agrupados en el mismo número de clústeres y con un calor de [MISSING VALUE!] nodos, incrementando el área a 225\textit{nodos}$^2$. La siguiente iteración retorna su área a 169 \textit{nodos}$^2$, manteniendo el número de nodos ocupados, agrupados en 4 clústeres con un calor de [MISSING VALUE!] nodos. Al avanzar una iteración más, la configuración retorna al estado de la configuración inicial. 
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=\textwidth]{./images/pulsar_evo.png}
+    \caption{De izquierda a derecha, evolución síncrona de la configuración \textit{pulsar}.}
+    \label{fig:pulsar_evo}
+\end{figure}
+
+Esta configuración experimenta el mismo comportamiento en el calor medio que la configuración \textit{jam}. Por otra parte la variación de el área media (\autoref{fig:pulsar_area}) es similar, notando que la separación entre los valores medios decrece respecto de $\alpha$, alcanzando para $\alpha=0.9$ un valor medio próximo a las 225 \textit{nodos}$^2$ de la primera iteración síncrona de esta configuración. 
+
+\begin{figure}[H]
+		\centering
+    	\includegraphics[width=0.8\textwidth]{./images/data/pulsar/{Area_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del promedio de área de la configuración \textit{pulsar}.}
+    \label{fig:pulsar_area}
+\end{figure}
+
+El número medio de clústeres decrece de $\alpha=0.15$ a $\alpha=0.6$ una unidad, a continuación crece 1.25 clústeres de $\alpha=0.6$ a $\alpha=0.9$. Además en la (\autoref{fig:pulsar_fijas}) el número de vidas inmóviles crece casi 2 unidades respecto de $\alpha$.
+
+\begin{figure}[H]
+		\centering
+    	\includegraphics[width=0.8\textwidth]{./images/data/pulsar/{Clusteres_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del promedio de clústeres de la configuración \textit{pulsar}.}
+    \label{fig:pulsar_clusteres}
+\end{figure}
+
+\begin{figure}[H]
+		\centering
+    	\includegraphics[width=0.8\textwidth]{./images/data/pulsar/{Clusteres_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del promedio de clústeres de la configuración \textit{pulsar}.}
+    \label{fig:pulsar_fijas}
+\end{figure}
+
 \subsection{\textit{Osciladores} de periodo 4}
+
+
+
 
 \subsection{\textit{Naves espaciales}}
 Hasta ahora solo hemos descrito el comportamiento de \textit{osciladores}. Como se expuso en la sección \ref{spaceships}, las \textit{naves espaciales} pueden ser vistas como \textit{osciladores} que se desplazan, luego es interesante explorar si los comportamientos que hemos observado en las configuraciones iniciales anteriores se reproducen en este tipo de configuraciones iniciales. 
@@ -114,37 +160,32 @@ Comenzamos la sección estudiando la configuración inicial \textit{lightweight 
 \begin{figure}[H]
 	\centering
     \includegraphics[width=\textwidth]{./images/lightweightspaceship_evo.png}
-    \caption{De derecha a izquierda, evolución síncrona de la configuración \textit{lightweightspaceship}.}
+    \caption{De derecha a izquierda, evolución síncrona de la configuración \textit{lightweight spaceship}.}
     \label{fig:lightweightspaceship_evo}
 \end{figure}
 
-Uno de los característicos efectos que produce la introducción de $\alpha$-asincronismo en esta configuración inicial es que el número de clústeres permanece constante durante en todas la ejecución (\autoref{fig:7-1}). Ésto contrasta con el hecho de que el resto de variables observadas tomen un valor diferente para cada valor de $\alpha$. Si observamos el número medio de nodos ocupados(\autoref{fig:7-2}) se observa que tras superar la décimo quinta iteración los valores medios se estabilizan y la separación vertical de dichos valores constantes es aproximadamente igual a 0.5 nodos ocupados entre valores consecutivos de $\alpha$. De esta manera el observamos que cuando el valor de $\alpha$ el promedio nodos ocupados se acerca a los 12 nodos ocupados en la iteraciones impares de esta configuración con la evolución síncrona.
+Uno de los característicos efectos que produce la introducción de $\alpha$-asincronismo en esta configuración inicial es que el número medio de clústeres permanece constante en todas las ejecuciones (\autoref{fig:7-1}) como en la configuración \textit{blinker}. Ésto contrasta con el hecho de que el resto de variables observadas tomen un valor diferente para cada valor de $\alpha$. Si observamos el número medio de nodos ocupados(\autoref{fig:7-2}) se observa que los valores medios se estabilizan y la separación vertical de dichos valores constantes es aproximadamente igual a 0.5 nodos ocupados entre valores consecutivos de $\alpha$. De esta manera el observamos que cuando el valor de $\alpha$ el promedio nodos ocupados se acerca a los 12 nodos ocupados en la iteraciones impares de esta configuración con la evolución síncrona.
 
 Mientras que la densidad y el calor medios de esta configuración tienen un comportamiento similar al número medio de nodos ocupados se puede observar una variación diferente en el área media (\autoref{fig:7-3}). Cuando $\alpha$ se aproxima, tanto inferior como superiormente, a $0.5$ los valores medios de área se estabilizan entorno al valor 21.2 \textit{nodos}$^2$. Por otro lado cuando $\alpha$ se aproxima a 0 ó a 1, los valores medios se aproximan a 20.5 \textit{nodos}$^2$, un valor muy cercano a los 20 \textit{nodos}$^2$ de la configuración con evolución síncrona. Otra cuestión notable es que el valor de área media pertenece en el intervalo $(20.5, 21.5)$ cuando $\alpha$ varía, un intervalo de pequeña longitud. A diferencia de la longitud de los intervalos en los que se encuentran los promedios de nodos ocupados, densidad y calor, que es mayor.
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}[b]{0.9\textwidth} 
-		\centering
-    	\includegraphics[width=\textwidth]{./images/data/lightweightspaceship/{Clusteres_multiple_alpha}.png}
-    	\caption{}
-    	\label{fig:7-1}
-    \end{subfigure}
-    \\
-	\begin{subfigure}[b]{0.9\textwidth} 
-        \centering
-        \includegraphics[width=\textwidth]{./images/data/lightweightspaceship/{Celulas_multiple_alpha}.png}
-        \caption{}
-        \label{fig:7-2}
-    \end{subfigure}
-    \caption{Variación del número medio de clústeres y de nodos ocupados en la configuración \textit{lightweight spaceship} para distintos valores de $\alpha$.}
-    \label{fig:77}
+    \includegraphics[width=0.8\textwidth]{./images/data/lightweightspaceship/{Clusteres_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del promedio de clústeres de la configuración \textit{lightweight spaceship}.}
+    \label{fig:7-1}
+\end{figure}
+
+\begin{figure}[H] 
+    \centering
+    \includegraphics[width=0.8\textwidth]{./images/data/lightweightspaceship/{Celulas_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del promedio de nodos ocupados de la configuración \textit{lightweight spaceship}.}
+    \label{fig:7-2}
 \end{figure}
  
 \begin{figure}[H]
 	\centering
-    \includegraphics[width=\textwidth]{./images/data/lightweightspaceship/{Area_multiple_alpha}.png}
-    \caption{Variación del área media en la configuración \textit{lightweight spaceship} para distintos valores de $\alpha$.}
+    \includegraphics[width=0.8\textwidth]{./images/data/lightweightspaceship/{Area_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del área media de la configuración \textit{lightweight spaceship}.}
     \label{fig:7-3}
 \end{figure}
 
@@ -163,7 +204,7 @@ La siguiente configuración que vamos a estudiar, \textit{heavyweight spaceship}
 
 \begin{figure}[H]
 	\centering
-    \includegraphics[width=\textwidth]{./images/data/middleweightspaceship/{Area_multiple_alpha}.png}
+    \includegraphics[width=0.8\textwidth]{./images/data/middleweightspaceship/{Area_multiple_alpha}.png}
     \caption{Variación del área media en la configuración \textit{middleweight spaceship} para distintos valores de $\alpha$.}
     \label{fig:88}
 \end{figure}
@@ -185,33 +226,39 @@ Los promedios de calor y número de nodos ocupados muestran un comportamiento id
 
 \begin{figure}[H]
 	\centering
-    \includegraphics[width=\textwidth]{./images/data/heavyweightspaceship/{Clusteres_multiple_alpha}.png}
+    \includegraphics[width=0.8\textwidth]{./images/data/heavyweightspaceship/{Clusteres_multiple_alpha}.png}
     \caption{Variación del promedio de clústeres en la configuración \textit{heavyweight spaceship} para distintos valores de $\alpha$.}
     \label{fig:9-1}
 \end{figure}
 
 \begin{figure}[H] 
     \centering
-    \includegraphics[width=\textwidth]{./images/data/heavyweightspaceship/{Densidad_multiple_alpha}.png}
+    \includegraphics[width=0.8\textwidth]{./images/data/heavyweightspaceship/{Densidad_multiple_alpha}.png}
     \caption{Variación del promedio de densidad en la configuración \textit{heavyweight spaceship} para distintos valores de $\alpha$.}
     \label{fig:9-2}
 \end{figure}
 
-Por último, la configuración inicial \textit{glider} es una nave espacial de velocidad $c/4$ formada por 5 nodos ocupados agrupados en un único clúster, tiene un calor de 4 \textit{nodos} y ocupa un área de 9 \textit{nodos}$^2$ (\autoref{fig:glider_evo}). Esta configuración inicial desarrolla un comportamiento sorprendentemente similar al descrito para los osciladores de periodo 2 en la sección \ref{osci2}.
+Por último, la configuración inicial \textit{glider} es una nave espacial de velocidad $c/4$ formada por 5 nodos ocupados agrupados en un único clúster, tiene un calor de 4 \textit{nodos} y ocupa un área de 9 \textit{nodos}$^2$ (\autoref{fig:glider_evo}). De esta figura destacamos que el calor medio se desarrolla de forma similar al que hemos observado para la configuración \textit{blinker} al igual que lo hace el área media pero en intervalos de mayor longitud (\autoref{fig:9-3} y \autoref{fig:9-4}). Mientras que los promedios de clústeres, densidad, vidas inmóviles y nodos ocupados varían sutilmente en intervalos de muy reducida longitud.
 
 \begin{figure}[H]
 	\centering
-    \includegraphics[width=\textwidth]{./images/glider_evo.png}
-    \caption{Evolución síncrona de la configuración \textit{glider}.}
+    \includegraphics[width=0.8\textwidth]{./images/glider_evo.png}
+    \caption{De izquierda a derecha, evolución síncrona de la configuración \textit{glider}.}
     \label{fig:lightweightspaceship_evo}
 \end{figure}
 
-% Existen dos intervalos bien marcados, uno de decrecimiento (que va disminuyendo en tamaño) y otro de crecimiento que va creciendo
-%\section{Efecto de la variación de la distribución de probabilidad}
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=0.8\textwidth]{./images/data/glider/{Calor_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del calor medio de la configuración \textit{glider}}
+    \label{fig:9-3}
+\end{figure}
 
-%En esta sección vamos a estudiar el efecto de la generación de números aleatorios para las simulaciones utilizando distribuciones de probabilidad distintas a la uniforme. Nos resulta de especial interés algún tipo de distribución que este relacionada con el valor de $\alpha$-asincronicidad que empleemos. Una buena candidata es la distribución normal con media $\mu=\alpha$
-
-%Cuidado, una normal centrada el $\alpha$ no da valores entre 0 y 1, hay que hacer alguna magia más
-
+\begin{figure}[H] 
+    \centering
+    \includegraphics[width=0.8\textwidth]{./images/data/glider/{Area_multiple_alpha}.png}
+    \caption{Evolución $\alpha$-asíncrona del área media de la configuración \textit{glider}. }
+    \label{fig:9-4}
+\end{figure}
 
 \end{document}

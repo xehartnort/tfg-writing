@@ -388,12 +388,13 @@ Como representantes de la categoría de \textit{osciladores} vamos a estudiar lo
 
 \section{Simulaciones} \label{vars}
 
-Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación exponemos. Nuestras variables de interés son:
+Dado el carácter aleatorio del juego de vida $\alpha$-asíncrono emplearemos los fundamentos de Monte Carlo expuestos en la sección \ref{MonteCarlo} para medir los parámetros de interés que a continuación exponemos.
 
 \begin{itemize}
-\item Crecimiento de la configuración inicial: dispondremos de tres herramientas para medir el número de nodos ocupados. Estudiaremos la evolución del número de nodos ocupados en cada etapa, la evolución del área del rectángulo de menor tamaño que contenga a todas los nodos ocupados de cada iteración y su densidad, esto es, el cociente del número de nodos ocupados por el área anterior.
-\item Tasa de cambio de la configuración inicial: emplearemos el concepto de calor, el número de nodos que cambian de estado por iteración.
+\item Crecimiento de la configuración inicial: dispondremos de tres herramientas para medir el cambio de crecimiento. Estudiaremos la evolución del número de nodos ocupados en cada etapa, la evolución del área del rectángulo de menor tamaño que contenga a todas los nodos ocupados de cada iteración y su densidad, esto es, el cociente del número de nodos ocupados por el área anterior. Cuyas unidad son respectivamente \textit{nodos}, \textit{nodos}$^2$ y \textit{nodos}$^-1$.
+\item Tasa de cambio de la configuración inicial: emplearemos el concepto de calor, el número de nodos que cambian de estado por iteración. Cuya unidad es \textit{nodos}.
 \item Distribución de los nodos ocupados en cúmulos: contabilizaremos el número de cúmulos por iteración, entendiendo por cúmulo al mayor conjunto de nodos ocupados cuyo vecindario no es disjunto, es decir, en un cúmulo cada nodo ocupado está contenido en el vecindario de otro nodo ocupado del cúmulo.
+\item Número de vida inmóviles, esto es, en cada iteración comprobamos cuales de los conjuntos de cúmulos son vidas inmóviles.
 \end{itemize}
 
 Estas variables serán medidas para distintos valores de $\alpha$ con el fin de estudiar el efecto de la aleatoriedad en las configuraciones iniciales. Notar que el número de simulaciones realizadas para cada patrón será variable puesto que algunos patrones son de mayor tamaño y en consecuencia tienen simulaciones más lentas.
@@ -403,7 +404,7 @@ Estas variables serán medidas para distintos valores de $\alpha$ con el fin de 
 Dado que realizar múltiples simulaciones de una configuración inicial toma una cantidad considerable de tiempo, hemos considerado la separación del proceso de obtención de datos de las simulaciones en tres etapas bien diferenciadas:
 \begin{enumerate}
 \item Obtención de las variables de interés para cada conjunto de simulaciones de una configuración inicial.
-\item Cálculo de los promedios y sus intervalos de confianza para cada variable en cada iteración. %Adicionalmente se calcula el \textit{p-value} de un test de hipótesis que nos permita afirmar que la distribución de los valores medios es probablemente normal.
+\item Cálculo de los promedios y sus intervalos de confianza para cada variable en cada iteración.
 \item Representación gráfica de los múltiples datos obtenidos para visualizar el impacto de la $\alpha$-asincronicidad en la evolución.
 \end{enumerate}
 
@@ -422,23 +423,23 @@ Con estos datos realiza la ejecución de múltiples simulaciones con un número 
 \item \textit{alpha}: representa el valor de $\alpha$-asincronismo en la evolución que se ha aplicado las simulaciones, éste valor tiene que estar entre 0 y 1 para ser un valor correcto. En particular, es el valor de $\alpha$ con el que se aplica el algoritmo \ref{alg:async} en cada iteración.
 \item \textit{numberOfSteps}: este campo representa el número de iteraciones que se han realizado en cada simulación.
 \item \textit{numberOfRuns}: este campo almacena el número de simulaciones que se han realizado.
-\item \textit{runs}: es una lista en la cual cada posición corresponde con una iteración, a su vez cada iteración contiene un lista que representa las distintas configuraciones y las variables medidas sobre estas en la iteración. Cada elemento de la lista tiene las siguientes entradas:
+\item \textit{runs}: es una lista en la cual cada posición corresponde con una iteración, a su vez cada iteración contiene un lista que representa las simulaciones realizadas. Cada elemento de esta última lista tiene las siguientes entradas:
 \begin{itemize}
-	\item \textit{hash}: este valor representa unívocamente a una configuración.
 	\item \textit{ncells}: este valor es el número de nodos ocupados.
 	\item \textit{nclusters}: este campo es el número de clústeres calculados.
 	\item \textit{area}: este valor es el área del menor rectángulo que contiene a todas los nodos ocupados.
-	\item \textit{ocurrences}: este campo almacena el número de veces que se repite esta configuración, evitando almacenar duplicados.
+	\item \textit{nstillLifes}: este campo contabiliza en número de vidas inmóviles que se han podido localizar.
 \end{itemize}
 \end{itemize}
 
-%%Añadir un ejemplo
+%%Añadir un ejemplo JSON
 
 Notar que dado que las simulaciones no comparten información entre sí, pueden ser realizadas en procesos independientes para más tarde agregar todos los resultados en una sola salida.
 
-La siguiente etapa acepta como entrada el archivo en formato JSON de la etapa anterior y calcula el valor medio y de la desviación típica de cada variable, generando un archivo en formato CSV \cite{csv} para cada variable medida en el cual cada fila tiene tres columnas: número de iteración, media y el radio del intervalo de confianza, esto es, tres veces la desviación típica. El nombre que recibe cada archivo está compuesto por la variable medida, el valor de $\alpha$, el número de simulaciones y el número de iteraciones. En la etapa final utilizaremos el nombre de los ficheros generados para interpretar su contenido adecuadamente y nombrar a su vez los gráficos de salida. 
+La siguiente etapa acepta como entrada el archivo en formato JSON de la etapa anterior y calcula el valor medio y de la desviación típica de cada variable, generando un archivo en formato CSV \cite{csv} para cada variable medida en el cual cada fila tiene cuatro columnas en el siguiente orden: número de iteración, media, el radio del intervalo de confianza y el valor de $p-value$ de un test de normalidad (sección \ref{normalidad}). El nombre que recibe cada archivo está compuesto por la variable medida, el valor de $\alpha$, el número de simulaciones y el número de iteraciones. En la etapa final utilizaremos el nombre de los ficheros generados para interpretar su contenido adecuadamente y nombrar a su vez los gráficos de salida. 
 
-Finalmente la última etapa recibe como entrada los archivos CSV generados en la etapa anterior y realiza dos tipos de gráficos. En primer lugar realiza un gráfico para cada archivo de entrada, dónde el eje X viene dado por el número de la iteración y el eje Y por la variable observada, esta última se pinta en conjunción con su intervalo de confianza. A continuación, para cada variable medida realiza un nuevo gráfico, esta vez en lugar de representar la evolución de una variable para un solo valor de $\alpha$, representa la evolución de la variable para todos los valores de $\alpha$. 
-%añadir ejemplo
+Finalmente la última etapa recibe como entrada los archivos CSV generados en la etapa anterior y realiza dos tipos de gráficos. En primer lugar realiza un gráfico para cada archivo de entrada, dónde el eje X viene dado por el número de la iteración, el eje Y por la variable observada, esta última se pinta en conjunción con su intervalo de confianza y el color que representa si supera o no el test de normalidad. A continuación, para cada variable medida realiza un nuevo gráfico, esta vez en lugar de representar la evolución de una variable para un solo valor de $\alpha$, representa la evolución de la variable para todos los valores de $\alpha$. 
+
+%añadir ejemplo gráficas
 
 \end{document}
