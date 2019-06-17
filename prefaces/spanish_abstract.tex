@@ -13,11 +13,16 @@
 
   \vspace{0.7cm}
   \noindent{\textbf{Resumen}}\\
-
-El juego de vida de Conway ha sido uno de los autómatas celulares más estudiados desde que von Neumman y Ulam introdujeran el concepto de autómata celular. El conjunto de reglas que determinan la evolución de éste autómata celular sobre un malla son muy simples, sin embargo dan lugar a comportamientos complejos y difíciles de predecir que han atraído la atención de diversos científicos de otros campos. Desde entonces, a parte de descubrir y catalogar dichos comportamientos, también ha surgido interés en el estudio de como afectan las perturbaciones en la malla y en la evolución. Además se han propuesto nuevos tipos de autómatas celulares similares al juego de vida pero que muestran comportamientos totalmente diferentes.
-
-
 \end{center}
+El juego de vida de Conway ha sido uno de los autómatas celulares más estudiados desde que von Neumman y Ulam introdujeran el concepto de autómata celular. El conjunto de reglas que determinan la evolución de éste autómata celular sobre un malla son muy simples, sin embargo dan lugar a comportamientos complejos y difíciles de predecir llamados configuraciones, que han atraído la atención de diversos científicos de otros campos. Desde entonces, a parte de descubrir y catalogar dichos comportamientos, también ha surgido interés en el estudio de como afectan las perturbaciones en la malla y en la evolución. Además se han propuesto nuevos tipos de autómatas celulares similares al juego de vida pero que muestran comportamientos totalmente diferentes, mostrando que pequeñas alteraciones en las reglas pueden llevar a grandes cambios. \\
+
+En este trabajo por un la hemos explorado e introducido el juego de vida de Conway, mostrando especial interés en la clasificación de los comportamientos complejos que se dan en el mismo y cuál es su evolución cuando se exponen a perturbaciones. En particular nos hemos preguntado que ocurre si las perturbaciones se introducen a nivel de aplicación de las reglas, es decir, que es lo que ocurre cuando las reglas no se aplican simultáneamente sobre todos los individuos, si no que lo hacen en función de cierta probabilidad $\alpha$. Esta modificación define una clase de autómatas llamados autómatas celulares $\alpha$-asíncronos y más concretamente da lugar el juego de vida $\alpha$-asíncrono. Con el fin de definir un contexto que agrupe tanto esta idea como la del juego de vida original hemos tomado la definición de autómata celular $m$-asíncrono. \\
+
+Hasta donde alcanza nuestro conocimiento solo se ha estudiado de manera general como se modifica el comportamiento de configuraciones aleatorias pero no se ha estudiado como cambian las diferentes clases de configuraciones en el juego de vida $\alpha$-asíncrono, lo que motiva que en este trabajo desarrollemos su estudio. \\
+
+%to the best of our knowlegde
+
+Dado el carácter probabilístico del juego de vida $\alpha$-asíncrono, la herramienta escogida para estudiar el desarrollo de las configuraciones ha sido la técnica de simulación Monte Carlo. Éstas se apoyan principalmente en la generación de números pseudo-aleatorios de una determinada distribución y en dos teoremas fundamentales de la teoría de la probabilidad: el teorema central del límite y la ley de los grandes números. Por tanto, en este trabajo enunciamos y demostramos las versiones \textit{clásicas} de estos teoremas. Además también visitamos brevemente el campo de la generación de números pseudo-aleatorios, pues no es una tarea trivial su generación y a menudo se encuentra en lenguajes de programación de alto nivel implementaciones deficientes de los mismos.
 
 \newpage
 \end{document}
