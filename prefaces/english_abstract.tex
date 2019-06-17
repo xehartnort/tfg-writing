@@ -10,12 +10,54 @@
 \begin{center}
   \AuthorName\\
   \vspace{0.7cm}
-  \noindent{\textbf{Keywords}: }\\
+  \noindent{\textbf{Keywords}: Game of life, $\alpha$-asynchronous Game of life, Monte Carlo simulation, cellular automata, $m$-asynchronous cellular automata.}\\
 
   \vspace{0.7cm}
   \noindent{\textbf{Abstract}}\\
- \end{center}
+\end{center}
 
+The cellular automata theory was introduced by von Neumann and Ulam in 1950 in order to study artificial self reproducing machines. The design of this kind of machines included the environment in which they evolve, a rectangular lattice. It is filled with cells, so each node is in one of the follwing states: filled (1) or empty (0). They evolve simultaneously obeing a fixed set of rules called transition rules. For each node, they take into account the number of filled nodes surrounding the node what is also known as the neighborhood of the node. \\
+
+Conway's game of life has been one of the most popular cellular automata since its invention in 1970. In this particular case the neighborhood of one node is made of all surrounding nodes in all directions at a distance of one node. Conway's game of life implement the following set of transition rules: 
+\begin{itemize}
+\item Any filled node with two or three filled nodes in its neighborhood remains filled, otherwise it empties.
+\item Any empty node with exactly three filled nodes in its neighborhood is filled, otherwise it keeps its current state.
+\end{itemize} 
+
+As unpredictable behaviours emerged from the transition rules, scientist from many fields became interested in the game of life and new sets of transition rules were developt. In this work we study the behaviour of a reduced set of configurations when transition rules are applied with a probability $\alpha$ so that in each iteration only a subset of nodes are truly updated and the remaining set of nodes keep their state. This scheme of updating define a new entire class of cellular automata called $\alpha$-asynchronous cellular automata whereby we define the $\alpha$-asynchronous game of life. \\
+
+The lattice in which the game of life evolves is infinite but the memory of the computer is finite, as we think that there is no need to store a big finite lattice in memory, in our implementation of both the game of life and the $\alpha$-asynchronous game of life only the filled nodes are stored in memory so that larger patterns can fit in it. The major drawback of our implementation is that in order to apply the transition rules in each iteration we must compute the set of nodes which are going to be updated. \\
+
+Even thought there had been a huge interest in the game of life and many patterns had been found and classified, there is not a baseline classification which is globally accepted. In this work, we considered the three following classes of patterns of interest:
+
+\begin{itemize}
+\item Still lives, which are static patterns.
+\item Oscillators, patterns that repeat themselves after a fixed number of iterations. They can be seen as a subset of still lives.
+\item Spaceships, patterns that translate themselves across the board. The number of iterations before it repeats but in a different position is named the period of the spaceship.
+\end{itemize}
+
+Those classes of patterns had been collected in the biggest online database of objects in Conway's Game of Life and similar cellular automata, \textit{Catagolue}. Note that as still lives are not affected by the $\alpha$-asynchronous update scheme, so we did not study them. In this work we choose the two most common oscillators of period 2, 3 and 4 and the four most common spaceships. The behaviour of those patterns are studied in the $\alpha$-asynchronous game of life. The chosen patterns are stored and read in the run length encoded format (RLE format) which allow us to store huge patterns in small files. \\
+
+Given the randomness of the $\alpha$-asynchronous game of life, we employ the Monte Carlo methods to study the change in the behaviour of the chosen patterns. In order to measure it we study in each iteration the mean values of:
+
+\begin{itemize}
+\item The number of filled nodes.
+\item The area of the smallest rectangle which contains all the filled nodes.
+\item The number of nodes which change their state also known as heat.
+\item The number of clusters, which are the smallest set of nodes with no node filled shared in their neighborhood.
+\item The number of still lives, that is, those clusters which are static patterns.
+\end{itemize}
+
+A section of our work is devoted to the mathematical foundations of the $\alpha$-asynchronous game of life by means of the $m$-asynchronous cellular automata. A wider class of cellular automata which contains the game of life and the $\alpha$-asynchronous game of life cellular automatas. In addition we prove the two main theorems which support the Monte Carlo methods. Those are the (strong) law of big numbers and the central limit theorem. \\
+ 
+We obtain the measures of the mean values of the variables of interest in a process with three stages, each intermediate stage is feed with the output of the stage before. The input of the first stage is a pattern in RLE format and a set of $\alpha$ values. \\
+\begin{enumerate}
+\item Fixed an $\alpha$ value, generate a JSON file with a set of fields filled with the data extracted from multiple simulations of each iteration of a chosen pattern.
+\item The JSON file is loaded, then the mean, the standard deviation and a p-value is computed for each variable of interest in each iteration. Those values are outputted to a CSV file in which each column store the values described previously.
+\item For each CSV file generated in the stage before, three kind of plots are made. Two which show the evolution of the mean values of one variable of interest for all values of $\alpha$ given and one showing only the mean value of the one variable of interest for a fixed value of $\alpha$.
+\end{enumerate}
+
+As a result of our study we conclude that the $\alpha$-asynchronous scheme induces stability in the behaviour of the nodes. The observed mean values of the variables of interest converge continuously to the values obtained in the synchronous game of life when $\alpha$ values converges to 1. On the other hand, when $\alpha$ values converges to 0 the mean values of the variables of interest tend to diverge from the values obtained in the synchronous game of life. We have observed that spaceships can be characterized by the number of still lives in their $\alpha$-asynchronous update, which is zero for all iterations. \\
 
 \newpage
 \end{document}
